@@ -5,7 +5,6 @@ import { Injectable } from '@angular/core';
 export class UserProvider {
   name: any = null;
   email: any = null;
-  isLoggedIn: any = null;
 
   constructor() {
   }
@@ -18,8 +17,5 @@ export class UserProvider {
     this.email = email_param;
   }
 
-  setLoggedInStatus(value : any){
-    this.isLoggedIn = value;
-  }
 
 }

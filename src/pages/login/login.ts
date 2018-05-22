@@ -31,21 +31,21 @@ export class LoginPage {
 			password: ['', Validators.compose([Validators.required, Validators.minLength(6)])]
 		});
 
-    this.createGoogleAuthObservable();
+    // this.createGoogleAuthObservable();
 
     // Diable the menu
     this.disableMenu();
 	}
 
-  createGoogleAuthObservable(){
-    firebase.auth().onAuthStateChanged( user => {
-      if (user){
-        this.user.setLoggedInStatus(true);
-      } else {
-        this.user.setLoggedInStatus(false);
-      }
-    });
-  }
+  // createGoogleAuthObservable(){
+  //   firebase.auth().onAuthStateChanged( user => {
+  //     if (user){
+  //       this.user.setLoggedInStatus(true);
+  //     } else {
+  //       console.log("No users logged in");
+  //     }
+  //   });
+  // }
 
   login() {
   	let data = this.loginForm.value;
@@ -65,18 +65,8 @@ export class LoginPage {
   }
 
   loginWithGoogle() {
-    // this.googlePlus.login({
-    //   'scopes' : 'profile email',
-    //   'webClientId' : '396313115996-fsp0t0q7co5gqmrg1o1ek8udjqn82rl0.apps.googleusercontent.com',
-    //   // 'webClientId': '777105251727-414douar978036vcr6u4st5oo3jdvtue.apps.googleusercontent.com',
-    //   'offline': true
-    // }).then((user) => {
-    //   console.log("Successfully logged in...", user);
-    //   this.user.setUserName(user.name);
-    //   this.user.setUserEmail(user.email);
-    //   this.navCtrl.setRoot(HomePage);
-    // }, err => console.log("Login with google failed...", err));
     this.auth.signInWithGoogle();
+    //this.navCtrl.setRoot(HomePage);
   }
 
   signup(){

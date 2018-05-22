@@ -1,16 +1,17 @@
-<ion-header>
-	<ion-navbar>
-		<button ion-button menuToggle>
-			<ion-icon name="menu"></ion-icon>
-		</button>
-		<ion-title>Log in</ion-title>
-	</ion-navbar>
-</ion-header>
+<ion-content padding class="animated fadeIn auth-page">
+	<div class="login-content">
 
-<ion-content>
-	<form (ngSubmit)="login()" [formGroup]="loginForm">
+		<div padding-horizontal text-center class="animated fadeInDown">
+			<div class="logo"></div>
+				<h2 ion-text class="text-primary add-border">
+					<strong>Welcome to your First Year!</strong>
+				</h2>
+		</div>
+
+
+	<form class="list-form add-border" (ngSubmit)="login()" [formGroup]="loginForm">
 		<ion-list inset>
-
+			<h4 ion-text align="center" class="text-primary add-border"> Please log in or signup </h4>
 			<ion-item [ngClass]="{ invalid: emailErrors.hasError('*', ['touched', 'dirty']) }">
 				<ion-input type="text" placeholder="Email" formControlName="email"></ion-input>
 			</ion-item>
@@ -53,4 +54,5 @@
 			</ion-list>
 		</div>
 	</form>
+</div>
 </ion-content>

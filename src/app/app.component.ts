@@ -19,7 +19,8 @@ export class MyApp {
   rootPage: any;
   userSubscription: Subscription;
 
-  pages: Array<{title: string, component: any}>;
+  pages: Array<{title: string, component: any, icon: string}>;
+  activePage: any;
 
   constructor(public platform: Platform,
     public statusBar: StatusBar,
@@ -31,28 +32,33 @@ export class MyApp {
 
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Home', component: HomePage },
-      { title: 'List', component: ListPage }
+      { title: 'Home', component: HomePage, icon: 'home' },
+      { title: 'List', component: ListPage, icon: 'nothing'}
     ];
 
+    this.activePage = this.pages[0];
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      this.statusBar.styleDefault();
+      //this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
+    this.createAuthObservable();
+  }
 
+  createAuthObservable(){
     // Logic to check if users are logged in or not.
     this.userSubscription = this.auth.afAuth.authState.subscribe( user => {
       if(user){
-        console.log("User exist, already logged in. User:", user);
-        this.rootPage = HomePage;
+        console.log("App::initializeApp(): User logged in: ", user);
+        console.log("Subscription: ", this.userSubscription);
+        this.nav.setRoot(HomePage);
       } else {
-        console.log("No user exists...going to LoginPage.");
-        this.rootPage = LoginPage;
+        console.log("App::initializeApp(): No user exists...going to LoginPage.");
+        this.nav.setRoot(LoginPage);
       };
     });
   }
@@ -62,18 +68,18 @@ export class MyApp {
     // we wouldn't want the back button to show in this scenario
     this.menu.close();
     this.nav.setRoot(page.component);
+    this.activePage = page;
   }
 
-  login() {
-    this.menu.close();
-	  this.nav.setRoot(LoginPage);
+  checkActive(page){
+    return page == this.activePage;
   }
 
   logout() {
 	  this.menu.close();
 	  this.auth.signOut();
-    this.userSubscription.unsubscribe();
-	  this.nav.setRoot(HomePage);
+	  this.nav.setRoot(LoginPage);
+    console.log("App::logOut(): User logged out");
   }
 
 }

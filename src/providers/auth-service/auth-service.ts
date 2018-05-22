@@ -34,7 +34,6 @@ export class AuthServiceProvider {
     return this.user && this.user.email;
   }
 
-
   signOut(): Promise<void> {
     return this.afAuth.auth.signOut();
   }
@@ -44,36 +43,19 @@ export class AuthServiceProvider {
 		return this.oauthSignIn(new firebase.auth.GoogleAuthProvider());
   }
 
-
   private oauthSignIn(provider: AuthProvider) {
-		// // if(this.platform.is('android')){
-		// 	console.log("this platform is android ran");
-		// if (!(<any>window).cordova) {
-		  // return this.afAuth.auth.signInWithPopup(provider).then(result => {
-			// 	let user = result.user;
-			// 	console.log("This is the user from google signin", user);
-			// }, error => {
-			// 	let errorCode = error.code;
-			// 	let errorMessage = error.message;
-			// 	let email = error.email;
-			// 	let credential = error.credential;
-			// 	console.log("Error responded with: ", error);
-			// });
-	  // } else {
-		  return this.afAuth.auth.signInWithRedirect(provider).then(() => {
-			  return this.afAuth.auth.getRedirectResult().then( result => {
-				  // This gives you a Google Access Token.
-				  // You can use it to access the Google API.
-				  let token = result.credential.accessToken;
-				  // The signed-in user info.396313115996-fsp0t0q7co5gqmrg1o1ek8udjqn82rl0.apps.googleusercontent.com
-			 	  let user = result.user;
-			   	console.log(token, user);
-			  }).catch(function(error) {
-				  // Handle Errors here.
-				  alert(error.message);
-			  });
-		  });
-	  // };
+		return this.afAuth.auth.signInWithRedirect(provider).then(() => {
+			return this.afAuth.auth.getRedirectResult().then( result => {
+				// This gives you a Google Access Token.
+				// You can use it to access the Google API.
+				let token = result.credential.accessToken;
+			 	let user = result.user;
+			  //console.log(token, user);
+			}).catch(function(error) {
+				// Handle Errors here.
+				alert(error.message);
+			});
+		});
   }
 
 }
