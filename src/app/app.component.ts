@@ -2,6 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform, MenuController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { Subscription} from 'rxjs/Subscription';
+import { UserProvider } from '../providers/user/user';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 
 import { HomePage } from '../pages/home/home';
@@ -15,6 +17,7 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any;
+  userSubscription: Subscription;
 
   pages: Array<{title: string, component: any}>;
 
@@ -22,7 +25,8 @@ export class MyApp {
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
     private auth: AuthServiceProvider,
-    private menu: MenuController) {
+    private menu: MenuController,
+    private user: UserProvider) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -42,18 +46,15 @@ export class MyApp {
     });
 
     // Logic to check if users are logged in or not.
-    this.auth.afAuth.authState.subscribe(
-      user => {
-        if (user) {
-          this.rootPage = HomePage;
-        } else {
-          this.rootPage = LoginPage;
-        }
-      },
-      () => {
+    this.userSubscription = this.auth.afAuth.authState.subscribe( user => {
+      if(user){
+        console.log("User exist, already logged in. User:", user);
+        this.rootPage = HomePage;
+      } else {
+        console.log("No user exists...going to LoginPage.");
         this.rootPage = LoginPage;
-      }
-    );
+      };
+    });
   }
 
   openPage(page) {
@@ -65,13 +66,13 @@ export class MyApp {
 
   login() {
     this.menu.close();
-	  this.auth.signOut();
 	  this.nav.setRoot(LoginPage);
   }
 
   logout() {
 	  this.menu.close();
 	  this.auth.signOut();
+    this.userSubscription.unsubscribe();
 	  this.nav.setRoot(HomePage);
   }
 

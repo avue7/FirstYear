@@ -13,6 +13,8 @@ import { firebaseConfig } from '../config';
 import { LoginPage } from '../pages/login/login';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { SignupPage } from '../pages/signup/signup';
+import { GooglePlus } from '@ionic-native/google-plus';
+import { UserProvider } from '../providers/user/user';
 
 
 @NgModule({
@@ -43,6 +45,8 @@ import { SignupPage } from '../pages/signup/signup';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AngularFireAuth,
     AuthServiceProvider,
+    GooglePlus,
+    UserProvider
   ]
 })
 export class AppModule {}
