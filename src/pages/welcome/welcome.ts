@@ -29,6 +29,14 @@ export class WelcomePage {
     this.auth.signInWithGoogle();
   }
 
+  loginWithFacebook(){
+    this.auth.signInWithFacebook();
+  }
+
+  loginWithTwitter(){
+    this.auth.signInWithTwitter();
+  }
+  
   signup(){
     this.navCtrl.push(SignupPage);
   }

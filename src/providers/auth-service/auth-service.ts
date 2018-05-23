@@ -3,21 +3,19 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import AuthProvider = firebase.auth.AuthProvider;
 import { UserProvider } from '../user/user';
-import { Platform } from 'ionic-angular';
 
 @Injectable()
 export class AuthServiceProvider {
 	private user: firebase.User;
 
-	constructor(public afAuth: AngularFireAuth,
-		private platform: Platform) {
+	constructor(public afAuth: AngularFireAuth) {
 		afAuth.authState.subscribe(user => {
 			this.user = user;
 		});
 	}
 
 	signInWithEmail(credentials) {
-		console.log('Sign in with email');
+		console.log('Auth-Service::signInWithEmail(): Sign in with email');
 		return this.afAuth.auth.signInWithEmailAndPassword(credentials.email,
 			 credentials.password);
 	}
@@ -35,13 +33,32 @@ export class AuthServiceProvider {
   }
 
   signOut(): Promise<void> {
-    return this.afAuth.auth.signOut();
+    return this.afAuth.auth.signOut().then(() => {
+			console.log("Successfully signed out");
+		}).catch((error) => {
+			console.log("Cannot Sign out:", error);
+		})
   }
 
   signInWithGoogle() {
-		console.log('Sign in with google');
+		console.log('Auth-Service::signInWithGoogle(): Sign in with google');
 		return this.oauthSignIn(new firebase.auth.GoogleAuthProvider());
   }
+
+	signInWithFacebook() {
+		console.log('Auth-Service::signInWithFacebook: Sign in with Facebook');
+		return this.oauthSignIn(new firebase.auth.FacebookAuthProvider().setCustomParameters({
+			auth_type: 'reauthenticate'
+		}));
+	}
+
+	signInWithTwitter() {
+		console.log("Auth-Service::signInWithTwitter(): Sign in with Twitter");
+		return this.oauthSignIn(new firebase.auth.TwitterAuthProvider().setCustomParameters({
+			force_login: 'true',
+			screen_name: 'true'
+		}));
+	}
 
   private oauthSignIn(provider: AuthProvider) {
 		return this.afAuth.auth.signInWithRedirect(provider).then(() => {
@@ -50,7 +67,7 @@ export class AuthServiceProvider {
 				// You can use it to access the Google API.
 				let token = result.credential.accessToken;
 			 	let user = result.user;
-			  //console.log(token, user);
+			  console.log(token, user);
 			}).catch(function(error) {
 				// Handle Errors here.
 				alert(error.message);
