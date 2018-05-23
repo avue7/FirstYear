@@ -57,7 +57,7 @@ export class MyApp {
         console.log("Subscription: ", this.userSubscription);
         this.nav.setRoot(HomePage);
       } else {
-        console.log("App::initializeApp(): No user exists...going to LoginPage.");
+        console.log("App::initializeApp(): No user exists...going to WelcomePage.");
         this.nav.setRoot(WelcomePage);
       };
     });

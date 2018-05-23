@@ -5,7 +5,7 @@
     <ion-row>
       <ion-col class="animated fadeInDown">
 				<br>
-        <img class="avatar-image" src="../../assets/imgs/logo.jpg" alt="Avatar" />
+        <img class="avatar-image" src="assets/imgs/logo.jpg" alt="Avatar" />
 				<h3> <strong> Welcome to First Year </strong> </h3>
       </ion-col>
     </ion-row>
@@ -15,36 +15,18 @@
 			</ion-col>
 		</ion-row>
 
-    <!-- <ion-row>
-      <ion-col>
-        <ion-list>
+	  <ion-row>
+	     <ion-col >
+	       <button ion-button class="login-button" (click)="login()">Login</button>
+				<button ion-button class="login-button" (click)="signup()">Signup</button>
+			</ion-col>
+		</ion-row>
 
-          <ion-item>
-            <ion-label>Email</ion-label>
-            <ion-input type="text"></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label>Password</ion-label>
-            <ion-input type="password"></ion-input>
-          </ion-item>
-
-        </ion-list>
-      </ion-col>
-    </ion-row> -->
-
-	    <ion-row>
-	      <ion-col >
-	        <button ion-button class="login-button">Login</button>
-					<button ion-button class="login-button">Signup</button>
-				</ion-col>
-			</ion-row>
-
-			<ion-row>
-				<ion-col>
-					Or login with:
-				</ion-col>
-			</ion-row>
+		<ion-row>
+			<ion-col>
+				Or login with:
+			</ion-col>
+		</ion-row>
 
 		<ion-grid>
 			<ion-row>
@@ -59,7 +41,7 @@
 					</button>
 				</ion-col>
 				<ion-col col-4>
-					<button ion-button icon-only block class="btn-gplus">
+					<button ion-button icon-only block class="btn-gplus" (click)="loginWithGoogle()">
 						<ion-icon name="logo-googleplus"></ion-icon>
 					</button>
 				</ion-col>
@@ -67,5 +49,4 @@
 		</ion-grid>
 
   </div>
-
 </ion-content>
