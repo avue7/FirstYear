@@ -16,6 +16,7 @@ import { SignupPage } from '../pages/signup/signup';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { UserProvider } from '../providers/user/user';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LoginPage } from '../pages/login/login';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HomePage,
     ListPage,
     WelcomePage,
-    SignupPage
+    SignupPage,
+    LoginPage
   ],
   imports: [
     BrowserModule,
@@ -38,7 +40,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HomePage,
     ListPage,
     WelcomePage,
-    SignupPage
+    SignupPage,
+    LoginPage
   ],
   providers: [
     StatusBar,
