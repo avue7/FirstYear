@@ -226,14 +226,17 @@
 
 // buttons configs
 .btn-facebook {
+  border: 1px solid #fff;
   background-color: #3B5999;
 }
 
 .btn-twitter {
+  border: 1px solid #fff;
   background-color: #00ACEE;
 }
 
 .btn-gplus {
+  border: 1px solid #fff;
   background-color: #E04006
 }
 
@@ -342,10 +345,10 @@ ion-navbar.no-border {
       width: 86%;
 
       .logo {
-        width: 175px;
-        height: 175px;
+        width: 100px;
+        height: 100px;
         margin: 20px auto 0;
-        border-radius: 10%;
+        border-radius: 0%;
         background: url("../assets/imgs/logo.jpg") no-repeat;
         background-size: 100%;
       }
@@ -501,20 +504,6 @@ ion-icon[ng-reflect-disabled="true"] {
       box-shadow: none;
     }
   }
-}
-
-.ios {
-  ion-list ion-item,
-  .list-hotels .hotel-bg {
-    pointer-events: none;
-  }
-}
-
-// google
-.google-map {
-  height: 160px;
-  pointer-events: none;
-  margin: 0 -20px;
 }
 
 // Animate CSS

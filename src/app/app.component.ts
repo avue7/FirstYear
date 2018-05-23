@@ -8,7 +8,7 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
-import { LoginPage } from '../pages/login/login';
+import { WelcomePage } from '../pages/welcome/welcome';
 
 @Component({
   templateUrl: 'app.html'
@@ -58,7 +58,7 @@ export class MyApp {
         this.nav.setRoot(HomePage);
       } else {
         console.log("App::initializeApp(): No user exists...going to LoginPage.");
-        this.nav.setRoot(LoginPage);
+        this.nav.setRoot(WelcomePage);
       };
     });
   }
@@ -78,7 +78,7 @@ export class MyApp {
   logout() {
 	  this.menu.close();
 	  this.auth.signOut();
-	  this.nav.setRoot(LoginPage);
+	  this.nav.setRoot(WelcomePage);
     console.log("App::logOut(): User logged out");
   }
 

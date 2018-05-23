@@ -1,58 +1,18 @@
-<ion-content padding class="animated fadeIn auth-page">
-	<div class="login-content">
+<!--
+  Generated template for the LoginPage page.
 
-		<div padding-horizontal text-center class="animated fadeInDown">
-			<div class="logo"></div>
-				<h2 ion-text class="text-primary add-border">
-					<strong>Welcome to your First Year!</strong>
-				</h2>
-		</div>
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>login</ion-title>
+  </ion-navbar>
+
+</ion-header>
 
 
-	<form class="list-form add-border" (ngSubmit)="login()" [formGroup]="loginForm">
-		<ion-list inset>
-			<h4 ion-text align="center" class="text-primary add-border"> Please log in or signup </h4>
-			<ion-item [ngClass]="{ invalid: emailErrors.hasError('*', ['touched', 'dirty']) }">
-				<ion-input type="text" placeholder="Email" formControlName="email"></ion-input>
-			</ion-item>
+<ion-content padding>
 
-			<div ngxErrors="email" #emailErrors="ngxErrors">
-				<div [ngxError]="['email', 'required']" [when]="['touched', 'dirty']">It should be a valid email</div>
-			</div>
-
-			<ion-item [ngClass]="{ invalid: passwordErrors.hasError('*', ['touched']) }">
-				<ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
-			</ion-item>
-
-			<div ngxErrors="password" #passwordErrors="ngxErrors">
-				<div [ngxError]="['minlength', 'required']" [when]="['touched']">It should be at least 5 characters</div>
-			</div>
-		</ion-list>
-
-		<div padding-horizontal>
-			<div class="form-error">{{loginError}}</div>
-
-			<button ion-button full type="submit" [disabled]="!loginForm.valid">Log in</button>
-			<div class="login-footer">
-				<p>
-					<a href="#">Forgot password?</a>
-					If you're a new user, please sign up.
-				</p>
-			</div>
-
-			<ion-list>
-
-				<button ion-button icon-left block clear (click)="loginWithGoogle()">
-					<ion-icon name="logo-google"></ion-icon>
-					Log in with Google
-				</button>
-
-				<button ion-button icon-left block clear (click)="signup()">
-					<ion-icon name="person-add"></ion-icon>
-					Sign up
-				</button>
-			</ion-list>
-		</div>
-	</form>
-</div>
 </ion-content>
