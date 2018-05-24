@@ -20,6 +20,7 @@ export class AuthServiceProvider {
 		console.log('Auth-Service::signInWithEmail(): Sign in with email');
 		return this.afAuth.auth.signInWithEmailAndPassword(credentials.email, credentials.password).then(() => {
 		}, error => {
+			console.log("Auth-service::signInWithEmail(): error:", error);
 			return error.code;
 		});
 	}

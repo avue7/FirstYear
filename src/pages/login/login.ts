@@ -27,10 +27,10 @@ export class LoginPage {
     private user: UserProvider,
     private menu: MenuController) {
 		this.loginForm = fb.group({
-			email: ['', Validators.compose([Validators.required, Validators.email])],
+      email: ['', Validators.compose([Validators.required, Validators.email])],
 			password: ['', Validators.compose([Validators.required, Validators.minLength(6)])]
-		});
 
+		});
     // Diable the menu
     this.disableMenu();
 	}
@@ -53,6 +53,8 @@ export class LoginPage {
     let invalidEmailCode = "auth/invalid-email";
 
     this.auth.signInWithEmail(credentials).then((code) => {
+      console.log("Login::login(): code recieved back is:", code);
+
       if(code == emailDoesNotExistCode){
         this.loginError = "Email entered is not registered. Please go back and signup or try again.";
         return;
@@ -62,9 +64,10 @@ export class LoginPage {
         return;
       }
       if(code == wrongPasswordCode){
-        this.loginError = "Incorrect Password.";
+        this.loginError = "Incorrect password. Maybe this email is associated with another log-in provider.";
         return;
       }
+
       this.navCtrl.setRoot(HomePage);
     });
   }

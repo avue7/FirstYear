@@ -1,0 +1,59 @@
+[33mcommit cec38bedb66091913fb53d317eacd56ebf37a267[m
+Author: avue7 <avue7@mail.csuchico.edu>
+Date:   Thu May 24 02:00:57 2018 -0700
+
+    Removed the div for the forgot password link in the homepage so that it is unclickable outside of the characters in the string.
+
+[33mcommit e7d5f6a585f2e932d7c6417c2a9211aa7f0fc9fb[m
+Author: avue7 <avue7@mail.csuchico.edu>
+Date:   Thu May 24 01:50:23 2018 -0700
+
+    Added forgot password page w/ logic to check for email that exists in database. If exists then password reset request can be made. Also, added stlying to the alert box globally by setting the sass variables that lives in the variables.scss file.
+
+[33mcommit b10d2762f12b134f6373f7af70bb16e2256c5c0a[m
+Author: avue7 <avue7@mail.csuchico.edu>
+Date:   Tue May 22 23:55:17 2018 -0700
+
+    Added authentication for twitter sign in and debugged issues with twitter...added reauthentication technique so that users will always have to reauthenticate when using the facebook or twitter login buttons. I will have to address this for google plus sign in as well on the next commit.
+
+[33mcommit 135ed2e3b851790fa116472844c90efbe24ad608[m
+Author: avue7 <avue7@mail.csuchico.edu>
+Date:   Tue May 22 20:25:42 2018 -0700
+
+    removed unnecessary file hooks
+
+[33mcommit daacc50a9a5a1aded11f85d9d79c8d6a02b7706b[m
+Author: avue7 <avue7@mail.csuchico.edu>
+Date:   Tue May 22 20:24:00 2018 -0700
+
+    Fixed the google plus login method, added the login method.
+
+[33mcommit dca769606df7a239f59f0aa9f07ba7eb249a23c9[m
+Author: avue7 <avue7@mail.csuchico.edu>
+Date:   Tue May 22 18:47:08 2018 -0700
+
+    Modified the login page to be the welcome page. This will be the new root page when users enter the app and have not logged in yet. Also fixed the welcome page with a little bit of style to make it look prettier.
+
+[33mcommit b1bd43b27beeb8092dca40a3f4cdf23b3b5e02f4[m
+Author: avue7 <avue7@mail.csuchico.edu>
+Date:   Tue May 22 02:54:43 2018 -0700
+
+    Added background and style to the login page. Need to fix the view of the google sign in button as well as the forgot password link.
+
+[33mcommit cf407a6f3cfa7a07f8cdfc809e001b1e9d272c8b[m
+Author: avue7 <avue7@mail.csuchico.edu>
+Date:   Mon May 21 21:29:48 2018 -0700
+
+    Added google plus signin to the app. Successfully used the universal and dynamic links to be able to authenticated and create users to the firebase database correctly with google sign in.
+
+[33mcommit 7129dd4c5ae7736ec02d3b9ded0a7a236b1f5a23[m
+Author: avue7 <avue7@mail.csuchico.edu>
+Date:   Thu May 17 18:54:16 2018 -0700
+
+    Initial added. Started with firebase added to the app. User auth is fixed for firebase however google sign up is not working atm. Need to fix where the logout login button is put and overall fix.
+
+[33mcommit 586613ade0193f066c15bfbada698fde59b4a64e[m
+Author: avue7 <avue7@mail.csuchico.edu>
+Date:   Thu May 17 17:04:36 2018 -0700
+
+    Initial commit
