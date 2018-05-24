@@ -6,8 +6,8 @@ import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
 
 @Component({
-	selector: 'as-page-signup',
-	templateUrl: './signup.html'
+	selector: 'page-signup',
+	templateUrl: 'signup.html'
 })
 export class SignupPage {
 	signupError: string;

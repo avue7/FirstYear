@@ -5,31 +5,31 @@
 </ion-header>
 
 <ion-content>
+  <div padding id="cloud-layer">
+		<form (ngSubmit)="signup()" [formGroup]="form">
+			<ion-list inset>
 
-	<form (ngSubmit)="signup()" [formGroup]="form">
-		<ion-list inset>
+				<ion-item [ngClass]="{ invalid: emailErrors.hasError('*', ['touched']) }">
+					<ion-input type="text" placeholder="Email" formControlName="email"></ion-input>
+				</ion-item>
 
-			<ion-item [ngClass]="{ invalid: emailErrors.hasError('*', ['touched']) }">
-				<ion-input type="text" placeholder="Email" formControlName="email"></ion-input>
-			</ion-item>
+				<div ngxErrors="email" #emailErrors="ngxErrors">
+					<div [ngxError]="['email', 'required']" [when]="['touched']">It should be a valid email</div>
+				</div>
 
-			<div ngxErrors="email" #emailErrors="ngxErrors">
-				<div [ngxError]="['email', 'required']" [when]="['touched']">It should be a valid email</div>
+				<ion-item [ngClass]="{ invalid: passwordErrors.hasError('*', ['touched']) }">
+					<ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
+				</ion-item>
+
+				<div ngxErrors="password" #passwordErrors="ngxErrors">
+					<div [ngxError]="['minlength', 'required']" [when]="['touched']">It should be at least 6 characters</div>
+				</div>
+			</ion-list>
+
+			<div padding-horizontal>
+				<div class="form-error" style="color:red;">{{signupError}}</div>
+				<button ion-button class="signup-button" full type="submit" [disabled]="!form.valid">Sign up</button>
 			</div>
-
-			<ion-item [ngClass]="{ invalid: passwordErrors.hasError('*', ['touched']) }">
-				<ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
-			</ion-item>
-
-			<div ngxErrors="password" #passwordErrors="ngxErrors">
-				<div [ngxError]="['minlength', 'required']" [when]="['touched']">It should be at least 6 characters</div>
-			</div>
-		</ion-list>
-
-		<div padding-horizontal>
-			<div class="form-error">{{signupError}}</div>
-
-			<button ion-button full type="submit" [disabled]="!form.valid">Sign up</button>
-		</div>
-	</form>
+		</form>
+	</div>
 </ion-content>
