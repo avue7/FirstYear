@@ -13,19 +13,16 @@
   			</ion-item>
 
   			<div ngxErrors="email" #emailErrors="ngxErrors">
-  				<div [ngxError]="['email', 'required']" [when]="['touched', 'dirty']">Please enter a valid email</div>
+  				<div [ngxError]="['email', 'required']" [when]="['touched', 'dirty']">Please enter a valid email address.</div>
   			</div>
 
-  			<ion-item class="password" [ngClass]="{ invalid: passwordErrors.hasError('*', ['touched']) }">
+  			<ion-item class="password" [ngClass]="{ invalid: passwordErrors.hasError('*', ['touched', 'dirty']) }">
   				<ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
   			</ion-item>
-				<div style="cursor: pointer;" (click)="forgotPassword()">
-					<font size="-3" style="color:gray"> Forgot Password? </font>
-				</div>
 
   			<div ngxErrors="password" #passwordErrors="ngxErrors">
-  				<div [ngxError]="['minlength', 'required']" [when]="['touched']">Password must be at least 6 characters</div>
-					<!-- <span > Click here.</span> -->
+  				<div [ngxError]="['minlength', 'required']" [when]="['touched', 'dirty']">Password must be at least 6 characters.</div>
+					<font size="-3" style="color:gray; cursor: pointer;" (click)="forgotPassword()"> Forgot Password? </font>
         </div>
   		</ion-list>
 
