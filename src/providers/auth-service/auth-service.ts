@@ -3,12 +3,14 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import AuthProvider = firebase.auth.AuthProvider;
 import { UserProvider } from '../user/user';
+import { GooglePlus } from '@ionic-native/google-plus';
 
 @Injectable()
 export class AuthServiceProvider {
 	private user: firebase.User;
 
-	constructor(public afAuth: AngularFireAuth) {
+	constructor(public afAuth: AngularFireAuth,
+		private googlePlus: GooglePlus) {
 		afAuth.authState.subscribe(user => {
 			this.user = user;
 		});
@@ -16,8 +18,10 @@ export class AuthServiceProvider {
 
 	signInWithEmail(credentials) {
 		console.log('Auth-Service::signInWithEmail(): Sign in with email');
-		return this.afAuth.auth.signInWithEmailAndPassword(credentials.email,
-			 credentials.password);
+		return this.afAuth.auth.signInWithEmailAndPassword(credentials.email, credentials.password).then(() => {
+		}, error => {
+			return error.code;
+		});
 	}
 
   signUp(credentials) {
@@ -42,7 +46,21 @@ export class AuthServiceProvider {
 
   signInWithGoogle() {
 		console.log('Auth-Service::signInWithGoogle(): Sign in with google');
-		return this.oauthSignIn(new firebase.auth.GoogleAuthProvider());
+		return this.googlePlus.login({
+			'webClientId': '396313115996-fsp0t0q7co5gqmrg1o1ek8udjqn82rl0.apps.googleusercontent.com',
+		}).then((res) => {
+			let googleCredential = firebase.auth.GoogleAuthProvider.credential(res.idToken);
+			this.afAuth.auth.signInWithCredential(googleCredential).then((response) => {
+				console.log("Successfully signed in with google plus");
+			});
+		}, error => {
+			console.log("Auth-Service::signInWithGoogle(): cannot sign in:", error);
+		});
+
+		// THis method for in app...
+		// return this.afAuth.auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(() => {
+		// 	return this.oauthSignIn(new firebase.auth.GoogleAuthProvider());
+		// });
   }
 
 	signInWithFacebook() {
@@ -75,4 +93,11 @@ export class AuthServiceProvider {
 		});
   }
 
+	resetPassword(emailAddress: any) {
+		this.afAuth.auth.sendPasswordResetEmail(emailAddress).then(() => {
+			console.log("Auth-Service::forgotPassword(): sent password reset to:", emailAddress);
+		}).catch((error) => {
+			console.log("Auth-Service::forgotPassword(): error while trying to send password reset:", error);
+		});
+	}
 }

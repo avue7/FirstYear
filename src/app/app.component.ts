@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { Subscription} from 'rxjs/Subscription';
 import { UserProvider } from '../providers/user/user';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
+import { GooglePlus } from '@ionic-native/google-plus';
 
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
@@ -27,7 +28,8 @@ export class MyApp {
     public splashScreen: SplashScreen,
     private auth: AuthServiceProvider,
     private menu: MenuController,
-    private user: UserProvider) {
+    private user: UserProvider,
+    private googlePlus: GooglePlus) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -78,6 +80,7 @@ export class MyApp {
   logout() {
 	  this.menu.close();
 	  this.auth.signOut();
+    this.googlePlus.logout();
 	  this.nav.setRoot(WelcomePage);
     console.log("App::logOut(): User logged out");
   }

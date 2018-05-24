@@ -17,6 +17,7 @@ import { GooglePlus } from '@ionic-native/google-plus';
 import { UserProvider } from '../providers/user/user';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginPage } from '../pages/login/login';
+import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { LoginPage } from '../pages/login/login';
     ListPage,
     WelcomePage,
     SignupPage,
-    LoginPage
+    LoginPage,
+    ForgotPasswordPage
   ],
   imports: [
     BrowserModule,
@@ -41,7 +43,8 @@ import { LoginPage } from '../pages/login/login';
     ListPage,
     WelcomePage,
     SignupPage,
-    LoginPage
+    LoginPage,
+    ForgotPasswordPage
   ],
   providers: [
     StatusBar,
