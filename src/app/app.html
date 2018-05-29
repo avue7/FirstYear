@@ -1,7 +1,10 @@
 <ion-menu [content]="content">
   <ion-header>
     <ion-toolbar>
-      <ion-title align="center"> Menu </ion-title>
+      <ion-list *ngIf="auth.getEmail()">
+        <br>
+        {{auth.getEmail()}}
+      </ion-list>
     </ion-toolbar>
   </ion-header>
 
@@ -12,13 +15,12 @@
           {{p.title}}
       </ion-item>
 
-      <ion-list-header *ngIf="auth.getEmail()">{{auth.getEmail()}}
-      </ion-list-header>
-
-      <ion-item (click)="logout()">
-	      <ion-icon name="log-out" item-left></ion-icon>
-	        Log out
-      </ion-item>
+      <ion-footer>
+        <ion-item (click)="logout()">
+	         <ion-icon name="log-out" item-left></ion-icon>
+	          Log out
+        </ion-item>
+      </ion-footer>
     </ion-list>
   </ion-content>
 

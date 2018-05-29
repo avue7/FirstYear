@@ -5,7 +5,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { LoginPage } from '../login/login';
 
-@IonicPage()
 @Component({
   selector: 'page-forgot-password',
   templateUrl: 'forgot-password.html',
@@ -67,17 +66,14 @@ export class ForgotPasswordPage {
       buttons: [
         {
           text: 'Resend password reset',
-          cssClass: 'alertButtonCss',
         },
         {
           text: 'Go back to Login Page',
-          cssClass: 'alertButtonCss',
           handler: data => {
             this.navCtrl.pop();
           }
         }
       ],
-      cssClass: 'alertCustomCss',
     });
     alert.present();
   }
