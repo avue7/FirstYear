@@ -12,9 +12,9 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-content>
+  <ion-content scrollbar-y-auto>
     <ion-list>
-      <ion-item *ngFor="let p of pages" [class.activeHighlight]="checkActive(p)" (click)="openPage(p)">
+      <ion-item no-lines *ngFor="let p of pages" [class.activeHighlight]="checkActive(p)" (click)="openPage(p)">
         <ion-icon [name]="p.icon" item-left></ion-icon>
           {{p.title}}
       </ion-item>

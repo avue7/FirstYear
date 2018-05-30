@@ -71,13 +71,18 @@
     border: none !important;
     .content {
       // background: #42c7ff;
+
     }
     .item {
       // background: #42c7ff;
     }
     .activeHighlight {
-      background-color: map-get($colors, light);
-      opacity: 0.5;
+      background-color: gray;
+      opacity: 0.7;
+      color: #42c7ff;
+    }
+    .scroll-bar-indicator {
+      display: none;
     }
   }
   ion-toolbar {
@@ -97,6 +102,16 @@
       width: 70%;
       text-align: center;
     }
+  }
+
+  ion-icon {
+    &[class*="custom-bottle"] {
+      mask-image: url("../assets/icon/bottle.png");
+    }
+  }
+
+  .scroll-content {
+    overflow-y: auto;
   }
 
   // buttons configs
