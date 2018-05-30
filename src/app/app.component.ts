@@ -38,7 +38,7 @@ export class MyApp {
     this.pages = [
       { title: 'Home', component: HomePage, icon: 'home' },
       { title: 'Feeding', component: FeedingPage, icon: 'custom-bottle' },
-      { title: 'Diapering', component: DiaperingPage, icon: 'nothing' },
+      { title: 'Diapering', component: DiaperingPage, icon: 'custom-diaper' },
     ];
 
     this.activePage = this.pages[0];
