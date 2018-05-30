@@ -12,6 +12,8 @@ import { HomePage } from '../pages/home/home';
 import { WelcomePage } from '../pages/welcome/welcome';
 import { FeedingPage } from '../pages/feeding/feeding';
 import { DiaperingPage } from '../pages/diapering/diapering';
+import { CreditsPage } from '../pages/credits/credits';
+
 
 @Component({
   templateUrl: 'app.html'
@@ -39,6 +41,7 @@ export class MyApp {
       { title: 'Home', component: HomePage, icon: 'home' },
       { title: 'Feeding', component: FeedingPage, icon: 'custom-bottle' },
       { title: 'Diapering', component: DiaperingPage, icon: 'custom-diaper' },
+      { title: 'Credits', component: CreditsPage, icon: 'nothing'}
     ];
 
     this.activePage = this.pages[0];
@@ -90,6 +93,8 @@ export class MyApp {
   }
 
   logout() {
+    this.user.setUserPicture(null);
+    this.user.setUserEmail(null);
 	  this.menu.close();
 	  this.auth.signOut();
     this.googlePlus.logout();
