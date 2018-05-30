@@ -70,10 +70,10 @@
   .menu-inner {
     border: none !important;
     .content {
-      background: #42c7ff;
+      // background: #42c7ff;
     }
     .item {
-      background: #42c7ff;
+      // background: #42c7ff;
     }
     .activeHighlight {
       background-color: map-get($colors, light);
@@ -82,7 +82,10 @@
   }
   ion-toolbar {
     text-align: center !important;
-    color: #42c7ff !important;
+    color: white;
+    .toolbar-background {
+      background-color: #42c7ff;
+    }
   }
   ion-navbar {
     .title.title-md {

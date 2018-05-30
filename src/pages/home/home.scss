@@ -1,6 +1,8 @@
 page-home {
-  ion-navbar {
-
+  ion-toolbar {
+    ion-segment {
+      text-color: white !important;
+    }
   }
   ion-title {
     color: #42c7ff !important;
