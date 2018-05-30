@@ -70,19 +70,27 @@
   .menu-inner {
     border: none !important;
     .content {
-      background: #42c7ff;
+      // background: #42c7ff;
+
     }
     .item {
-      background: #42c7ff;
+      // background: #42c7ff;
     }
     .activeHighlight {
-      background-color: map-get($colors, light);
-      opacity: 0.5;
+      background-color: gray;
+      opacity: 0.7;
+      color: #42c7ff;
+    }
+    .scroll-bar-indicator {
+      display: none;
     }
   }
   ion-toolbar {
-    text-align: center !important;
-    color: #42c7ff !important;
+    //text-align: center !important;
+    color: white;
+    .toolbar-background {
+      background-color: #42c7ff;
+    }
   }
   ion-navbar {
     .title.title-md {
@@ -94,6 +102,29 @@
       width: 70%;
       text-align: center;
     }
+  }
+
+  // Custom icons
+  ion-icon {
+    &[class*="custom-"] {
+      mask-size: contain;
+      mask-position: 50% 50%;
+      mask-repeat: no-repeat;
+      background: currentColor;
+      // width: 0em;
+      // height: 0em;
+    }
+
+    &[class*="custom-bottle"] {
+      mask-image: url(../assets/icon/baby-bottle.png);
+    }
+    &[class*="custom-diaper"] {
+      mask-image: url(../assets/icon/diaper.png);
+    }
+  }
+
+  .scroll-content {
+    overflow-y: auto;
   }
 
   // buttons configs
