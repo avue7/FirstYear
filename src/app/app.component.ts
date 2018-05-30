@@ -41,7 +41,7 @@ export class MyApp {
       { title: 'Home', component: HomePage, icon: 'home' },
       { title: 'Feeding', component: FeedingPage, icon: 'custom-bottle' },
       { title: 'Diapering', component: DiaperingPage, icon: 'custom-diaper' },
-      { title: 'Credits', component: CreditsPage, icon: 'nothing'}
+      { title: 'Credits', component: CreditsPage, icon: 'custom-copyright'}
     ];
 
     this.activePage = this.pages[0];
