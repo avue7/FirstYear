@@ -56,6 +56,12 @@ export class MyApp {
     // Logic to check if users are logged in or not.
     this.userSubscription = this.auth.afAuth.authState.subscribe( user => {
       if(user){
+        if(user.name){
+          this.user.setUserName(user.name);
+        };
+        if(user.email){
+          this.user.setUserEmail(user.email);
+        };
         console.log("App::initializeApp(): User logged in: ", user);
         console.log("Subscription: ", this.userSubscription);
         this.nav.setRoot(HomePage);

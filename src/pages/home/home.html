@@ -6,3 +6,20 @@
     <ion-title> Home </ion-title>
   </ion-navbar>
 </ion-header>
+
+<ion-content padding>
+
+  <!-- SEGMENT BEGINS -->
+  <ion-segment [(ngModel)]="segmentType">
+    <ion-segment-button value="Activities">
+      Activities
+    </ion-segment-button>
+    <ion-segment-button value="Charts">
+      Charts
+    </ion-segment-button>
+    <ion-segment-button value="Chats">
+      Chats
+    </ion-segment-button>
+  </ion-segment>
+
+</ion-content>

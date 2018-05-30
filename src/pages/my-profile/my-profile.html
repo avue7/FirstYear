@@ -9,5 +9,9 @@
 
 
 <ion-content padding>
-
+  <ion-list>
+    <ion-item *ngIf="userName">
+      Welcome {{userName}}!
+    </ion-item>
+  </ion-list>
 </ion-content>
