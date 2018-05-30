@@ -58,9 +58,12 @@ export class MyApp {
     // Logic to check if users are logged in or not.
     this.userSubscription = this.auth.afAuth.authState.subscribe( user => {
       if(user){
-        // if(user.name){
+        // if(user.displayName){
         //   this.user.setUserName(user.name);
         // };
+        if(user.photoURL){
+          this.user.setUserPicture(user.photoURL);
+        }
         if(user.email){
           this.user.setUserEmail(user.email);
         };

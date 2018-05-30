@@ -1,12 +1,13 @@
 <ion-menu [content]="content">
   <ion-header>
     <ion-toolbar>
-      <ion-list>
-        <ion-item text-align="center">
-
-        </ion-item>
-      </ion-list>
-      <p align="right" style="font-size:10px;">
+      <!-- <ion-item no-lines style="background-color:transparent; align:center;"> -->
+      <div id="imgwrap" *ngIf="user.picture">
+        <img src="{{user.picture}}">
+          <h2> 1 year old 4 months </h2>
+      </div>
+      <!-- </ion-item> -->
+      <p align="right" style="font-size:10px;color:gray">
           Logged-in as: {{auth.getEmail()}}
       </p>
     </ion-toolbar>

@@ -123,6 +123,10 @@
     }
   }
 
+  .avatar {
+    margin: auto;
+  }
+
   .scroll-content {
     overflow-y: auto;
   }
@@ -141,6 +145,16 @@
   .btn-gplus {
     border: 1px solid #fff;
     background-color: #E04006
+  }
+
+  // Id for imgwrap center
+  #imgwrap {
+    text-align: center !important;
+    img {
+      border: 0;
+      max-width: 140px;
+      border-radius: 50%;
+    }
   }
 }
 

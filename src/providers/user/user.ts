@@ -18,6 +18,7 @@ export class UserProvider {
     this.email = email_param;
   }
 
+  // This is a url to the photo
   setUserPicture(picture_param: any){
     this.picture = picture_param;
   }
