@@ -19,7 +19,8 @@ import { LoginPage } from '../pages/login/login';
 import { SignupPage } from '../pages/signup/signup';
 import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { HomePage } from '../pages/home/home';
-import { MyProfilePage } from '../pages/my-profile/my-profile';
+import { FeedingPage } from '../pages/feeding/feeding';
+import { DiaperingPage } from '../pages/diapering/diapering';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { MyProfilePage } from '../pages/my-profile/my-profile';
     SignupPage,
     LoginPage,
     ForgotPasswordPage,
-    MyProfilePage
+    FeedingPage,
+    DiaperingPage
   ],
   imports: [
     BrowserModule,
@@ -47,7 +49,8 @@ import { MyProfilePage } from '../pages/my-profile/my-profile';
     SignupPage,
     LoginPage,
     ForgotPasswordPage,
-    MyProfilePage
+    FeedingPage,
+    DiaperingPage
   ],
   providers: [
     StatusBar,

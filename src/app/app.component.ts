@@ -10,7 +10,8 @@ import { GooglePlus } from '@ionic-native/google-plus';
 // Pages:
 import { HomePage } from '../pages/home/home';
 import { WelcomePage } from '../pages/welcome/welcome';
-import { MyProfilePage } from '../pages/my-profile/my-profile';
+import { FeedingPage } from '../pages/feeding/feeding';
+import { DiaperingPage } from '../pages/diapering/diapering';
 
 @Component({
   templateUrl: 'app.html'
@@ -36,7 +37,8 @@ export class MyApp {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Home', component: HomePage, icon: 'home' },
-      { title: 'My Profile', component: MyProfilePage, icon: 'person' },
+      { title: 'Feeding', component: FeedingPage, icon: 'nothing' },
+      { title: 'Diapering', component: DiaperingPage, icon: 'nothing' },
     ];
 
     this.activePage = this.pages[0];
@@ -56,9 +58,9 @@ export class MyApp {
     // Logic to check if users are logged in or not.
     this.userSubscription = this.auth.afAuth.authState.subscribe( user => {
       if(user){
-        if(user.name){
-          this.user.setUserName(user.name);
-        };
+        // if(user.name){
+        //   this.user.setUserName(user.name);
+        // };
         if(user.email){
           this.user.setUserEmail(user.email);
         };

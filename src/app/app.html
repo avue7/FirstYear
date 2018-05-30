@@ -1,10 +1,14 @@
 <ion-menu [content]="content">
   <ion-header>
     <ion-toolbar>
-      <ion-list *ngIf="auth.getEmail()">
-        <br>
-        {{auth.getEmail()}}
+      <ion-list>
+        <ion-item text-align="center">
+          safdas
+        </ion-item>
       </ion-list>
+      <p align="right" style="font-size:10px;">
+          Logged-in as: {{auth.getEmail()}}
+      </p>
     </ion-toolbar>
   </ion-header>
 
