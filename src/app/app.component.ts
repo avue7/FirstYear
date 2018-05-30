@@ -7,9 +7,10 @@ import { UserProvider } from '../providers/user/user';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { GooglePlus } from '@ionic-native/google-plus';
 
+// Pages:
 import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
 import { WelcomePage } from '../pages/welcome/welcome';
+import { MyProfilePage } from '../pages/my-profile/my-profile';
 
 @Component({
   templateUrl: 'app.html'
@@ -35,7 +36,7 @@ export class MyApp {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Home', component: HomePage, icon: 'home' },
-      { title: 'List', component: ListPage, icon: 'nothing'}
+      { title: 'My Profile', component: MyProfilePage, icon: 'person' },
     ];
 
     this.activePage = this.pages[0];
@@ -82,6 +83,7 @@ export class MyApp {
 	  this.auth.signOut();
     this.googlePlus.logout();
 	  this.nav.setRoot(WelcomePage);
+    this.activePage = this.pages[0];
     console.log("App::logOut(): User logged out");
   }
 
