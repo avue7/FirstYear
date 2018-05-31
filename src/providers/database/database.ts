@@ -6,20 +6,40 @@ import 'firebase/firestore';
 
 @Injectable()
 export class DatabaseProvider {
-  db = firebase.firestore();
-  currentUserRef: any;
+  // currentUserRef: any;
 
   constructor() {
   }
 
   setNewUser(userId : any){
+    let db = firebase.firestore();
+    let currentUserRef = db.collection("users").doc(userId);
 
-    // Create an entry in the database for the current user
-    this.currentUserRef = this.db.collection("users").doc(userId).set({});
+    // First check if user exists
+    this.checkIfUserExists(currentUserRef).then((retVal) => {
+      if(retVal){
+        console.log("Database:: Successfully created new user in users collection.");
+      } else {
+        console.log("Database:: user already exists in the users collection.");
+      }
+    });
   }
 
-  checkIfUserExists(userId : any){
-
+  checkIfUserExists(currentUserRef : any){
+    return new Promise(resolve => {
+      currentUserRef.get().then((docSnapShot) => {
+        if(docSnapShot.exists) {
+          // currentUserRef.onSnapShot((doc) => {
+          // do stuff here if exists
+          // });
+          resolve(false);
+        } else {
+          // Create the document
+          currentUserRef.set({});
+          resolve(true);
+        };
+      });
+    });
   }
 
 }
