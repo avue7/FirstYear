@@ -25,6 +25,9 @@ import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { HomePage } from '../pages/home/home';
 import { FeedingPage } from '../pages/feeding/feeding';
 import { DiaperingPage } from '../pages/diapering/diapering';
+import { SleepingPage } from '../pages/sleeping/sleeping';
+import { GrowthPage } from '../pages/growth/growth';
+import { PlayingPage } from '../pages/playing/playing';
 import { CreditsPage } from '../pages/credits/credits';
 
 
@@ -38,7 +41,10 @@ import { CreditsPage } from '../pages/credits/credits';
     ForgotPasswordPage,
     FeedingPage,
     DiaperingPage,
-    CreditsPage
+    SleepingPage,
+    GrowthPage,
+    PlayingPage,
+    CreditsPage,
   ],
   imports: [
     BrowserModule,
@@ -59,6 +65,9 @@ import { CreditsPage } from '../pages/credits/credits';
     ForgotPasswordPage,
     FeedingPage,
     DiaperingPage,
+    SleepingPage,
+    GrowthPage,
+    PlayingPage,
     CreditsPage
   ],
   providers: [

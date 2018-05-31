@@ -122,8 +122,17 @@
     &[class*="custom-baby-with-diaper"] {
       mask-image: url(../assets/icon/baby-with-diaper.png);
     }
-    &[class*="custom-copyright"] {
-      mask-image: url(../assets/icon/copyright.png);
+    &[class*="custom-cited"] {
+      mask-image: url(../assets/icon/cited.png);
+    }
+    &[class*="custom-sleeping-baby"] {
+      mask-image: url(../assets/icon/sleeping-baby.png);
+    }
+    &[class*="custom-cubes"] {
+      mask-image: url(../assets/icon/cubes.png);
+    }
+    &[class*="custom-growth"] {
+      mask-image: url(../assets/icon/growth.png);
     }
   }
 

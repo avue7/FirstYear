@@ -13,6 +13,9 @@ import { HomePage } from '../pages/home/home';
 import { WelcomePage } from '../pages/welcome/welcome';
 import { FeedingPage } from '../pages/feeding/feeding';
 import { DiaperingPage } from '../pages/diapering/diapering';
+import { SleepingPage } from '../pages/sleeping/sleeping';
+import { GrowthPage } from '../pages/growth/growth';
+import { PlayingPage } from '../pages/playing/playing';
 import { CreditsPage } from '../pages/credits/credits';
 
 
@@ -42,7 +45,10 @@ export class MyApp {
       { title: 'Home', component: HomePage, icon: 'home' },
       { title: 'Feeding', component: FeedingPage, icon: 'custom-bottle' },
       { title: 'Diapering', component: DiaperingPage, icon: 'custom-diaper' },
-      { title: 'Credits', component: CreditsPage, icon: 'custom-copyright'}
+      { title: 'Sleeping', component: SleepingPage, icon: 'custom-sleeping-baby' },
+      { title: 'Playing', component: PlayingPage, icon: 'custom-cubes' },
+      { title: 'Growth', component: GrowthPage, icon: 'custom-growth' },
+      { title: 'Credits', component: CreditsPage, icon: 'custom-cited'}
     ];
 
     this.activePage = this.pages[0];

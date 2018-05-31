@@ -5,12 +5,9 @@ import { UserProvider } from '../../providers/user/user';
 // Pages:
 import { FeedingPage } from '../feeding/feeding';
 import { DiaperingPage } from '../diapering/diapering';
-
-// Testing out firestore
-// import { AngularFirestore } from 'angularfire2/firestore';
-// import firebase from 'firebase';
-// import 'firebase/firestore';
-// import { Observable } from 'rxjs/Observable';
+import { SleepingPage } from '../sleeping/sleeping';
+import { PlayingPage } from '../playing/playing';
+import { GrowthPage } from '../growth/growth';
 
 @Component({
   selector: 'page-home',
@@ -24,7 +21,10 @@ export class HomePage {
   segments: any = {
     'Activities': [
       { component: FeedingPage, icon: 'custom-bottle' },
-      { component: DiaperingPage, icon: 'custom-diaper' }
+      { component: DiaperingPage, icon: 'custom-diaper' },
+      { component: SleepingPage, icon: 'custom-sleeping-baby' },
+      { component: PlayingPage, icon: 'custom-cubes' },
+      { component: GrowthPage, icon: 'custom-growth' }
     ],
     'Charts': [
       {
@@ -42,11 +42,6 @@ export class HomePage {
     private menu: MenuController,
     private user: UserProvider) {
     this.enableMenu();
-
-    this.pages = [
-      { component: FeedingPage, icon: 'custom-bottle' },
-      { component: DiaperingPage, icon: 'custom-diaper' }
-    ];
   }
 
   openPage(page: any) {
