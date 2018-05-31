@@ -7,4 +7,40 @@ page-home {
   ion-title {
     color: #42c7ff !important;
   }
+  // ion-item {
+  //   //float: left !important;
+  //   border: 3px solid #73AD21 !important;
+  //   padding: 10px !important;
+  //   width: 50% !important;
+  // }
+  .left-scrollbar {
+    border: 3px solid #73AD21;
+    width: 90px !important;
+    padding: 10px;
+  }
+
+  ion-footer{
+    text-align: center;
+    border: 3px solid #42c7ff !important;
+    position: fixed !important;
+
+    ion-scroll {
+      white-space: nowrap;
+      height: 60px;
+    }
+  }
+
+  .float-left {
+    float: left !important;
+    border: 1px solid #73AD21 !important;
+    padding: 9px !important;
+    height: 0px !important;
+  }
+
+  .avatar {
+    color: #42c7ff;
+    padding: 20px !important;
+    float: left !important;
+    width: 20% !important;
+  }
 }

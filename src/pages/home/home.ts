@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { NavController, MenuController } from 'ionic-angular';
 import { UserProvider } from '../../providers/user/user';
 
+// Pages:
+import { FeedingPage } from '../feeding/feeding';
+import { DiaperingPage } from '../diapering/diapering';
+
 // Testing out firestore
 // import { AngularFirestore } from 'angularfire2/firestore';
 // import firebase from 'firebase';
@@ -13,18 +17,14 @@ import { UserProvider } from '../../providers/user/user';
   templateUrl: 'home.html'
 })
 export class HomePage {
+  pages: Array<{component: any, icon: string}>;
+
   segmentType = 'Activities';
+
   segments: any = {
     'Activities': [
-      {
-        name: 'Diaper',
-      },
-      {
-        name: 'Bottle',
-      },
-      {
-        name: 'Sleep'
-      }
+      { component: FeedingPage, icon: 'custom-bottle' },
+      { component: DiaperingPage, icon: 'custom-diaper' }
     ],
     'Charts': [
       {
@@ -43,18 +43,14 @@ export class HomePage {
     private user: UserProvider) {
     this.enableMenu();
 
-    // let db = firebase.firestore();
-    //
-    // db.collection('users').add({
-    //   first: "Test",
-    //   last: "last",
-    //   born: "now"
-    // })
-    // .then( (docRef) => {
-    //   console.log("Home::constructor(): Document written with id: ", docRef.id);
-    // }, (error) => {
-    //   console.log("Home::constructor(): Error adding document: ", error);
-    // });
+    this.pages = [
+      { component: FeedingPage, icon: 'custom-bottle' },
+      { component: DiaperingPage, icon: 'custom-diaper' }
+    ];
+  }
+
+  openPage(page: any) {
+    this.navCtrl.push(page.component);
   }
 
   getSegments(type: any){
