@@ -6,6 +6,7 @@ import { Subscription} from 'rxjs/Subscription';
 import { UserProvider } from '../providers/user/user';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { GooglePlus } from '@ionic-native/google-plus';
+import { DatabaseProvider } from '../providers/database/database';
 
 // Pages:
 import { HomePage } from '../pages/home/home';
@@ -33,10 +34,10 @@ export class MyApp {
     private auth: AuthServiceProvider,
     private menu: MenuController,
     private user: UserProvider,
-    private googlePlus: GooglePlus) {
+    private googlePlus: GooglePlus,
+    private db: DatabaseProvider) {
     this.initializeApp();
 
-    // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Home', component: HomePage, icon: 'home' },
       { title: 'Feeding', component: FeedingPage, icon: 'custom-bottle' },
@@ -70,6 +71,11 @@ export class MyApp {
         if(user.email){
           this.user.setUserEmail(user.email);
         };
+        if(user.uid){
+          this.user.setUserId(user.uid);
+          this.db.setNewUser(user.uid);
+        };
+
         console.log("App::initializeApp(): User logged in: ", user);
         console.log("Subscription: ", this.userSubscription);
         this.nav.setRoot(HomePage);
@@ -93,11 +99,13 @@ export class MyApp {
   }
 
   logout() {
-    this.user.setUserPicture(null);
-    this.user.setUserEmail(null);
 	  this.menu.close();
 	  this.auth.signOut();
-    this.googlePlus.logout();
+    this.googlePlus.logout().then(() => {
+    }, error => {
+      console.log("App::logout(): error: ", error);
+    });
+    this.user.deleteUser();
 	  this.nav.setRoot(WelcomePage);
     this.activePage = this.pages[0];
     console.log("App::logOut(): User logged out");

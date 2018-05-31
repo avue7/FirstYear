@@ -12,6 +12,10 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { UserProvider } from '../providers/user/user';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DatabaseProvider } from '../providers/database/database';
+
+// Testing firestore
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 
 // Pages:
 import { WelcomePage } from '../pages/welcome/welcome';
@@ -41,7 +45,9 @@ import { CreditsPage } from '../pages/credits/credits';
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig.fire),
     NgxErrorsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    // Testing firestore
+    AngularFirestoreModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -62,7 +68,8 @@ import { CreditsPage } from '../pages/credits/credits';
     AngularFireAuth,
     AuthServiceProvider,
     GooglePlus,
-    UserProvider
+    UserProvider,
+    DatabaseProvider
   ]
 })
 export class AppModule {}
