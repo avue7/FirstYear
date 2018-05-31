@@ -17,6 +17,7 @@ import { SleepingPage } from '../pages/sleeping/sleeping';
 import { GrowthPage } from '../pages/growth/growth';
 import { PlayingPage } from '../pages/playing/playing';
 import { CreditsPage } from '../pages/credits/credits';
+import { CameraPage } from '../pages/camera/camera';
 
 
 @Component({
@@ -48,6 +49,7 @@ export class MyApp {
       { title: 'Sleeping', component: SleepingPage, icon: 'custom-sleeping-baby' },
       { title: 'Playing', component: PlayingPage, icon: 'custom-cubes' },
       { title: 'Growth', component: GrowthPage, icon: 'custom-growth' },
+      { title: 'PhotoShoot', component: CameraPage, icon: 'md-camera' },
       { title: 'Credits', component: CreditsPage, icon: 'custom-cited'}
     ];
 

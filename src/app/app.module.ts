@@ -28,6 +28,7 @@ import { DiaperingPage } from '../pages/diapering/diapering';
 import { SleepingPage } from '../pages/sleeping/sleeping';
 import { GrowthPage } from '../pages/growth/growth';
 import { PlayingPage } from '../pages/playing/playing';
+import { CameraPage } from '../pages/camera/camera';
 import { CreditsPage } from '../pages/credits/credits';
 
 
@@ -44,7 +45,8 @@ import { CreditsPage } from '../pages/credits/credits';
     SleepingPage,
     GrowthPage,
     PlayingPage,
-    CreditsPage,
+    CameraPage,
+    CreditsPage
   ],
   imports: [
     BrowserModule,
@@ -68,6 +70,7 @@ import { CreditsPage } from '../pages/credits/credits';
     SleepingPage,
     GrowthPage,
     PlayingPage,
+    CameraPage,
     CreditsPage
   ],
   providers: [
