@@ -30,6 +30,7 @@ import { GrowthPage } from '../pages/growth/growth';
 import { PlayingPage } from '../pages/playing/playing';
 import { CameraPage } from '../pages/camera/camera';
 import { CreditsPage } from '../pages/credits/credits';
+import { BabyModalPage } from '../pages/baby-modal/baby-modal';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { CreditsPage } from '../pages/credits/credits';
     GrowthPage,
     PlayingPage,
     CameraPage,
-    CreditsPage
+    CreditsPage,
+    BabyModalPage
   ],
   imports: [
     BrowserModule,
@@ -71,7 +73,8 @@ import { CreditsPage } from '../pages/credits/credits';
     GrowthPage,
     PlayingPage,
     CameraPage,
-    CreditsPage
+    CreditsPage,
+    BabyModalPage
   ],
   providers: [
     StatusBar,

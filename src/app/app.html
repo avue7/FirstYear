@@ -1,7 +1,6 @@
 <ion-menu [content]="content">
   <ion-header>
     <ion-toolbar>
-      <!-- <ion-item no-lines style="background-color:transparent; align:center;"> -->
       <br>
       <div id="imgwrap" *ngIf="user.picture; else dummy">
         <img src="{{user.picture}}">
@@ -9,35 +8,63 @@
       </div>
       <ng-template #dummy>
         <div id="imgwrap" #dummy>
-          <img src="assets/icon/baby-with-diaper.png">
-            <h2> 1 year old 4 months </h2>
+          <img src="assets/icon/baby-with-diaper.png" style="width:80px;height:80px;">
+            <h5> 1 year old 4 months </h5>
           </div>
       </ng-template>
-
-      <!-- </ion-item> -->
       <p align="right" style="font-size:10px;color:gray">
           Logged-in as: {{auth.getEmail()}}
       </p>
     </ion-toolbar>
   </ion-header>
 
-  <ion-content scrollbar-y-auto>
+  <ion-content>
     <ion-list>
+
       <ion-item no-lines *ngFor="let p of pages" [class.activeHighlight]="checkActive(p)" (click)="openPage(p)">
         <ion-icon [name]="p.icon" item-left></ion-icon>
           {{p.title}}
       </ion-item>
 
-      <ion-footer>
+      <!--  ERASE WHEN DONE TESTING THIS -->
+      <ion-item (click)="logout()">
+	       <ion-icon name="log-out" item-left></ion-icon>
+	        Log out
+      </ion-item>
+
         <ion-item (click)="logout()">
-	         <ion-icon name="log-out" item-left></ion-icon>
-	          Log out
+           <ion-icon name="log-out" item-left></ion-icon>
+            Log out
         </ion-item>
-      </ion-footer>
+
+        <ion-item (click)="logout()">
+           <ion-icon name="log-out" item-left></ion-icon>
+            Log out
+        </ion-item>
+
+        <ion-item (click)="logout()">
+           <ion-icon name="log-out" item-left></ion-icon>
+            Log out
+        </ion-item>
+
+        <ion-item (click)="logout()">
+           <ion-icon name="log-out" item-left></ion-icon>
+            Log out
+        </ion-item>
+        <!-- ################################################# -->
+        
     </ion-list>
   </ion-content>
 
+  <ion-footer>
+    <ion-item (click)="logout()">
+       <ion-icon name="log-out" item-left></ion-icon>
+        Log out
+    </ion-item>
+  </ion-footer>
+
 </ion-menu>
+
 
 <!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
 <ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

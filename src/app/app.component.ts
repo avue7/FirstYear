@@ -49,7 +49,7 @@ export class MyApp {
       { title: 'Sleeping', component: SleepingPage, icon: 'custom-sleeping-baby' },
       { title: 'Playing', component: PlayingPage, icon: 'custom-cubes' },
       { title: 'Growth', component: GrowthPage, icon: 'custom-growth' },
-      { title: 'PhotoShoot', component: CameraPage, icon: 'md-camera' },
+      { title: 'PhotoShoot', component: CameraPage, icon: 'custom-camera' },
       { title: 'Credits', component: CreditsPage, icon: 'custom-cited'}
     ];
 
@@ -81,7 +81,7 @@ export class MyApp {
         };
         if(user.uid){
           this.user.setUserId(user.uid);
-          this.db.setNewUser(user.uid);
+          this.db.setNewUserNewBaby(user.uid);
         };
 
         console.log("App::initializeApp(): User logged in: ", user);

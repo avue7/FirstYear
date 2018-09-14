@@ -26,7 +26,7 @@ export class HomePage {
       { component: SleepingPage, icon: 'custom-sleeping-baby' },
       { component: PlayingPage, icon: 'custom-cubes' },
       { component: GrowthPage, icon: 'custom-growth' },
-      { component: CameraPage, icon: 'md-camera' }
+      { component: CameraPage, icon: 'custom-camera' }
     ],
     'Charts': [
       {

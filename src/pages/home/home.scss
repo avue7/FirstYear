@@ -13,20 +13,26 @@ page-home {
   //   padding: 10px !important;
   //   width: 50% !important;
   // }
-  .left-scrollbar {
-    border: 3px solid #73AD21;
-    width: 90px !important;
-    padding: 10px;
-  }
 
   ion-footer{
     text-align: center;
-    border: 3px solid #42c7ff !important;
+    //border: 3px solid #42c7ff !important;
     position: fixed !important;
 
-    ion-scroll {
+    ion-scroll[scrollX] {
       white-space: nowrap;
-      height: 60px;
+      height: 90px;
+      overflow: hidden;
+      width: 100vw;
+
+      .scroll-item {
+        display: inline-block;
+      }
+
+      .selectable-icon{
+        margin: 10px 20px 10px 20px;
+        color: red;
+      }
     }
   }
 
@@ -38,9 +44,8 @@ page-home {
   }
 
   .avatar {
-    color: #42c7ff;
     padding: 20px !important;
-    float: left !important;
     width: 20% !important;
+    background-color: #42c7ff;
   }
 }
