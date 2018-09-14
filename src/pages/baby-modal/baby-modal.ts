@@ -8,11 +8,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class BabyModalPage {
   babyInfoForm: FormGroup;
-  baby = {
-    firstName: '',
-    lastName: '',
-    birthday: ''
-  };
 
   constructor(private navParams: NavParams,
     private view: ViewController,
@@ -24,25 +19,18 @@ export class BabyModalPage {
     });
   }
 
-  ionViewWillLoad(){
-    const data = this.navParams.get('data');
-    this.baby.firstName = data.firstName;
-    this.baby.lastName = data.lastName;
-  }
+  // Getting data from caller...
+  // ionViewWillLoad(){
+  //   const data = this.navParams.get('data');
+  //   this.baby.firstName = data.firstName;
+  //   this.baby.lastName = data.lastName;
+  //   this.baby.birthday = data.birthday;
+  // }
 
   getBabyInfo(){
-    console.log(this.baby);
-    this.baby = this.babyInfoForm.value;
-    this.closeModal();
-  }
-
-  closeModal(){
-    // const data = {
-    //   firstName:
-    //   lastName:
-    //   age:
-    // }
-    this.view.dismiss();
+    let data = this.babyInfoForm.value;
+    console.log(data);
+    this.view.dismiss(data);
   }
 
   cancelModal(){
