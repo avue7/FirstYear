@@ -8,13 +8,6 @@ import 'firebase/firestore';
 
 @Injectable()
 export class DatabaseProvider {
-  // currentUserRef: any;
-  babyObject_ = {
-    firstName: '',
-    lastName: '',
-    birthday: ''
-  };
-
   myModal: any;
 
   constructor(private alertCtrl: AlertController,
@@ -24,7 +17,12 @@ export class DatabaseProvider {
 
   setNewUserNewBaby(userId : any, babyObject?: any){
     let db = firebase.firestore();
-    let currentUserRef = db.collection("users").doc(userId);
+
+    db.settings({
+      timestampsInSnapshots: true
+    });
+
+    let currentUserRef = db.collection('users').doc(userId).collection('babies');
 
     // First check if user exists
     this.checkIfUserExists(currentUserRef).then((retVal) => {
@@ -46,10 +44,18 @@ export class DatabaseProvider {
           resolve(true);
         } else {
           // Create the document
-          // this.openModal().then((baby) => {
-          //   //currentUserRef.collection("babies").doc("babyFirstName").set({});
-          //   console.log("Baby is ", baby);
-            resolve(this.openModal());
+
+          //%$$$## Problem lies here where babyObject.firstname is undefined
+          this.openModal().then((baby) => {
+            let babyObject = baby;
+            // let firstName = baby.firstName;
+            // let lastName = baby.lastName;
+            // let birthday = baby.birthday;
+            console.log("Baby is ", baby);
+            //console.log("Debugging this: ", Object.getOwnPropertyNames(babyObject));
+            currentUserRef.doc(babyObject.firstName).set(babyObject);
+            resolve(false);
+          });
         };
       });
     });
@@ -60,7 +66,7 @@ export class DatabaseProvider {
     let currentUserRef = db.collection("users").doc(userId);
   }
 
-  openModal(){
+  openModal() : any{
     return new Promise(resolve => {
       // Data to be passed to the modal
       // const myData = {
@@ -75,16 +81,12 @@ export class DatabaseProvider {
     });
   }
 
-  waitForReturn(){
+  waitForReturn() : any{
     return new Promise(resolve => {
       this.myModal.onDidDismiss( data => {
-        // this.babyObject_.firstName = data.firstName,
-        // this.babyObject_.lastName = data.lastName,
-        // this.babyObject_.birthday = data.birthday
-        this.babyObject_ = data;
-        console.log("This babyObject_", this.babyObject_);
-        console.log("Database::modal_onDidDismiss: baby info =", data);
-        resolve(false);
+        let babyObject = data;
+        // console.log("This babyObject_", babyObject);
+        resolve(babyObject);
       });
     });
   }
