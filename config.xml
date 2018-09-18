@@ -102,6 +102,6 @@
     <plugin name="cordova-universal-links-plugin" spec="^1.2.1" />
     <allow-navigation href="http://192.168.1.2:8102" />
     <allow-navigation href="http://192.168.1.2:8101" />
-    <allow-navigation href="http://192.168.1.2:8100" sessionid="400aa4f4" />
+    <allow-navigation href="http://192.168.1.2:8100" sessionid="2534a34e" />
     <engine name="android" spec="7.1.1" />
 </widget>

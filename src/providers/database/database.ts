@@ -25,36 +25,33 @@ export class DatabaseProvider {
     let currentUserRef = db.collection('users').doc(userId).collection('babies');
 
     // First check if user exists
-    this.checkIfUserExists(currentUserRef).then((retVal) => {
-      if(retVal){
+    this.checkIfBabyExists(currentUserRef).then((retVal) => {
+      if(retVal == true){
         console.log("Database:: user already exists in the users collection.");
+      } else if(retVal == "later"){
+        console.log("Database:: user decides to do baby info later");
       } else {
         console.log("Database:: Successfully created new user in users collection.");
       }
     });
   }
 
-  checkIfUserExists(currentUserRef : any, babyObject?: any){
+  checkIfBabyExists(currentUserRef : any, babyObject?: any){
     return new Promise(resolve => {
       currentUserRef.get().then((docSnapShot) => {
-        if(docSnapShot.exists) {
-          // currentUserRef.onSnapShot((doc) => {
-          // do stuff here if exists
-          // });
+        if (!docSnapShot.empty){
+          console.log("Database::checkIfBabyExists(): baby doc(s) exists.")
           resolve(true);
         } else {
-          // Create the document
-
-          //%$$$## Problem lies here where babyObject.firstname is undefined
+          console.log("Database::checkIfBabyExists: no baby doc(s) exists.")
           this.openModal().then((baby) => {
             let babyObject = baby;
-            // let firstName = baby.firstName;
-            // let lastName = baby.lastName;
-            // let birthday = baby.birthday;
-            console.log("Baby is ", baby);
-            //console.log("Debugging this: ", Object.getOwnPropertyNames(babyObject));
-            currentUserRef.doc(babyObject.firstName).set(babyObject);
-            resolve(false);
+            if (babyObject == undefined){
+              resolve("later");
+            } else {
+              currentUserRef.doc(babyObject.firstName).set(babyObject);
+              resolve(false);
+            };
           });
         };
       });
@@ -68,19 +65,14 @@ export class DatabaseProvider {
 
   openModal() : any{
     return new Promise(resolve => {
-      // Data to be passed to the modal
-      // const myData = {
-      //   firstName: '',
-      //   lastName: '',
-      //   birthday: ''
-      // }
-
-      this.myModal = this.modal.create(BabyModalPage /*, { data: myData} */);
+      this.myModal = this.modal.create(BabyModalPage);
       this.myModal.present();
       resolve(this.waitForReturn());
     });
   }
 
+  // This method serves as a condition while loop and waits for the
+  // modal to dismiss before it goes to the next line of the caller.
   waitForReturn() : any{
     return new Promise(resolve => {
       this.myModal.onDidDismiss( data => {
