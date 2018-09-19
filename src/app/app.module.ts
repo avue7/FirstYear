@@ -13,6 +13,7 @@ import { GooglePlus } from '@ionic-native/google-plus';
 import { UserProvider } from '../providers/user/user';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatabaseProvider } from '../providers/database/database';
+import { DatePipe } from '@angular/common';
 
 // Testing firestore
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -84,7 +85,8 @@ import { BabyModalPage } from '../pages/baby-modal/baby-modal';
     AuthServiceProvider,
     GooglePlus,
     UserProvider,
-    DatabaseProvider
+    DatabaseProvider,
+    DatePipe
   ]
 })
 export class AppModule {}

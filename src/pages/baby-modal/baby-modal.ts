@@ -19,14 +19,6 @@ export class BabyModalPage {
     });
   }
 
-  // Getting data from caller...
-  // ionViewWillLoad(){
-  //   const data = this.navParams.get('data');
-  //   this.baby.firstName = data.firstName;
-  //   this.baby.lastName = data.lastName;
-  //   this.baby.birthday = data.birthday;
-  // }
-
   getBabyInfo(){
     let data = this.babyInfoForm.value;
     console.log(data);
