@@ -2,8 +2,8 @@
   <ion-header>
     <ion-toolbar>
       <br>
-      <div id="imgwrap" *ngIf="user.picture; else dummy">
-        <img src="{{user.picture}}">
+      <div id="imgwrap">
+        <img src="assets/icon/baby-with-diaper.png" style="width:80px;height:80px;">
           <!-- For ages less than 1 -->
           <h2 *ngIf="bdayYear < 1 && bdayMonth <= 1; else months"> {{bdayMonth}} month old </h2>
           <ng-template #months>
@@ -23,12 +23,12 @@
             <h2> {{bdayYear}} years {{bdayMonth}} month old </h2>
           </ng-template>
       </div>
-      <ng-template #dummy>
+      <!-- <ng-template #dummy>
         <div id="imgwrap" #dummy>
           <img src="assets/icon/baby-with-diaper.png" style="width:80px;height:80px;">
             <h5> 1 year old 4 months </h5>
           </div>
-      </ng-template>
+      </ng-template> -->
       <p align="right" style="font-size:10px;color:gray">
           Logged-in as: {{auth.getEmail()}}
       </p>

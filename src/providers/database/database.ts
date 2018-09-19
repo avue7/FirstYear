@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AlertController, ModalController, NavParams } from 'ionic-angular';
+import { /*AlertController,*/ ModalController } from 'ionic-angular';
 import { BabyModalPage } from '../../pages/baby-modal/baby-modal';
 
 // Testing firestore
@@ -10,7 +10,7 @@ import 'firebase/firestore';
 export class DatabaseProvider {
   myModal: any;
 
-  constructor(private alertCtrl: AlertController,
+  constructor(/*private alertCtrl: AlertController,*/
     private modal: ModalController) {
 
   }
@@ -56,11 +56,6 @@ export class DatabaseProvider {
         };
       });
     });
-  }
-
-  setNewBaby(userId: any){
-    let db = firebase.firestore();
-    let currentUserRef = db.collection("users").doc(userId);
   }
 
   openModal() : any{

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController, MenuController } from 'ionic-angular';
-import { UserProvider } from '../../providers/user/user';
 
 // Pages:
 import { FeedingPage } from '../feeding/feeding';
@@ -41,8 +40,7 @@ export class HomePage {
   }
 
   constructor(public navCtrl: NavController,
-    private menu: MenuController,
-    private user: UserProvider) {
+    private menu: MenuController) {
     this.enableMenu();
   }
 

@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController} from 'ionic-angular';
+import { NavController, NavParams, AlertController} from 'ionic-angular';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-
-import { LoginPage } from '../login/login';
 
 @Component({
   selector: 'page-forgot-password',
@@ -41,7 +39,7 @@ export class ForgotPasswordPage {
 
     // Exception codes return from firebase...
     let emailDoesNotExistCode = "auth/user-not-found";
-    let wrongPasswordCode = "auth/wrong-password";
+    //let wrongPasswordCode = "auth/wrong-password";
     let invalidEmailCode = "auth/invalid-email";
 
     this.auth.signInWithEmail(credentials).then((code) => {

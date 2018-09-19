@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import AuthProvider = firebase.auth.AuthProvider;
-import { UserProvider } from '../user/user';
 import { GooglePlus } from '@ionic-native/google-plus';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavParams, ViewController } from 'ionic-angular';
+import { ViewController } from 'ionic-angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
@@ -9,8 +9,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class BabyModalPage {
   babyInfoForm: FormGroup;
 
-  constructor(private navParams: NavParams,
-    private view: ViewController,
+  constructor( private view: ViewController,
     fb: FormBuilder) {
     this.babyInfoForm = fb.group({
       firstName: ['', Validators.compose([Validators.required])],

@@ -85,9 +85,9 @@ export class MyApp {
         // if(user.displayName){
         //   this.user.setUserName(user.name);
         // };
-        if(user.photoURL){
-          this.user.setUserPicture(user.photoURL);
-        }
+        // if(user.photoURL){
+        //   this.user.setUserPicture(user.photoURL);
+        // }
         if(user.email){
           this.user.setUserEmail(user.email);
         };
@@ -143,8 +143,6 @@ export class MyApp {
     console.log("Month difference:", this.bdayMonth);
     // let day = Number(splitToday[2]) - Number(splitBirthday[2]);
     // console.log("Year difference:", day);
-
-
   }
 
   openPage(page) {
