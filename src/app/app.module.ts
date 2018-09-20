@@ -32,6 +32,7 @@ import { PlayingPage } from '../pages/playing/playing';
 import { CameraPage } from '../pages/camera/camera';
 import { CreditsPage } from '../pages/credits/credits';
 import { BabyModalPage } from '../pages/baby-modal/baby-modal';
+import { TimerProvider } from '../providers/timer/timer';
 
 
 @NgModule({
@@ -86,7 +87,8 @@ import { BabyModalPage } from '../pages/baby-modal/baby-modal';
     GooglePlus,
     UserProvider,
     DatabaseProvider,
-    DatePipe
+    DatePipe,
+    TimerProvider
   ]
 })
 export class AppModule {}

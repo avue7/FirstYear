@@ -6,12 +6,46 @@ import { NavController, NavParams } from 'ionic-angular';
   templateUrl: 'feeding.html',
 })
 export class FeedingPage {
+  leftBreast: any = null;
+  rightBreast: any = null;
+
+  // Default value for breastfeeding radio left or right
+  breastfeeding = "leftBreast";
+
+  segmentType = 'Breast';
+
+  segments: any = {
+    'Breast':[
+
+    ],
+    'Bottle':[
+
+    ],
+    'Meal':[
+
+    ]
+  }
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
+    this.setLeftBreast();
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad FeedingPage');
+  }
+
+  setLeftBreast(){
+    this.leftBreast = true;
+    this.rightBreast = false;
+    console.log("Feeding::setLeftBreast: leftBreast is", this.leftBreast);
+    console.log("Feeding::setLeftBreast: rightBreast is", this.rightBreast);
+  }
+
+  setRightBreast(){
+    this.rightBreast = true;
+    this.leftBreast = false;
+    console.log("Feeding::setRightBreast: rightBreast is", this.rightBreast);
+    console.log("Feeding::setRightBreast: leftBreast is", this.leftBreast);
   }
 
 }

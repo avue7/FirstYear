@@ -6,9 +6,91 @@
     <ion-title> Feeding </ion-title>
   </ion-navbar>
 
+  <!-- SEGMENT BEGINS -->
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="segmentType">
+      <ion-segment-button value="Breast">
+        Breast
+      </ion-segment-button>
+      <ion-segment-button value="Bottle">
+        Bottle
+      </ion-segment-button>
+      <ion-segment-button value="Meal">
+        Meal
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 
-<ion-content padding>
+<ion-content no-border-top>
+
+  <!-- This is where you can do individual things inside the segments -->
+  <div [ngSwitch]="segmentType">
+
+    <ion-list *ngSwitchCase="'Breast'">
+        <ion-row radio-group [(ngModel)]="breastfeeding">
+          <ion-col>
+            <ion-item>
+              Breastfeeding on:
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item>
+              <ion-label>Left</ion-label>
+              <ion-radio value="leftBreast" (ionSelect)="setLeftBreast()"></ion-radio>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item>
+              <ion-label>Right</ion-label>
+              <ion-radio value="rightBreast" (ionSelect)="setRightBreast()"></ion-radio>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <!-- Timer for breastfeeding starts here -->
+        <p> Timer for breast feeding goes here <p>
+
+        <ion-item>
+          <ion-title>
+            <br>
+            <br>
+            Most Recent Breastfeedings
+          </ion-title>
+          <ion-item> 1 </ion-item>
+          <ion-item> 2 </ion-item>
+          <ion-item> 3 </ion-item>
+          <ion-item> 4 </ion-item>
+        </ion-item>
+
+        <!-- <ion-list *ngSwitchCase=breastfeeding"> -->
+
+      <!-- <ion-title text-align="center">
+        <br>
+         Breast feeding on: {{ breast == 'left' ? 'left' : 'right' }} breast -->
+        <!-- <ion-icon [name]="breast" color="danger"></ion-icon> -->
+      <!-- </ion-title>
+      <ion-segment [(ngModel)]="breast" color="danger">
+        <ion-segment-button value="left">
+          Left Breast
+        </ion-segment-button>
+        <ion-segment-button value="right">
+          Right Breast
+        </ion-segment-button>
+      </ion-segment> -->
+
+    </ion-list>
+
+
+    <ion-list *ngSwitchCase="'Bottle'">
+      <p> do something here 2 </p>
+    </ion-list>
+
+    <ion-list *ngSwitchCase="'Meal'">
+      <p> do something here 3 </p>
+    </ion-list>
+
+  </div>
 
 </ion-content>
