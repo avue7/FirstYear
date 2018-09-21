@@ -4,7 +4,6 @@ import { TimerProvider } from '../../providers/timer/timer'
 
 
 
-
 @Component({
   selector: 'page-feeding',
   templateUrl: 'feeding.html',
@@ -12,7 +11,7 @@ import { TimerProvider } from '../../providers/timer/timer'
 export class FeedingPage {
   leftBreast: any = null;
   rightBreast: any = null;
-
+  activeBreast: any;
 
 
   // Default value for breastfeeding radio left or right
@@ -44,10 +43,6 @@ export class FeedingPage {
     console.log('ionViewDidLoad FeedingPage');
   }
 
-  ionViewWillLeave() {
-    this.timer.timerSubscription.unsubscribe();
-  }
-
   setLeftBreast(){
     this.leftBreast = true;
     this.rightBreast = false;
@@ -74,5 +69,8 @@ export class FeedingPage {
     };
   }
 
+  save(){
+
+  }
 
 }

@@ -77,4 +77,8 @@ export class DatabaseProvider {
       });
     });
   }
+
+  saveBabyActivity(activity : any){
+    
+  }
 }

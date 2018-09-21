@@ -28,79 +28,48 @@
   <!-- This is where you can do individual things inside the segments -->
   <div [ngSwitch]="segmentType">
 
+    <!-- Brestfeeding segment starts here -->
     <ion-list *ngSwitchCase="'Breast'">
-        <ion-row radio-group [(ngModel)]="breastfeeding">
-          <ion-col>
-            <ion-item>
-              Breastfeeding on:
-            </ion-item>
-          </ion-col>
-          <ion-col>
-            <ion-item>
-              <ion-label>Left</ion-label>
-              <ion-radio value="leftBreast" (ionSelect)="setLeftBreast()"></ion-radio>
-            </ion-item>
-          </ion-col>
-          <ion-col>
-            <ion-item>
-              <ion-label>Right</ion-label>
-              <ion-radio value="rightBreast" (ionSelect)="setRightBreast()"></ion-radio>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-
-        <!-- Timer for breastfeeding starts here -->
-        <p> Timer for breast feeding goes here:<p>
-          <button ion-button icon-only (click)="startPauseTimer()">
-            <ion-icon [name]="timer.isPaused ? 'play' : 'pause' "></ion-icon>
+      <ion-row no-padding class="other-data">
+        <ion-col no-padding class="column">
+          <button ion-button full [class.activeHighlight]="leftBreast" [disabled]="!timer.isPaused" color="light" (click)="setLeftBreast()">
+            Left Breast
           </button>
-          <button ion-button icon-only (click)="refreshTimer()">
-            <ion-icon [name]="refresh"></ion-icon>
+        </ion-col>
+        <ion-col no-padding class="column">
+          <button ion-button full [class.activeHighlight]="rightBreast" [disabled]="!timer.isPaused" color="light" (click)="setRightBreast()">
+            Right Breast
           </button>
+        </ion-col>
+      </ion-row>
+      <i class="center">Last breastfeed: </i>
 
+      <br><br><br><br>
 
+      <!-- Timer for breastfeeding starts here -->
+      <h2> {{((timer.tick) | hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </h2>
 
-          <!-- <button ion-button (click)="stopTimer()"> stop</button>
+      <br><br><br>
 
-          <button ion-button (click)="resumeTimer()"> resume</button> -->
-          <p> {{((timer.tick) | hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </p>
-
-
-        <ion-item>
-          <ion-title>
-            <br>
-            <br>
-            Most Recent Breastfeedings
-          </ion-title>
-          <ion-item> 1 </ion-item>
-          <ion-item> 2 </ion-item>
-          <ion-item> 3 </ion-item>
-          <ion-item> 4 </ion-item>
-        </ion-item>
-
-        <!-- <ion-list *ngSwitchCase=breastfeeding"> -->
-
-      <!-- <ion-title text-align="center">
-        <br>
-         Breast feeding on: {{ breast == 'left' ? 'left' : 'right' }} breast -->
-        <!-- <ion-icon [name]="breast" color="danger"></ion-icon> -->
-      <!-- </ion-title>
-      <ion-segment [(ngModel)]="breast" color="danger">
-        <ion-segment-button value="left">
-          Left Breast
-        </ion-segment-button>
-        <ion-segment-button value="right">
-          Right Breast
-        </ion-segment-button>
-      </ion-segment> -->
-
+      <div class="center">
+        <button class="timer" ion-button icon-only (click)="refreshTimer()">
+          <ion-icon name='refresh'></ion-icon>
+        </button>
+        <button class="timer" ion-button icon-only (click)="startPauseTimer()">
+          <ion-icon [name]="timer.isPaused ? 'play' : 'pause' "></ion-icon>
+        </button>
+        <button class="timer" ion-button icon-only (click)="save()">
+          <ion-icon name='archive'></ion-icon>
+        </button>
+      </div>
     </ion-list>
 
-
+    <!-- Bottle feeding starts here -->
     <ion-list *ngSwitchCase="'Bottle'">
       <p> do something here 2 </p>
     </ion-list>
 
+    <!-- Meal feeding starts here -->
     <ion-list *ngSwitchCase="'Meal'">
       <p> do something here 3 </p>
     </ion-list>
