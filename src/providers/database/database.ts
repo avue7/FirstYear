@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { /*AlertController,*/ ModalController } from 'ionic-angular';
 import { BabyModalPage } from '../../pages/baby-modal/baby-modal';
+import { BabyProvider } from '../baby/baby';
+import { UserProvider } from '../user/user';
+import { DatePipe } from '@angular/common';
 
 // Testing firestore
 import firebase from 'firebase';
@@ -9,9 +12,16 @@ import 'firebase/firestore';
 @Injectable()
 export class DatabaseProvider {
   myModal: any;
+  babyName: any;
+  babyBirthday: any;
+  bdayYear: any;
+  bdayMonth: any;
 
   constructor(/*private alertCtrl: AlertController,*/
-    private modal: ModalController) {
+    private modal: ModalController,
+    private baby: BabyProvider,
+    private user: UserProvider,
+    private datePipe: DatePipe) {
 
   }
 
@@ -78,7 +88,80 @@ export class DatabaseProvider {
     });
   }
 
-  saveBabyActivity(activity : any){
-    
+  createBabyObservable(userId: any){
+    return new Promise(resolve => {
+
+      this.getUserReference().then((currentUserRef) => {
+        currentUserRef.onSnapshot((snapShot) => {
+          snapShot.docChanges().forEach((change) => {
+            let baby = change.doc.data();
+            this.babyName = baby.firstName;
+            this.babyBirthday = baby.birthday;
+            resolve(this.calculateAge());
+            console.log("Database::createBabyObservable: babyFirstname:", this.babyName);
+            console.log("Database::createBabyObservable: babyBirthday:", this.babyBirthday);
+          });
+        });
+      });
+    });
+  }
+
+  calculateAge(){
+    return new Promise (resolve => {
+      let todayUnformatted = new Date();
+      let today = this.datePipe.transform(todayUnformatted, 'yyyy-MM-dd');
+      // console.log("today ", today);
+      let splitToday = today.split('-');
+      // console.log("split today", splitToday);
+      let splitBirthday = this.babyBirthday.split('-');
+      // console.log("split birthday", splitBirthday);
+
+      // Calculate the year, month, day by taking the difference
+      this.bdayYear = Number(splitToday[0]) - Number(splitBirthday[0]);
+      console.log("Year difference:", this.bdayYear);
+      this.bdayMonth = Number(splitToday[1]) - Number(splitBirthday[1]);
+      console.log("Month difference:", this.bdayMonth);
+      // let day = Number(splitToday[2]) - Number(splitBirthday[2]);
+      // console.log("Year difference:", day);
+      resolve(true);
+    });
+  }
+
+  getUserReference() : any {
+    return new Promise (resolve => {
+      let db = firebase.firestore();
+
+      db.settings({
+        timestampsInSnapshots: true
+      });
+
+      let currentUserRef = db.collection('users').doc(this.user.id).collection('babies');
+      resolve(currentUserRef);
+    });
+  }
+
+  getBabyReference() : any{
+    let db = firebase.firestore();
+
+    db.settings({
+      timestampsInSnapshots: true
+    });
+
+    // let firstName = this.baby.getBabyFirstName();
+    // console.log("firstName is ", this.babyName);
+
+    let babyRef = db.collection('users').doc(this.user.id).collection('babies').doc(this.babyName);
+    return babyRef;
+  }
+
+  saveBabyActivity(activity : any, object : any){
+
+    let babyReference = this.getBabyReference();
+
+    babyReference.collection(activity).doc(object.date).set(object);
+
+    console.log("Database::saveBabyActivity(): activity is", activity);
+    console.log("Database::saveBabyActivity(): object is", object);
+
   }
 }

@@ -18,7 +18,6 @@ import { GrowthPage } from '../pages/growth/growth';
 import { PlayingPage } from '../pages/playing/playing';
 import { CreditsPage } from '../pages/credits/credits';
 import { CameraPage } from '../pages/camera/camera';
-import { DatePipe } from '@angular/common';
 
 import firebase from 'firebase';
 import 'firebase/firestore';
@@ -50,8 +49,7 @@ export class MyApp {
     private menu: MenuController,
     private user: UserProvider,
     private googlePlus: GooglePlus,
-    private db: DatabaseProvider,
-    private datePipe: DatePipe) {
+    private db: DatabaseProvider) {
     this.initializeApp();
 
     this.pages = [
@@ -82,19 +80,16 @@ export class MyApp {
     // Logic to check if users are logged in or not.
     this.userSubscription = this.auth.afAuth.authState.subscribe( user => {
       if(user){
-        // if(user.displayName){
-        //   this.user.setUserName(user.name);
-        // };
-        // if(user.photoURL){
-        //   this.user.setUserPicture(user.photoURL);
-        // }
         if(user.email){
           this.user.setUserEmail(user.email);
         };
         if(user.uid){
           this.user.setUserId(user.uid);
           this.db.setNewUserNewBaby(user.uid);
-          this.createBabyObservable(user.uid);
+          this.db.createBabyObservable(user.uid).then(() => {
+            this.bdayYear = this.db.bdayYear;
+            this.bdayMonth = this.db.bdayMonth;
+          });
         };
 
         console.log("App::initializeApp(): User logged in: ", user);
@@ -105,44 +100,6 @@ export class MyApp {
         this.nav.setRoot(WelcomePage);
       };
     });
-  }
-
-  createBabyObservable(userId: any){
-    let db = firebase.firestore();
-
-    db.settings({
-      timestampsInSnapshots: true
-    });
-
-    let currentUserRef = db.collection('users').doc(userId).collection('babies');
-    currentUserRef.onSnapshot((snapShot) => {
-      snapShot.docChanges().forEach((change) => {
-        let baby = change.doc.data();
-        this.babyName = baby.firstName;
-        this.babyBirthday = baby.birthday;
-        this.calculateAge(this.babyBirthday);
-        console.log("Apps.component::createBabyObservable: babyFirstname:", this.babyName);
-        console.log("Apps.component::createBabyObservable: babyBirthday:", this.babyBirthday);
-      });
-    });
-  }
-
-  calculateAge(birthday : any){
-    let todayUnformatted = new Date();
-    let today = this.datePipe.transform(todayUnformatted, 'yyyy-MM-dd');
-    // console.log("today ", today);
-    let splitToday = today.split('-');
-    // console.log("split today", splitToday);
-    let splitBirthday = birthday.split('-');
-    // console.log("split birthday", splitBirthday);
-
-    // Calculate the year, month, day by taking the difference
-    this.bdayYear = Number(splitToday[0]) - Number(splitBirthday[0]);
-    console.log("Year difference:", this.bdayYear);
-    this.bdayMonth = Number(splitToday[1]) - Number(splitBirthday[1]);
-    console.log("Month difference:", this.bdayMonth);
-    // let day = Number(splitToday[2]) - Number(splitBirthday[2]);
-    // console.log("Year difference:", day);
   }
 
   openPage(page) {

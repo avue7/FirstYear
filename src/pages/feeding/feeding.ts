@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { TimerProvider } from '../../providers/timer/timer'
-
+import { TimerProvider } from '../../providers/timer/timer';
+import { FormattedTodayProvider} from '../../providers/formatted-today/formatted-today';
+import { DatabaseProvider } from '../../providers/database/database';
 
 
 @Component({
@@ -12,6 +13,8 @@ export class FeedingPage {
   leftBreast: any = null;
   rightBreast: any = null;
   activeBreast: any;
+
+  lastBreastFeed: any;
 
 
   // Default value for breastfeeding radio left or right
@@ -33,7 +36,9 @@ export class FeedingPage {
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
-    private timer: TimerProvider) {
+    private timer: TimerProvider,
+    private ft: FormattedTodayProvider,
+    private db: DatabaseProvider) {
     this.setLeftBreast();
     // this.tick = 0;
 
@@ -69,7 +74,34 @@ export class FeedingPage {
     };
   }
 
-  save(){
+  saveBreastFeeding(){
+    let todayUnformatted = this.ft.getToday();
+    let today = this.ft.getTodayMonthFirst(todayUnformatted);
+
+    let breast_: any;
+
+    if(this.leftBreast){
+      breast_ = "left breast";
+      console.log("Feeding::save(): feed on the left breast");
+    } else{
+      breast_ = "right breast";
+      console.log("Feeding::save(): feed on the right breast");
+    }
+
+    let object = {
+      breast: breast_,
+      date: today,
+      time: this.timer.tick
+    }
+
+    console.log("Feeding::save(): object is:", object);
+    console.log("Feeding::save(): today is:", today);
+    console.log("Feeding::save(): tick is:", this.timer.tick);
+
+    this.db.saveBabyActivity("breastfeeding", object);
+  }
+
+  getLastBreastFeed(){
 
   }
 

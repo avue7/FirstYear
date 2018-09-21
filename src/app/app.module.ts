@@ -35,7 +35,8 @@ import { BabyModalPage } from '../pages/baby-modal/baby-modal';
 
 import { TimerProvider } from '../providers/timer/timer';
 import { HoursMinutesSecondsPipe } from '../pipes/hours-minutes-seconds/hours-minutes-seconds';
-
+import { FormattedTodayProvider } from '../providers/formatted-today/formatted-today';
+import { BabyProvider } from '../providers/baby/baby';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,9 @@ import { HoursMinutesSecondsPipe } from '../pipes/hours-minutes-seconds/hours-mi
     DatabaseProvider,
     DatePipe,
     UserProvider,
-    TimerProvider
+    TimerProvider,
+    FormattedTodayProvider,
+    BabyProvider
   ]
 })
 export class AppModule {}
