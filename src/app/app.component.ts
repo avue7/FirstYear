@@ -62,7 +62,7 @@ export class MyApp {
       { title: 'Playing', component: PlayingPage, icon: 'custom-cubes' },
       { title: 'Growth', component: GrowthPage, icon: 'custom-growth' },
       { title: 'PhotoShoot', component: CameraPage, icon: 'custom-camera' },
-      { title: 'Credits', component: CreditsPage, icon: 'custom-cited'}
+      { title: 'Credits', component: CreditsPage, icon: 'custom-cited'},
     ];
 
     this.activePage = this.pages[0];

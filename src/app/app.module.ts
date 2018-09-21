@@ -32,6 +32,7 @@ import { PlayingPage } from '../pages/playing/playing';
 import { CameraPage } from '../pages/camera/camera';
 import { CreditsPage } from '../pages/credits/credits';
 import { BabyModalPage } from '../pages/baby-modal/baby-modal';
+
 import { TimerProvider } from '../providers/timer/timer';
 
 
@@ -59,7 +60,8 @@ import { TimerProvider } from '../providers/timer/timer';
     NgxErrorsModule,
     BrowserAnimationsModule,
     // Testing firestore
-    AngularFirestoreModule
+    AngularFirestoreModule,
+
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -85,9 +87,9 @@ import { TimerProvider } from '../providers/timer/timer';
     AngularFireAuth,
     AuthServiceProvider,
     GooglePlus,
-    UserProvider,
     DatabaseProvider,
     DatePipe,
+    UserProvider,
     TimerProvider
   ]
 })
