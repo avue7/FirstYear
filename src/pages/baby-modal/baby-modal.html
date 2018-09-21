@@ -49,6 +49,15 @@
           Birthday is required.
         </div>
       </ion-item>
+
+      <ion-item>
+        <ion-label >Gender</ion-label>
+        <ion-select [(ngModel)]="gender" formControlName="gender" interface="popover">
+          <ion-option value="male">Male</ion-option>
+          <ion-option value="female">Female</ion-option>
+        </ion-select>
+      </ion-item>
+      
     </ion-list>
     <button ion-button class="baby-button" [disabled]="!babyInfoForm.valid">Create Baby Profile</button>
   </form>

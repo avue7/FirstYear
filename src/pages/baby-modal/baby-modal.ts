@@ -8,13 +8,15 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class BabyModalPage {
   babyInfoForm: FormGroup;
+  gender: string = "male";
 
   constructor( private view: ViewController,
     fb: FormBuilder) {
     this.babyInfoForm = fb.group({
       firstName: ['', Validators.compose([Validators.required])],
       lastName: ['', Validators.compose([Validators.required])],
-      birthday: ['', Validators.compose([Validators.required])]
+      birthday: ['', Validators.compose([Validators.required])],
+      gender: ['', Validators.compose([Validators.required])]
     });
   }
 
