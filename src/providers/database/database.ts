@@ -4,6 +4,7 @@ import { BabyModalPage } from '../../pages/baby-modal/baby-modal';
 import { BabyProvider } from '../baby/baby';
 import { UserProvider } from '../user/user';
 import { DatePipe } from '@angular/common';
+import { ToastController } from 'ionic-angular';
 
 // Testing firestore
 import firebase from 'firebase';
@@ -16,33 +17,41 @@ export class DatabaseProvider {
   babyBirthday: any;
   bdayYear: any;
   bdayMonth: any;
+  noBabyYet: boolean;
 
   constructor(/*private alertCtrl: AlertController,*/
     private modal: ModalController,
     private baby: BabyProvider,
     private user: UserProvider,
-    private datePipe: DatePipe) {
+    private datePipe: DatePipe,
+    private toastCtrl: ToastController) {
 
   }
 
   setNewUserNewBaby(userId : any, babyObject?: any){
-    let db = firebase.firestore();
+    return new Promise (resolve => {
+      let db = firebase.firestore();
 
-    db.settings({
-      timestampsInSnapshots: true
-    });
+      db.settings({
+        timestampsInSnapshots: true
+      });
 
-    let currentUserRef = db.collection('users').doc(userId).collection('babies');
+      let currentUserRef = db.collection('users').doc(userId).collection('babies');
 
-    // First check if user exists
-    this.checkIfBabyExists(currentUserRef).then((retVal) => {
-      if(retVal == true){
-        console.log("Database:: user already exists in the users collection.");
-      } else if(retVal == "later"){
-        console.log("Database:: user decides to do baby info later");
-      } else {
-        console.log("Database:: Successfully created new user in users collection.");
-      }
+      // First check if user exists
+      this.checkIfBabyExists(currentUserRef).then((retVal) => {
+        if(retVal == true){
+          console.log("Database:: user already exists in the users collection.");
+          this.noBabyYet = false;
+          resolve(false);
+        } else if(retVal == "later"){
+          console.log("Database:: user decides to do baby info later");
+          resolve("later");
+        } else {
+          console.log("Database:: Successfully created new user in users collection.");
+          resolve(true);
+        }
+      });
     });
   }
 
@@ -51,6 +60,7 @@ export class DatabaseProvider {
       currentUserRef.get().then((docSnapShot) => {
         if (!docSnapShot.empty){
           console.log("Database::checkIfBabyExists(): baby doc(s) exists.")
+          this.noBabyYet = false;
           resolve(true);
         } else {
           console.log("Database::checkIfBabyExists: no baby doc(s) exists.")
@@ -58,8 +68,10 @@ export class DatabaseProvider {
             let babyObject = baby;
             if (babyObject == undefined){
               resolve("later");
+              this.noBabyYet = true;
             } else {
               currentUserRef.doc(babyObject.firstName).set(babyObject);
+              this.noBabyYet = false;
               resolve(false);
             };
           });
@@ -90,19 +102,23 @@ export class DatabaseProvider {
 
   createBabyObservable(userId: any){
     return new Promise(resolve => {
-
-      this.getUserReference().then((currentUserRef) => {
-        currentUserRef.onSnapshot((snapShot) => {
-          snapShot.docChanges().forEach((change) => {
-            let baby = change.doc.data();
-            this.babyName = baby.firstName;
-            this.babyBirthday = baby.birthday;
-            resolve(this.calculateAge());
-            console.log("Database::createBabyObservable: babyFirstname:", this.babyName);
-            console.log("Database::createBabyObservable: babyBirthday:", this.babyBirthday);
+      if(this.noBabyYet == true){
+        console.log("Database::createBabyObservable(): noBabyYet is set to:", this.noBabyYet);
+        resolve(false);
+      } else {
+        this.getUserReference().then((currentUserRef) => {
+          currentUserRef.onSnapshot((snapShot) => {
+            snapShot.docChanges().forEach((change) => {
+              let baby = change.doc.data();
+              this.babyName = baby.firstName;
+              this.babyBirthday = baby.birthday;
+              resolve(this.calculateAge());
+              console.log("Database::createBabyObservable: babyFirstname:", this.babyName);
+              console.log("Database::createBabyObservable: babyBirthday:", this.babyBirthday);
+            });
           });
         });
-      });
+      };
     });
   }
 
@@ -117,9 +133,9 @@ export class DatabaseProvider {
       // console.log("split birthday", splitBirthday);
 
       // Calculate the year, month, day by taking the difference
-      this.bdayYear = Number(splitToday[0]) - Number(splitBirthday[0]);
+      this.bdayYear = Math.abs(Number(splitToday[0]) - Number(splitBirthday[0]));
       console.log("Year difference:", this.bdayYear);
-      this.bdayMonth = Number(splitToday[1]) - Number(splitBirthday[1]);
+      this.bdayMonth = Math.abs(Number(splitToday[1]) - Number(splitBirthday[1]));
       console.log("Month difference:", this.bdayMonth);
       // let day = Number(splitToday[2]) - Number(splitBirthday[2]);
       // console.log("Year difference:", day);
@@ -155,13 +171,45 @@ export class DatabaseProvider {
   }
 
   saveBabyActivity(activity : any, object : any){
-
-    let babyReference = this.getBabyReference();
-
-    babyReference.collection(activity).doc(object.date).set(object);
-
     console.log("Database::saveBabyActivity(): activity is", activity);
     console.log("Database::saveBabyActivity(): object is", object);
 
+    let babyReference = this.getBabyReference();
+    babyReference.collection(activity).doc(object.date).set(object);
+
+    // Check if saved was Successful
+    babyReference.collection(activity).doc(object.date).get().then((doc) => {
+      if (doc.exists){
+        this.successToast(activity);
+        console.log("Database::saveBabyActivity(): doc was successfully saved to database");
+      } else {
+        this.failureToast();
+        console.log("Database::saveBabyActivity(): doc was not successfully saved.");
+      };
+    });
+  }
+
+  successToast(activity? : any){
+    let toast = this.toastCtrl.create({
+      message: this.babyName + '\'s ' + activity + ' activity was successfully saved.',
+      duration: 4000,
+      position: 'bottom'
+    });
+
+    toast.onDidDismiss(() => {
+      console.log("Database::presentToaast(): toast was dismissed");
+    });
+
+    toast.present();
+  }
+
+  failureToast(){
+    let toast = this.toastCtrl.create({
+      message: 'Error. Somthing happened. This event was not saved succesfully.',
+      duration: 4000,
+      position: 'bottom'
+    });
+
+    toast.present();
   }
 }

@@ -85,10 +85,18 @@ export class MyApp {
         };
         if(user.uid){
           this.user.setUserId(user.uid);
-          this.db.setNewUserNewBaby(user.uid);
-          this.db.createBabyObservable(user.uid).then(() => {
-            this.bdayYear = this.db.bdayYear;
-            this.bdayMonth = this.db.bdayMonth;
+          this.db.setNewUserNewBaby(user.uid).then(retVal => {
+            if(retVal == "later"){
+              this.bdayYear = 0;
+              this.bdayMonth = 0;
+              this.babyName = "No baby added yet!";
+            } else {
+              this.db.createBabyObservable(user.uid).then(() => {
+                this.bdayYear = this.db.bdayYear;
+                this.bdayMonth = this.db.bdayMonth;
+                this.babyName = this.db.babyName;
+              });
+            };
           });
         };
 

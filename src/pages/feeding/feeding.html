@@ -52,13 +52,13 @@
       <br><br><br>
 
       <div class="center">
-        <button class="timer" ion-button icon-only (click)="refreshTimer()">
+        <button class="timer" ion-button icon-only [disabled]="!timer.tick" (click)="refreshTimer()">
           <ion-icon name='refresh'></ion-icon>
         </button>
         <button class="timer" ion-button icon-only (click)="startPauseTimer()">
           <ion-icon [name]="timer.isPaused ? 'play' : 'pause' "></ion-icon>
         </button>
-        <button class="timer" ion-button icon-only (click)="saveBreastFeeding()">
+        <button class="timer" ion-button icon-only [disabled]="!timer.tick" (click)="saveBreastFeeding()">
           <ion-icon name='archive'></ion-icon>
         </button>
       </div>
