@@ -81,8 +81,13 @@
       opacity: 0.7;
       color: #42c7ff;
     }
-    .scroll-bar-indicator {
-      display: none;
+    .scroll-content {
+      //display: none;
+      overflow: scroll;
+    }
+    ion-footer {
+      position: fixed;
+      height: 50px;
     }
   }
   ion-toolbar {
@@ -111,8 +116,6 @@
       mask-position: 50% 50%;
       mask-repeat: no-repeat;
       background: currentColor;
-      // width: 0em;
-      // height: 0em;
     }
 
     &[class*="custom-bottle"] {
@@ -121,10 +124,34 @@
     &[class*="custom-diaper"] {
       mask-image: url(../assets/icon/diaper.png);
     }
+    &[class*="custom-baby-with-diaper"] {
+      mask-image: url(../assets/icon/baby-with-diaper.png);
+    }
+    &[class*="custom-cited"] {
+      mask-image: url(../assets/icon/cited.png);
+    }
+    &[class*="custom-sleeping-baby"] {
+      mask-image: url(../assets/icon/sleeping-baby.png);
+    }
+    &[class*="custom-cubes"] {
+      mask-image: url(../assets/icon/cubes.png);
+    }
+    &[class*="custom-growth"] {
+      mask-image: url(../assets/icon/growth.png);
+    }
+    &[class*="custom-camera"] {
+      mask-image: url(../assets/icon/camera.png);
+    }
   }
 
+  .avatar {
+    margin: auto;
+  }
+
+  // Scroll bar
   .scroll-content {
-    overflow-y: auto;
+    //overflow-y: auto;
+    overflow: scroll;
   }
 
   // buttons configs
@@ -141,6 +168,24 @@
   .btn-gplus {
     border: 1px solid #fff;
     background-color: #E04006
+  }
+
+  .logout-button {
+    width: 100%;
+    // border-radius: 20px;
+    //font-size: 0.9em;
+    border: 1px solid #fff;
+    background-color: #39acdc;
+  }
+
+  // Id for imgwrap center
+  #imgwrap {
+    text-align: center !important;
+    img {
+      border: 0;
+      max-width: 140px;
+      border-radius: 50%;
+    }
   }
 }
 

@@ -12,6 +12,11 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { UserProvider } from '../providers/user/user';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DatabaseProvider } from '../providers/database/database';
+import { DatePipe } from '@angular/common';
+
+// Testing firestore
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 
 // Pages:
 import { WelcomePage } from '../pages/welcome/welcome';
@@ -21,7 +26,17 @@ import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { HomePage } from '../pages/home/home';
 import { FeedingPage } from '../pages/feeding/feeding';
 import { DiaperingPage } from '../pages/diapering/diapering';
+import { SleepingPage } from '../pages/sleeping/sleeping';
+import { GrowthPage } from '../pages/growth/growth';
+import { PlayingPage } from '../pages/playing/playing';
+import { CameraPage } from '../pages/camera/camera';
+import { CreditsPage } from '../pages/credits/credits';
+import { BabyModalPage } from '../pages/baby-modal/baby-modal';
 
+import { TimerProvider } from '../providers/timer/timer';
+import { HoursMinutesSecondsPipe } from '../pipes/hours-minutes-seconds/hours-minutes-seconds';
+import { FormattedTodayProvider } from '../providers/formatted-today/formatted-today';
+import { BabyProvider } from '../providers/baby/baby';
 
 @NgModule({
   declarations: [
@@ -32,14 +47,24 @@ import { DiaperingPage } from '../pages/diapering/diapering';
     LoginPage,
     ForgotPasswordPage,
     FeedingPage,
-    DiaperingPage
+    DiaperingPage,
+    SleepingPage,
+    GrowthPage,
+    PlayingPage,
+    CameraPage,
+    CreditsPage,
+    BabyModalPage,
+    HoursMinutesSecondsPipe
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig.fire),
     NgxErrorsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    // Testing firestore
+    AngularFirestoreModule,
+
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -50,7 +75,13 @@ import { DiaperingPage } from '../pages/diapering/diapering';
     LoginPage,
     ForgotPasswordPage,
     FeedingPage,
-    DiaperingPage
+    DiaperingPage,
+    SleepingPage,
+    GrowthPage,
+    PlayingPage,
+    CameraPage,
+    CreditsPage,
+    BabyModalPage
   ],
   providers: [
     StatusBar,
@@ -59,7 +90,12 @@ import { DiaperingPage } from '../pages/diapering/diapering';
     AngularFireAuth,
     AuthServiceProvider,
     GooglePlus,
-    UserProvider
+    DatabaseProvider,
+    DatePipe,
+    UserProvider,
+    TimerProvider,
+    FormattedTodayProvider,
+    BabyProvider
   ]
 })
 export class AppModule {}

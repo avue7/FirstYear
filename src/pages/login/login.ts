@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, MenuController } from 'ionic-angular';
+import { IonicPage, NavController, MenuController } from 'ionic-angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HomePage } from '../home/home';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
-import { SignupPage } from '../signup/signup';
-import { GooglePlus } from '@ionic-native/google-plus';
-import firebase from 'firebase';
-import { UserProvider } from '../../providers/user/user';
+//import { SignupPage } from '../signup/signup';
+//import { GooglePlus } from '@ionic-native/google-plus';
+//import firebase from 'firebase';
+// import { UserProvider } from '../../providers/user/user';
 import { ForgotPasswordPage } from '../forgot-password/forgot-password';
 
 @IonicPage()
@@ -23,8 +23,8 @@ export class LoginPage {
 		private navCtrl: NavController,
 		private auth: AuthServiceProvider,
 		fb: FormBuilder,
-    private googlePlus: GooglePlus,
-    private user: UserProvider,
+    //private googlePlus: GooglePlus,
+    // private user: UserProvider,
     private menu: MenuController) {
 		this.loginForm = fb.group({
       email: ['', Validators.compose([Validators.required, Validators.email])],

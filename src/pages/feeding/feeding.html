@@ -6,9 +6,74 @@
     <ion-title> Feeding </ion-title>
   </ion-navbar>
 
+  <!-- SEGMENT BEGINS -->
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="segmentType">
+      <ion-segment-button value="Breast">
+        Breast
+      </ion-segment-button>
+      <ion-segment-button value="Bottle">
+        Bottle
+      </ion-segment-button>
+      <ion-segment-button value="Meal">
+        Meal
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 
-<ion-content padding>
+<ion-content no-border-top>
+
+  <!-- This is where you can do individual things inside the segments -->
+  <div [ngSwitch]="segmentType">
+
+    <!-- Brestfeeding segment starts here -->
+    <ion-list *ngSwitchCase="'Breast'">
+      <ion-row no-padding class="other-data">
+        <ion-col no-padding class="column">
+          <button ion-button full [class.activeHighlight]="leftBreast" [disabled]="!timer.isPaused" color="light" (click)="setLeftBreast()">
+            Left Breast
+          </button>
+        </ion-col>
+        <ion-col no-padding class="column">
+          <button ion-button full [class.activeHighlight]="rightBreast" [disabled]="!timer.isPaused" color="light" (click)="setRightBreast()">
+            Right Breast
+          </button>
+        </ion-col>
+      </ion-row>
+      <i class="center">Last breastfeed: </i>
+
+      <br><br><br><br>
+
+      <!-- Timer for breastfeeding starts here -->
+      <h2> {{((timer.tick) | hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </h2>
+
+      <br><br><br>
+
+      <div class="center">
+        <button class="timer" ion-button icon-only [disabled]="!timer.tick" (click)="refreshTimer()">
+          <ion-icon name='refresh'></ion-icon>
+        </button>
+        <button class="timer" ion-button icon-only (click)="startPauseTimer()">
+          <ion-icon [name]="timer.isPaused ? 'play' : 'pause' "></ion-icon>
+        </button>
+        <button class="timer" ion-button icon-only [disabled]="!timer.tick" (click)="saveBreastFeeding()">
+          <ion-icon name='archive'></ion-icon>
+        </button>
+      </div>
+    </ion-list>
+
+    <!-- Bottle feeding starts here -->
+    <ion-list *ngSwitchCase="'Bottle'">
+      <p> do something here 2 </p>
+    </ion-list>
+
+    <!-- Meal feeding starts here -->
+    <ion-list *ngSwitchCase="'Meal'">
+      <p> do something here 3 </p>
+    </ion-list>
+
+  </div>
 
 </ion-content>

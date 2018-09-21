@@ -6,12 +6,22 @@ import { Subscription} from 'rxjs/Subscription';
 import { UserProvider } from '../providers/user/user';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { GooglePlus } from '@ionic-native/google-plus';
+import { DatabaseProvider } from '../providers/database/database';
 
 // Pages:
 import { HomePage } from '../pages/home/home';
 import { WelcomePage } from '../pages/welcome/welcome';
 import { FeedingPage } from '../pages/feeding/feeding';
 import { DiaperingPage } from '../pages/diapering/diapering';
+import { SleepingPage } from '../pages/sleeping/sleeping';
+import { GrowthPage } from '../pages/growth/growth';
+import { PlayingPage } from '../pages/playing/playing';
+import { CreditsPage } from '../pages/credits/credits';
+import { CameraPage } from '../pages/camera/camera';
+
+import firebase from 'firebase';
+import 'firebase/firestore';
+
 
 @Component({
   templateUrl: 'app.html'
@@ -25,20 +35,32 @@ export class MyApp {
   pages: Array<{title: string, component: any, icon: string}>;
   activePage: any;
 
+  babyName: any;
+  babyAge: any;
+  babyPicture: any;
+  babyBirthday: any;
+  bdayYear: number;
+  bdayMonth: number;
+
   constructor(public platform: Platform,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
     private auth: AuthServiceProvider,
     private menu: MenuController,
     private user: UserProvider,
-    private googlePlus: GooglePlus) {
+    private googlePlus: GooglePlus,
+    private db: DatabaseProvider) {
     this.initializeApp();
 
-    // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Home', component: HomePage, icon: 'home' },
       { title: 'Feeding', component: FeedingPage, icon: 'custom-bottle' },
       { title: 'Diapering', component: DiaperingPage, icon: 'custom-diaper' },
+      { title: 'Sleeping', component: SleepingPage, icon: 'custom-sleeping-baby' },
+      { title: 'Playing', component: PlayingPage, icon: 'custom-cubes' },
+      { title: 'Growth', component: GrowthPage, icon: 'custom-growth' },
+      { title: 'PhotoShoot', component: CameraPage, icon: 'custom-camera' },
+      { title: 'Credits', component: CreditsPage, icon: 'custom-cited'},
     ];
 
     this.activePage = this.pages[0];
@@ -58,12 +80,26 @@ export class MyApp {
     // Logic to check if users are logged in or not.
     this.userSubscription = this.auth.afAuth.authState.subscribe( user => {
       if(user){
-        // if(user.name){
-        //   this.user.setUserName(user.name);
-        // };
         if(user.email){
           this.user.setUserEmail(user.email);
         };
+        if(user.uid){
+          this.user.setUserId(user.uid);
+          this.db.setNewUserNewBaby(user.uid).then(retVal => {
+            if(retVal == "later"){
+              this.bdayYear = 0;
+              this.bdayMonth = 0;
+              this.babyName = "No baby added yet!";
+            } else {
+              this.db.createBabyObservable(user.uid).then(() => {
+                this.bdayYear = this.db.bdayYear;
+                this.bdayMonth = this.db.bdayMonth;
+                this.babyName = this.db.babyName;
+              });
+            };
+          });
+        };
+
         console.log("App::initializeApp(): User logged in: ", user);
         console.log("Subscription: ", this.userSubscription);
         this.nav.setRoot(HomePage);
@@ -89,7 +125,11 @@ export class MyApp {
   logout() {
 	  this.menu.close();
 	  this.auth.signOut();
-    this.googlePlus.logout();
+    this.googlePlus.logout().then(() => {
+    }, error => {
+      console.log("App::logout(): error: ", error);
+    });
+    this.user.deleteUser();
 	  this.nav.setRoot(WelcomePage);
     this.activePage = this.pages[0];
     console.log("App::logOut(): User logged out");

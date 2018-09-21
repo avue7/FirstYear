@@ -1,3 +1,42 @@
 page-feeding {
+  .right-left-button {
+    // border-radius: 20px;
+    //font-size: 0.9em;
+    border: 1px solid #fff;
+    background-color: #42c7ff;
+    // #39acdc;111
+  }
+  ion-title {
+    text-align: center;
+  }
+  h2 {
+    font-size: 35pt;
+    text-align: center;
+  }
+  .center {
+    text-align: center;
+  }
+  .timer {
+    // position: fixed;
+    // bottom: 0;
+    text-align: center;
+    background-color: #42c7ff;
+  }
+  .border {
+    border-bottom: 1px solid grey !important;
+  }
 
+  .other-data {
+    .column {
+      &:first-child {
+        border-right: 1px solid rgba(36, 50, 157, .25);
+      }
+    }
+    font-size: 15pt;
+  }
+
+  .activeHighlight{
+    background-color: map-get($colors, dark) !important;
+    color: white;
+  }
 }

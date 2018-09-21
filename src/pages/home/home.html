@@ -28,5 +28,67 @@
 
 <ion-content no-border-top>
 
+  <!-- This is where you can do individual things inside the segments -->
+  <div [ngSwitch]="segmentType">
 
+    <ion-list *ngSwitchCase="'Activities'">
+      <p> Summary </p>
+
+      <ion-footer>
+        <!--
+        <ion-scroll scrollX="true">
+          <div class="scroll-item">
+          <p *ngFor="let activity of segments['Activities']">
+            <ion-icon class="avatar" [name]="activity.icon" (click)="openPage(activity)"></ion-icon>
+          </p>
+            </div>
+        </ion-scroll> -->
+        <strong style="color:#e1e1e1;font-size:7;"> Add an activity by clicking on any icon below: </strong>
+        <ion-scroll scrollX="true">
+          <div class="scroll-item" *ngFor="let activity of segments['Activities']">
+            <ion-icon [name]="activity.icon" (click)="openPage(activity)" class="scroll-item selectable-icon avatar"></ion-icon>
+          </div>
+        </ion-scroll>
+
+      </ion-footer>
+    </ion-list>
+
+    <ion-list *ngSwitchCase="'Charts'">
+      <p> do something here 2 </p>
+    </ion-list>
+
+    <ion-list *ngSwitchCase="'Gallery'">
+      <p> do something here 3 </p>
+    </ion-list>
+
+    <ion-list *ngSwitchCase="'Chats'">
+      <p> do something here 4 </p>
+    </ion-list>
+
+  </div>
+
+  <!-- <ion-list >
+    <ion-list-header class="float-left">Latest Events:</ion-list-header>
+    <ion-item>
+      something ehre
+    </ion-item>
+    <ion-item no-lines *ngFor="let activity of segments['Activities']">
+      sdafdasfs
+      <ion-icon [name]="activity.icon" (click)="openPage(activity)"></ion-icon>
+    </ion-item>
+  </ion-list> -->
+  <!-- <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div class="left-scrollbar">
+          <ion-item *ngFor="let activity of segments['Activities']">
+            <ion-icon [name]="activity.icon" item-left (click)="openPage(activity)"></ion-icon>
+          </ion-item>
+        </div>
+      </ion-col>
+      <ion-col>
+        Latest Events:
+      </ion-col>
+    </ion-row>
+  </ion-grid> -->
 </ion-content>

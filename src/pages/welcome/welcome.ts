@@ -3,9 +3,9 @@ import { IonicPage, NavController, MenuController } from 'ionic-angular';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
 import { SignupPage } from '../signup/signup';
-import { UserProvider } from '../../providers/user/user';
+//import { UserProvider } from '../../providers/user/user';
 import { LoginPage } from '../login/login';
-import { HomePage } from '../home/home';
+//import { HomePage } from '../home/home';
 
 @IonicPage()
 @Component({
@@ -36,7 +36,7 @@ export class WelcomePage {
   loginWithTwitter(){
     this.auth.signInWithTwitter();
   }
-  
+
   signup(){
     this.navCtrl.push(SignupPage);
   }
