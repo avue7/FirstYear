@@ -50,12 +50,21 @@
         </ion-row>
 
         <!-- Timer for breastfeeding starts here -->
-        <p> Timer for breast feeding goes here <p>
-        <button ion-button (click)="startTimer()"> Start</button>
-        <button ion-button (click)="stopTimer()"> stop</button>
-        <button ion-button (click)="pauseTimer()"> pause</button>
-        <button ion-button (click)="resumeTimer()"> resume</button>
-        <p> {{(timer.tick)}} </p>
+        <p> Timer for breast feeding goes here:<p>
+          <button ion-button icon-only (click)="startPauseTimer()">
+            <ion-icon [name]="timer.isPaused ? 'play' : 'pause' "></ion-icon>
+          </button>
+          <button ion-button icon-only (click)="refreshTimer()">
+            <ion-icon [name]="refresh"></ion-icon>
+          </button>
+
+
+
+          <!-- <button ion-button (click)="stopTimer()"> stop</button>
+
+          <button ion-button (click)="resumeTimer()"> resume</button> -->
+          <p> {{((timer.tick) | hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </p>
+
 
         <ion-item>
           <ion-title>

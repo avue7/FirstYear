@@ -34,6 +34,7 @@ import { CreditsPage } from '../pages/credits/credits';
 import { BabyModalPage } from '../pages/baby-modal/baby-modal';
 
 import { TimerProvider } from '../providers/timer/timer';
+import { HoursMinutesSecondsPipe } from '../pipes/hours-minutes-seconds/hours-minutes-seconds';
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import { TimerProvider } from '../providers/timer/timer';
     PlayingPage,
     CameraPage,
     CreditsPage,
-    BabyModalPage
+    BabyModalPage,
+    HoursMinutesSecondsPipe
   ],
   imports: [
     BrowserModule,

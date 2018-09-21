@@ -37,10 +37,15 @@ export class FeedingPage {
     private timer: TimerProvider) {
     this.setLeftBreast();
     // this.tick = 0;
+
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad FeedingPage');
+  }
+
+  ionViewWillLeave() {
+    this.timer.timerSubscription.unsubscribe();
   }
 
   setLeftBreast(){
@@ -57,20 +62,16 @@ export class FeedingPage {
     console.log("Feeding::setRightBreast: leftBreast is", this.leftBreast);
   }
 
-  startTimer(){
-    this.timer.startTimer();
+  startPauseTimer(){
+    this.timer.startPauseTimer();
   }
 
-  stopTimer(){
-    this.timer.stopTimer();
-  }
-
-  pauseTimer(){
-    this.timer.pauseTimer();
-  }
-
-  resumeTimer(){
-    this.timer.resumeTimer();
+  refreshTimer(){
+    if(this.timer.timerSubscription != undefined){
+      this.timer.refreshTimer();
+    } else{
+      console.log("Feedings::refreshTimer(): timerSubscription is undefined");
+    };
   }
 
 
