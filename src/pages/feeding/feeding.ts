@@ -75,8 +75,7 @@ export class FeedingPage {
   }
 
   saveBreastFeeding(){
-    let todayUnformatted = this.ft.getToday();
-    let today = this.ft.getTodayMonthFirst(todayUnformatted);
+    let today = this.ft.getTodayMonthFirstWithTime();
 
     let breast_: any;
 
