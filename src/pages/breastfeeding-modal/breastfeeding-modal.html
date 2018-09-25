@@ -1,0 +1,60 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Manually Add Breastfeed</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <form novalidate class="list-form" (ngSubmit)="manualAddBreast()" [formGroup]="breastForm">
+    <ion-list>
+      <ion-item>
+        <ion-label stacked>First Name</ion-label>
+        <ion-input type="text" formControlName="firstName"></ion-input>
+      </ion-item>
+      <!-- checking for errors for firstName -->
+      <ion-item no-lines *ngIf="babyInfoForm.get('firstName').hasError('required')
+        && babyInfoForm.get('firstName').touched">
+        <div class="error">
+          First Name is required.
+        </div>
+      </ion-item>
+
+      <ion-item>
+        <ion-label stacked>Last Name</ion-label>
+        <ion-input type="text" formControlName="lastName"></ion-input>
+      </ion-item>
+      <!-- checking for errors for lastName -->
+      <ion-item no-lines *ngIf="babyInfoForm.get('lastName').hasError('required')
+        && babyInfoForm.get('lastName').touched">
+        <div class="error">
+          Last Name is required.
+        </div>
+      </ion-item>
+
+      <ion-item>
+        <ion-label stacked>Birthday</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" formControlName="birthday"></ion-datetime>
+      </ion-item>
+      <!-- checking for errors for lastName -->
+      <ion-item no-lines *ngIf="babyInfoForm.get('birthday').hasError('required')
+        && babyInfoForm.get('birthday').touched">
+        <div class="error">
+          Birthday is required.
+        </div>
+      </ion-item>
+
+      <ion-item>
+        <ion-label >Gender</ion-label>
+        <ion-select [(ngModel)]="gender" formControlName="gender" interface="popover">
+          <ion-option value="male">Male</ion-option>
+          <ion-option value="female">Female</ion-option>
+        </ion-select>
+      </ion-item>
+
+    </ion-list>
+    <button ion-button class="baby-button" [disabled]="!babyInfoForm.valid">Create Baby Profile</button>
+  </form>
+  <button ion-button class="baby-button" (click)="cancelModal()">Do Later</button>
+
+</ion-content>

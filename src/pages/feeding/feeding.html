@@ -42,7 +42,7 @@
           </button>
         </ion-col>
       </ion-row>
-      <i class="center">Last breastfeed: </i>
+      <i class="center">Last breastfeed: {{lastBreastFeed}} on {{lastBreastSide}}</i>
 
       <br><br><br><br>
 
@@ -52,16 +52,32 @@
       <br><br><br>
 
       <div class="center">
-        <button class="timer" ion-button icon-only [disabled]="!timer.tick" (click)="refreshTimer()">
+        <button class="timer" ion-button icon-only [disabled]="!timer.tick || !timer.isPaused" (click)="refreshTimer()">
           <ion-icon name='refresh'></ion-icon>
         </button>
         <button class="timer" ion-button icon-only (click)="startPauseTimer()">
           <ion-icon [name]="timer.isPaused ? 'play' : 'pause' "></ion-icon>
         </button>
-        <button class="timer" ion-button icon-only [disabled]="!timer.tick" (click)="saveBreastFeeding()">
+        <button class="timer" ion-button icon-only [disabled]="!timer.tick || !timer.isPaused" (click)="saveBreastFeeding()">
           <ion-icon name='archive'></ion-icon>
         </button>
       </div>
+
+      <ion-footer no-border-top no-border-bottom>
+        <ion-row no-padding class="other-data">
+          <ion-col no-padding class="column">
+            <button ion-button full color="light">
+              History
+            </button>
+          </ion-col>
+          <ion-col no-padding class="column">
+            <button ion-button full color="light" (click)="manualAdd()">
+              Manually Add
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-footer>
+
     </ion-list>
 
     <!-- Bottle feeding starts here -->

@@ -2,6 +2,13 @@
 
   page-baby-modal {
 
+    ion-modal{
+      .modal-wrapper {
+        height: 70% !important;
+        width: 60% !important;
+      }
+    }
+
     .scroll-content {
       background-color: #42c7ff;
       display: flex;

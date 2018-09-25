@@ -3,7 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { TimerProvider } from '../../providers/timer/timer';
 import { FormattedTodayProvider} from '../../providers/formatted-today/formatted-today';
 import { DatabaseProvider } from '../../providers/database/database';
-
+import { AlertController } from 'ionic-angular';
 
 @Component({
   selector: 'page-feeding',
@@ -14,7 +14,8 @@ export class FeedingPage {
   rightBreast: any = null;
   activeBreast: any;
 
-  lastBreastFeed: any;
+  lastBreastFeed: any = null;
+  lastBreastSide: any = null;
 
 
   // Default value for breastfeeding radio left or right
@@ -38,14 +39,14 @@ export class FeedingPage {
     public navParams: NavParams,
     private timer: TimerProvider,
     private ft: FormattedTodayProvider,
-    private db: DatabaseProvider) {
+    private db: DatabaseProvider,
+    private alertCtrl: AlertController) {
     this.setLeftBreast();
-    // this.tick = 0;
-
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad FeedingPage');
+    this.getLastBreastFeed();
   }
 
   setLeftBreast(){
@@ -97,11 +98,47 @@ export class FeedingPage {
     console.log("Feeding::save(): today is:", today);
     console.log("Feeding::save(): tick is:", this.timer.tick);
 
-    this.db.saveBabyActivity("breastfeeding", object);
+    this.db.saveBabyActivity("breastfeeding", object).then(() => {
+      this.getLastBreastFeed();
+    });
   }
 
   getLastBreastFeed(){
+    console.log("this ran");
+    let count = 0;
+    let babyRef = this.db.getBabyReference();
+    babyRef.collection('breastfeeding')
+      // .where('date', '==', 'date')
+      .get().then((latestSnapshot) => {
+        latestSnapshot.forEach(doc => {
+          count = count + 1;
+          // console.log("Feeding::getLastBreastFeed(): lastest breastfeed:", doc.data());
+        });
+    });
 
+    babyRef.collection('breastfeeding').get().then((latestSnapshot) => {
+      latestSnapshot.forEach(doc => {
+        count = count - 1;
+        if(count == 0){
+          // console.log("Feeding::getLastBreastFeed(): count is:", count);
+          console.log("Feeding::getLastBreastFeed(): last doc retrieved is:", typeof doc.data());
+          this.lastBreastFeed = this.ft.formatDateTimeStandard(doc.data().date);
+          this.lastBreastSide = doc.data().breast;
+        };
+      });
+    });
+  }
+
+  manualAdd(){
+    // let alert = this.alertCtrl.create({
+    //   title: 'Manually Add Breastfeed',
+    //   inputs: [
+    //     {
+    //       name: 'breast',
+    //       placeholder: 'Which Breast'
+    //     }
+    //   ]
+    // })
   }
 
 }

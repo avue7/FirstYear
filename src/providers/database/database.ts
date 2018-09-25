@@ -171,21 +171,25 @@ export class DatabaseProvider {
   }
 
   saveBabyActivity(activity : any, object : any){
-    console.log("Database::saveBabyActivity(): activity is", activity);
-    console.log("Database::saveBabyActivity(): object is", object);
+    return new Promise (resolve => {
+      console.log("Database::saveBabyActivity(): activity is", activity);
+      console.log("Database::saveBabyActivity(): object is", object);
 
-    let babyReference = this.getBabyReference();
-    babyReference.collection(activity).doc(object.date).set(object);
+      let babyReference = this.getBabyReference();
+      babyReference.collection(activity).doc(object.date).set(object);
 
-    // Check if saved was Successful
-    babyReference.collection(activity).doc(object.date).get().then((doc) => {
-      if (doc.exists){
-        this.successToast(activity);
-        console.log("Database::saveBabyActivity(): doc was successfully saved to database");
-      } else {
-        this.failureToast();
-        console.log("Database::saveBabyActivity(): doc was not successfully saved.");
-      };
+      // Check if saved was Successful
+      babyReference.collection(activity).doc(object.date).get().then((doc) => {
+        if (doc.exists){
+          this.successToast(activity);
+          console.log("Database::saveBabyActivity(): doc was successfully saved to database");
+          resolve(true);
+        } else {
+          this.failureToast();
+          console.log("Database::saveBabyActivity(): doc was not successfully saved.");
+          resolve(false);
+        };
+      });
     });
   }
 
