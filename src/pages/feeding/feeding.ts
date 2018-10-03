@@ -48,11 +48,12 @@ export class FeedingPage {
     this.getLastBreastFeed();
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad FeedingPage');
-    this.getLastBreastFeed();
-  }
+  // ionViewDidLoad() {
+  //   console.log('ionViewDidLoad FeedingPage');
+  //   this.getLastBreastFeed();
+  // }
 
+  ///////////////////// NOTE: BREAST FEEDING ACTIVITY /////////////////
   setLeftBreast(){
     this.leftBreast = true;
     this.rightBreast = false;
@@ -134,7 +135,7 @@ export class FeedingPage {
     });
   }
 
-  manualAdd(){
+  manualAddBreastFeed(){
     this.openModal().then((breastFeeding) => {
       //console.log("manual breastfeeding object is", breastFeeding);
       if (breastFeeding == undefined){
@@ -222,4 +223,11 @@ export class FeedingPage {
       });
     });
   }
+
+  getBfHistory() {
+    
+  }
+  /////////////////////////// BREASTFEEDING ACTIVITY ENDS /////////////////////////////
+
+
 }

@@ -5,6 +5,8 @@ import { BabyProvider } from '../baby/baby';
 import { UserProvider } from '../user/user';
 import { DatePipe } from '@angular/common';
 import { ToastController } from 'ionic-angular';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 
 // Testing firestore
 import firebase from 'firebase';
@@ -18,7 +20,9 @@ export class DatabaseProvider {
   bdayYear: any;
   bdayMonth: any;
   noBabyYet: boolean;
-
+  noBfHistoryYet: boolean;
+  //bfHistoryObservable: new Observable();
+  bfHistoryArray: any = [];
   constructor(/*private alertCtrl: AlertController,*/
     private modal: ModalController,
     private baby: BabyProvider,
@@ -122,6 +126,28 @@ export class DatabaseProvider {
     });
   }
 
+  createBreastFeedingHistoryObservable(userId: any){
+    return new Promise(resolve => {
+      if(this.noBfHistoryYet == true){
+        console.log("Database::createBreastFeedingHistoryObservable(): no history yet", this.noBfHistoryYet);
+        resolve(false);
+      } else {
+        //let bfHistoryArray: any;
+        this.getActivityReference('breastfeeding').then((breastFeedRef) => {
+          breastFeedRef.onSnapshot((snapShot) => {
+            snapShot.docChanges().forEach((change) => {
+              let data = change.doc.data();
+              this.bfHistoryArray.push(data);
+              console.log("Testing bfHistory", data);
+              console.log("bfHistoryArray", this.bfHistoryArray);
+              resolve(true);
+            });
+          })
+        })
+      }
+    })
+  }
+
   calculateAge(){
     return new Promise (resolve => {
       let todayUnformatted = new Date();
@@ -170,6 +196,22 @@ export class DatabaseProvider {
     return babyRef;
   }
 
+  getActivityReference(activity : any) : any {
+    return new Promise (resolve => {
+      let db = firebase.firestore();
+
+      db.settings({
+        timestampsInSnapshots: true
+      });
+
+      // let firstName = this.baby.getBabyFirstName();
+      // console.log("firstName is ", this.babyName);
+
+      let activityRef = db.collection('users').doc(this.user.id).collection('babies').doc(this.babyName)
+      .collection(activity);
+      resolve(activityRef);
+    });
+  }
   saveBabyActivity(activity : any, object : any){
     return new Promise (resolve => {
       console.log("Database::saveBabyActivity(): activity is", activity);
