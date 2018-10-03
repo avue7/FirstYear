@@ -20,7 +20,7 @@ export class BabyModalPage {
     });
   }
 
-  getBabyInfo(){
+  setBabyInfo(){
     let data = this.babyInfoForm.value;
     console.log(data);
     this.view.dismiss(data);

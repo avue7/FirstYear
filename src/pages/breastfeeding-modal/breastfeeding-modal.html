@@ -8,53 +8,54 @@
 <ion-content padding>
   <form novalidate class="list-form" (ngSubmit)="manualAddBreast()" [formGroup]="breastForm">
     <ion-list>
-      <ion-item>
-        <ion-label stacked>First Name</ion-label>
-        <ion-input type="text" formControlName="firstName"></ion-input>
-      </ion-item>
-      <!-- checking for errors for firstName -->
-      <ion-item no-lines *ngIf="babyInfoForm.get('firstName').hasError('required')
-        && babyInfoForm.get('firstName').touched">
-        <div class="error">
-          First Name is required.
-        </div>
-      </ion-item>
 
       <ion-item>
-        <ion-label stacked>Last Name</ion-label>
-        <ion-input type="text" formControlName="lastName"></ion-input>
-      </ion-item>
-      <!-- checking for errors for lastName -->
-      <ion-item no-lines *ngIf="babyInfoForm.get('lastName').hasError('required')
-        && babyInfoForm.get('lastName').touched">
-        <div class="error">
-          Last Name is required.
-        </div>
-      </ion-item>
-
-      <ion-item>
-        <ion-label stacked>Birthday</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY" formControlName="birthday"></ion-datetime>
-      </ion-item>
-      <!-- checking for errors for lastName -->
-      <ion-item no-lines *ngIf="babyInfoForm.get('birthday').hasError('required')
-        && babyInfoForm.get('birthday').touched">
-        <div class="error">
-          Birthday is required.
-        </div>
-      </ion-item>
-
-      <ion-item>
-        <ion-label >Gender</ion-label>
-        <ion-select [(ngModel)]="gender" formControlName="gender" interface="popover">
-          <ion-option value="male">Male</ion-option>
-          <ion-option value="female">Female</ion-option>
+        <ion-label>Breast</ion-label>
+        <ion-select [(ngModel)]="breast" formControlName="breast" interface="popover">
+          <ion-option value="left">Left</ion-option>
+          <ion-option value="right">Right</ion-option>
         </ion-select>
       </ion-item>
 
+      <ion-item>
+        <ion-label>Date</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="today" formControlName="date"></ion-datetime>
+      </ion-item>
+      <!-- checking for errors for date-->
+      <ion-item no-lines *ngIf="breastForm.get('date').hasError('required')
+        && breastForm.get('date').touched">
+        <div class="error">
+          Date is required.
+        </div>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Time</ion-label>
+        <ion-datetime displayFormat="hh:mm:ss A" [(ngModel)]="timeNow" formControlName="time"></ion-datetime>
+      </ion-item>
+      <!-- checking for errors for time -->
+      <ion-item no-lines *ngIf="breastForm.get('time').hasError('required')
+        && breastForm.get('time').touched">
+        <div class="error">
+          Time is required.
+        </div>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Duration (mins : secs)</ion-label>
+        <ion-datetime displayFormat="mm:ss" placeholder="DUDE" [(ngModel)]="zeros" formControlName="duration"></ion-datetime>
+      </ion-item>
+      <!-- checking for errors for duration -->
+      <ion-item no-lines *ngIf="breastForm.get('duration').hasError('required')
+        && breastForm.get('duration').touched">
+        <div class="error">
+          Duration is required.
+        </div>
+      </ion-item>
+
     </ion-list>
-    <button ion-button class="baby-button" [disabled]="!babyInfoForm.valid">Create Baby Profile</button>
+    <button ion-button class="baby-button" [disabled]="!breastForm.valid">Add</button>
   </form>
-  <button ion-button class="baby-button" (click)="cancelModal()">Do Later</button>
+  <button ion-button class="baby-button" (click)="cancelModal()">Cancel</button>
 
 </ion-content>

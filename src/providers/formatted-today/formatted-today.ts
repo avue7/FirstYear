@@ -21,10 +21,16 @@ export class FormattedTodayProvider {
     return splitToday;
   }
 
-  getTodayMonthFirst(today : any) : any {
-    let todayString = today[1] + "-" + today[2] + "-" + today[0];
-    console.log("FormattedToday::getTodayMonthFirst(): today is:", todayString);
-    return todayString;
+  // getDateFromUnformat(rawDateTime : any) : any {
+  //   let date = this.datePipe.transform(rawDateTime, 'yyyy-MM-dd');
+  //   let splitDate = date.split('-');
+  //   return(this.getDateMonthFirst(splitDate));
+  // }
+
+  getTodayMonthFirst(date : any) : any {
+    let dateString = date[1] + "-" + date[2] + "-" + date[0];
+    console.log("FormattedToday::getDateMonthFirst(): date is:", dateString);
+    return dateString;
   }
 
   getTodayMonthFirstWithTime() : any{
@@ -50,6 +56,7 @@ export class FormattedTodayProvider {
       am = true;
     };
 
+    console.log("FormmattedToday::formatDateTimeStandard(): date is:", date);
     console.log("Timearray is: ", this.timeArray);
     // Set anything above 12 to match standard
 
@@ -113,7 +120,7 @@ export class FormattedTodayProvider {
      let today = this.getTodayMonthFirst(temp);
 
      let dateTime: any;
-     if(today = date){
+     if(today == date){
        dateTime = "Today at " + timeString;
        console.log("timestring is: ", dateTime);
        return dateTime;
@@ -122,13 +129,14 @@ export class FormattedTodayProvider {
        console.log("timestring is: ", dateTime);
        return dateTime;
      };
-    } else {
+    } else { //Time is in AM
      let timeString = this.timeArray[0] + ":" + this.timeArray[1] + ":" + this.timeArray[2] + " am";
      let temp = this.getToday();
      let today = this.getTodayMonthFirst(temp);
 
      let dateTime: any;
-     if(today = date){
+     console.log("FormattedToday::formatDateTimeStandard(): today is:", today, "date retrieved is:", date);
+     if(today == date){
        dateTime = "Today at " + timeString;
        console.log("timestring is: ", dateTime);
        return dateTime;
