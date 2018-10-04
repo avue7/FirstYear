@@ -218,22 +218,9 @@ export class FeedingPage {
 
         // Extract only the time
         let timeTemp = new Date(breastFeeding.time);
-        let mins = Number(timeTemp.getMinutes());
-        let secs = Number(timeTemp.getSeconds());
-        let minString: any;
-        let secString: any;
 
-        if(mins < 10){
-          minString = mins.toString();
-          minString = '0' + minString;
-        };
-
-        if(secs < 10){
-          secString = secs.toString();
-          secString = '0' + secString;
-        };
-
-        let time = timeTemp.getHours() + ':' + minString + ':' + secString;
+        let time = timeTemp.getHours() + ':' + this.addZeroToTime(timeTemp.getMinutes()) + ':' +
+        this.addZeroToTime(timeTemp.getSeconds());
         console.log("time is:", time);
 
         // String up date and time and call the method to standardize the time
@@ -259,6 +246,13 @@ export class FeedingPage {
         });
       };
     });
+  }
+
+  addZeroToTime(time : any) : any{
+    if(time < 10){
+      time = "0" + time;
+    };
+    return time;
   }
 
   openModal() : any {
