@@ -42,9 +42,20 @@
           </button>
         </ion-col>
       </ion-row>
-      <i class="center">Last breastfeed: {{lastBreastFeed}} on {{lastBreastSide}}</i>
+      <p class="center"  *ngIf="lastBreastFeed;else none">
+        <i class="momentsAgo">Last breastfeed: about {{momentsAgo}}</i>
+        <br>
+        <i> {{lastBreastFeed}} on {{lastBreastSide}} </i>
+        <br>
+        <i> duration: {{((lastDuration) |  hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </i>
+      </p>
+      <ng-template #none>
+        <p class="center">
+          <i>Last breastfeeding: No records of breastfeeding yet! </i>
+        </p>
+      </ng-template>
 
-      <br><br><br><br>
+      <br><br><br>
 
       <!-- Timer for breastfeeding starts here -->
       <h2> {{((timer.tick) | hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </h2>

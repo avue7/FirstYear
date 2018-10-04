@@ -26,9 +26,10 @@ export class BreastfeedingModalPage {
       duration: ['', Validators.compose([Validators.required])]
     });
   }
-  
+
   manualAddBreast() {
     let data = this.breastForm.value;
+    console.log("Manual add data", data);
     this.view.dismiss(data);
   }
 

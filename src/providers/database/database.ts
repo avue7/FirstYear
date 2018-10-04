@@ -139,11 +139,10 @@ export class DatabaseProvider {
               let data = change.doc.data();
               this.bfHistoryArray.push(data);
               console.log("Testing bfHistory", data);
-              console.log("bfHistoryArray", this.bfHistoryArray);
               resolve(true);
             });
-          })
-        })
+          });
+        });
       }
     })
   }

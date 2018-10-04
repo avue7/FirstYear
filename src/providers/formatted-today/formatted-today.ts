@@ -63,39 +63,39 @@ export class FormattedTodayProvider {
     if(pm == true){
       switch(this.timeArray[0]){
         case "13": {
-          this.timeArray[0] = "1";
+          this.timeArray[0] = "01";
           break;
         };
         case "14": {
-          this.timeArray[0] = "2";
+          this.timeArray[0] = "02";
           break;
         };
         case "15": {
-          this.timeArray[0] = "3";
+          this.timeArray[0] = "03";
           break;
         };
         case "16": {
-          this.timeArray[0] = "4";
+          this.timeArray[0] = "04";
           break;
         };
         case "17": {
-          this.timeArray[0] = "5";
+          this.timeArray[0] = "05";
           break;
         };
         case "18": {
-          this.timeArray[0] = "6";
+          this.timeArray[0] = "06";
           break;
         };
         case "19": {
-          this.timeArray[0] = "7";
+          this.timeArray[0] = "07";
           break;
         };
         case "20": {
-          this.timeArray[0] = "8";
+          this.timeArray[0] = "08";
           break;
         };
         case "21": {
-          this.timeArray[0] = "9";
+          this.timeArray[0] = "09";
           break;
         };
         case "22": {

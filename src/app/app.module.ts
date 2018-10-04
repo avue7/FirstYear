@@ -33,6 +33,7 @@ import { CameraPage } from '../pages/camera/camera';
 import { CreditsPage } from '../pages/credits/credits';
 import { BabyModalPage } from '../pages/baby-modal/baby-modal';
 import { BreastfeedingModalPage } from '../pages/breastfeeding-modal/breastfeeding-modal';
+import { BfHistoryModalPage } from '../pages/bf-history-modal/bf-history-modal';
 
 import { TimerProvider } from '../providers/timer/timer';
 import { HoursMinutesSecondsPipe } from '../pipes/hours-minutes-seconds/hours-minutes-seconds';
@@ -58,7 +59,8 @@ import { DateTimePipe } from '../pipes/date-time/date-time';
     BabyModalPage,
     HoursMinutesSecondsPipe,
     DateTimePipe,
-    BreastfeedingModalPage
+    BreastfeedingModalPage,
+    BfHistoryModalPage
   ],
   imports: [
     BrowserModule,
@@ -86,7 +88,8 @@ import { DateTimePipe } from '../pipes/date-time/date-time';
     CameraPage,
     CreditsPage,
     BabyModalPage,
-    BreastfeedingModalPage
+    BreastfeedingModalPage,
+    BfHistoryModalPage
   ],
   providers: [
     StatusBar,

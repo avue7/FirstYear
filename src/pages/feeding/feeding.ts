@@ -5,6 +5,9 @@ import { FormattedTodayProvider} from '../../providers/formatted-today/formatted
 import { DatabaseProvider } from '../../providers/database/database';
 import { AlertController } from 'ionic-angular';
 import { BreastfeedingModalPage } from '../breastfeeding-modal/breastfeeding-modal';
+import { BfHistoryModalPage } from '../bf-history-modal/bf-history-modal';
+import * as moment from 'moment';
+import { Observable } from 'rxjs/Rx';
 
 @Component({
   selector: 'page-feeding',
@@ -15,9 +18,17 @@ export class FeedingPage {
   rightBreast: any = null;
   activeBreast: any;
   breastfeedingModal: any;
+  bfHistoryModal: any;
 
   lastBreastFeed: any = null;
   lastBreastSide: any = null;
+  lastDuration: any = null;
+
+  momentsAgoTime: any;
+  momentsAgoSubscription: any;
+  momentsAgo: any;
+
+
 
 
   // Default value for breastfeeding radio left or right
@@ -44,10 +55,14 @@ export class FeedingPage {
     private db: DatabaseProvider,
     private alertCtrl: AlertController,
     private modal: ModalController) {
+    this.momentsAgoTime = '';
     this.setLeftBreast();
     this.getLastBreastFeed();
   }
 
+  ionViewWillLeave(){
+    this.momentsAgoSubscription.unsubscribe();
+  }
   // ionViewDidLoad() {
   //   console.log('ionViewDidLoad FeedingPage');
   //   this.getLastBreastFeed();
@@ -93,9 +108,14 @@ export class FeedingPage {
       console.log("Feeding::save(): feed on the right breast");
     }
 
+    // Split today with time to get time
+    let splitTimeArray = today.split(' ');
+    let splitTimeOnly = splitTimeArray[1];
+
     let object = {
       breast: breast_,
       date: today,
+      time: splitTimeOnly,
       duration: this.timer.tick
     }
 
@@ -110,7 +130,7 @@ export class FeedingPage {
   }
 
   getLastBreastFeed(){
-    console.log("this ran");
+    this.momentsAgo = '';
     let count = 0;
     let babyRef = this.db.getBabyReference();
     babyRef.collection('breastfeeding')
@@ -128,10 +148,29 @@ export class FeedingPage {
         if(count == 0){
           // console.log("Feeding::getLastBreastFeed(): count is:", count);
           console.log("Feeding::getLastBreastFeed(): last date retrieved is:", doc.data().date);
+
+          // If last breastfeeding exists
+          if(this.lastBreastFeed){
+            this.momentsAgoSubscription.unsubscribe();
+          };
+
+          // NOTE: MOMENTS AGO HACK...
+          this.momentsAgoTime = moment(doc.data().date, 'MM-DD-YYYY HH:mm:ss');
+          console.log("SHIT::::", doc.data().date);
+          this.createMomentObservable(this.momentsAgoTime);
+
           this.lastBreastFeed = this.ft.formatDateTimeStandard(doc.data().date);
           this.lastBreastSide = doc.data().breast;
+          this.lastDuration = doc.data().duration;
         };
       });
+    });
+  }
+
+  createMomentObservable(momentsAgoTime : any){
+    this.momentsAgoSubscription = Observable.interval(1000).subscribe(x => {
+      this.momentsAgo = momentsAgoTime.startOf().fromNow();
+      // console.log("moments ago is:", this.momentsAgo);
     });
   }
 
@@ -179,8 +218,22 @@ export class FeedingPage {
 
         // Extract only the time
         let timeTemp = new Date(breastFeeding.time);
+        let mins = Number(timeTemp.getMinutes());
+        let secs = Number(timeTemp.getSeconds());
+        let minString: any;
+        let secString: any;
 
-        let time = timeTemp.getHours() + ':' + timeTemp.getMinutes() + ':' + timeTemp.getSeconds();
+        if(mins < 10){
+          minString = mins.toString();
+          minString = '0' + minString;
+        };
+
+        if(secs < 10){
+          secString = secs.toString();
+          secString = '0' + secString;
+        };
+
+        let time = timeTemp.getHours() + ':' + minString + ':' + secString;
         console.log("time is:", time);
 
         // String up date and time and call the method to standardize the time
@@ -191,6 +244,7 @@ export class FeedingPage {
         let bfManualObject = {
           breast: breastFeeding.breast + ' breast',
           date: dateTime,
+          time: time,
           duration: totalDuration
         };
 
@@ -225,7 +279,26 @@ export class FeedingPage {
   }
 
   getBfHistory() {
-    
+    this.openBfHistoryModal().then((history) => {
+      console.log("BF history is", history);
+    });
+  }
+
+  openBfHistoryModal(){
+    return new Promise(resolve => {
+      this.bfHistoryModal = this.modal.create(BfHistoryModalPage);
+      this.bfHistoryModal.present();
+      resolve(this.waitForBfReturn());
+    });
+  }
+
+  waitForBfReturn(){
+    return new Promise(resolve => {
+      this.bfHistoryModal.onDidDismiss( data => {
+        let history = data;
+        resolve(history);
+      });
+    })
   }
   /////////////////////////// BREASTFEEDING ACTIVITY ENDS /////////////////////////////
 
