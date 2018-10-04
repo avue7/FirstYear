@@ -55,12 +55,12 @@
         </p>
       </ng-template>
 
-      <br><br><br>
+      <br>
 
       <!-- Timer for breastfeeding starts here -->
       <h2> {{((timer.tick) | hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </h2>
 
-      <br><br><br>
+      <br><br>
 
       <div class="center">
         <button class="timer" ion-button icon-only [disabled]="!timer.tick || !timer.isPaused" (click)="refreshTimer()">

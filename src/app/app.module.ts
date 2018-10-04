@@ -104,7 +104,8 @@ import { DateTimePipe } from '../pipes/date-time/date-time';
     TimerProvider,
     FormattedTodayProvider,
     BabyProvider,
-    DateTimePipe
+    DateTimePipe,
+    HoursMinutesSecondsPipe
   ]
 })
 export class AppModule {}

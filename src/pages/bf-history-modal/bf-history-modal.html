@@ -1,6 +1,11 @@
 <ion-header>
 
   <ion-navbar>
+    <ion-buttons left>
+      <button ion-button icon-only (click)="cancelModal()" class="bf-modal">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
     <ion-title>Breastfeeding History</ion-title>
   </ion-navbar>
 
@@ -8,27 +13,60 @@
 
 
 <ion-content padding>
-  <div class="divider-title"> Today </div>
-  <!-- <ion-list class="timeline" *ngFor="let history of formattedHistoryArray">
-    <ion-item>
-      {{history}}
-    </ion-item>
-  </ion-list> -->
-  <ul class="timeline">
-    <li>
-      <div class="timeline-item">
-        <h4> here </h4>
-        <p> summarry goes here </p>
-      </div>
-    </li>
-  </ul>
+  <div *ngIf="hasToday">
+    <div class="divider-title"> Today </div>
 
-  <div class="divider-title"> Last Week </div>
+    <ul class="timeline">
+      <li *ngFor="let x of todayHistoryArray">
+        <div >
+          <p class="timeline-item"> {{x}}</p>
+        </div>
+      </li>
+    </ul>
+  </div>
 
-  <!-- <button ion-button class="baby-button" (click)="cancelModal()">Go Back</button> -->
+  <div *ngIf="hasYesterday">
+    <div class="divider-title"> Yesterday </div>
+    <ul class="timeline">
+      <li *ngFor="let x of yesterdayHistoryArray">
+        <div>
+          <p class="timeline-item"> {{x}}</p>
+        </div>
+      </li>
+    </ul>
+  </div>
 
-<ion-footer>
-  <button ion-button class="baby-button" (click)="cancelModal()">Go Back</button>
-</ion-footer>
+  <div *ngIf="hasLastWeek">
+    <div class="divider-title"> Last 7 days </div>
+    <ul class="timeline">
+      <li *ngFor="let x of lastweekHistoryArray">
+        <div>
+          <p class="timeline-item"> {{x}}</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="hasLastMonth">
+    <div class="divider-title"> Last 30 days </div>
+    <ul class="timeline">
+      <li *ngFor="let x of lastMonthHistoryArray">
+        <div>
+          <p class="timeline-item"> {{x}}</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="hasMore">
+    <div class="divider-title"> This Year </div>
+    <ul class="timeline">
+      <li *ngFor="let x of moreHistoryArray">
+        <div>
+          <p class="timeline-item"> {{x}}</p>
+        </div>
+      </li>
+    </ul>
+  </div>
 
 </ion-content>

@@ -2,7 +2,9 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
 import { FormattedTodayProvider} from '../../providers/formatted-today/formatted-today';
+
 import { Observable } from 'rxjs/Rx';
+import * as moment from 'moment';
 
 
 @Component({
@@ -11,8 +13,22 @@ import { Observable } from 'rxjs/Rx';
 })
 export class BfHistoryModalPage {
   historyArray: any = [];
-  formattedHistoryArray: any = [];
+  lifoHistoryArray: any = [];
+
   todayHistoryArray: any = [];
+  yesterdayHistoryArray: any = [];
+  moreHistoryArray: any = [];
+  lastweekHistoryArray: any = [];
+  moreDateArray: any = [];
+  lastMonthHistoryArray: any = [];
+
+  // boolean flags
+  hasToday: boolean;
+  hasYesterday: boolean;
+  hasLastWeek: boolean;
+  hasLastMonth: boolean;
+  hasMore: boolean;
+
   dateDistanceArray: any = [];
   indexCounter: number;
 
@@ -23,6 +39,11 @@ export class BfHistoryModalPage {
     private ft: FormattedTodayProvider) {
     this.historyArray = this.db.bfHistoryArray;
     this.indexCounter = 0;
+    this.hasToday = false;
+    this.hasYesterday = false;
+    this.hasLastWeek = false;
+    this.hasLastMonth = false;
+    this.hasMore = false;
     this.lifoHistory();
   }
 
@@ -31,23 +52,89 @@ export class BfHistoryModalPage {
   }
 
   lifoHistory(){
-    for(let x of this.historyArray){
-      let formatDateTimeTemp = this.ft.formatDateTimeStandard(x.date);
-      //this.formatHistoryOutput.push(this.ft.formatDateTimeStandard(x.date));
-      let formatOutput = formatDateTimeTemp + " on " + x.breast;
-      console.log("FormatTemp", formatDateTimeTemp);
-      console.log("FormatOutput: ", formatOutput);
+    let todayTemp = this.ft.getToday();
+    let today = this.ft.getTodayMonthFirst(todayTemp);
+    let todayMoment = moment(today);
 
-      // Unshift method appends to beg of array
-      this.formattedHistoryArray.unshift(formatOutput);
+    console.log("BF: TODAY IS:", today);
+    console.log("BF: TODAY MOMENT IS:", todayMoment);
+
+    for(let v of this.historyArray){
+      this.lifoHistoryArray.unshift(v);
     };
-    console.log("FormattedHistory:", this.formattedHistoryArray);
 
-    // For each entry extract and split the date
-    for(let y of this.formattedHistoryArray){
-      this.splitAndCheckDate(y, this.indexCounter);
-      this.indexCounter += 1;
-    }
+    for(let x of this.lifoHistoryArray){
+      console.log("X is:", x);
+      let entryDate = this.ft.getDateFromDateTime(x.date);
+      //let entryTime = this.ft.getTimeFromDateTime(x.time);
+      let entryDateMoment = moment(entryDate);
+
+      // Check for am pm and convert if necessary
+      let pm = false;
+      let am = false;
+      let xSplitTimeArray = x.time.split(':');
+
+      // Check if pm
+      if(xSplitTimeArray[0] < 12){
+        am = true;
+      } else {
+        pm = true;
+      };
+
+      let timeString: any;
+      if(pm = true){
+        let hour = this.ft.convertToStandardTime(xSplitTimeArray);
+        timeString = hour + ':' + xSplitTimeArray[1] + ':' + xSplitTimeArray[2] + ' PM';
+      } else {
+        timeString = xSplitTimeArray[0] + ':' + xSplitTimeArray[1] + ':' + xSplitTimeArray[2] + ' AM';
+      };
+
+      // Convert duration
+      console.log("Duration is:", x.duration);
+      let minutes = Math.floor(x.duration / 60);
+      let seconds =  x.duration % 60;
+
+      let durationString: any;
+
+      if(minutes == 0){
+        durationString = seconds + ' secs';
+      } else {
+        durationString = minutes + ' mins ' + seconds + ' secs';
+      };
+
+      // Combine date, time, breast, duration
+      let outputString = '@' + timeString + ', '+ x.breast + ', for ' + durationString;
+
+      // Group the activity by days
+      if(todayMoment.diff(entryDateMoment, 'years') == 0){
+        if(todayMoment.diff(entryDateMoment, 'months') == 0){
+          // Todays
+          if(todayMoment.diff(entryDateMoment, 'days') == 0){
+            this.todayHistoryArray.push(outputString);
+            this.hasToday = true;
+          }
+          // Yesterdays
+          else if(todayMoment.diff(entryDateMoment, 'days') == 1){
+            this.yesterdayHistoryArray.push(outputString);
+            this.hasYesterday = true;
+          };
+          // Last 7 days
+          if(todayMoment.diff(entryDateMoment, 'days') <= 7){
+            let outputStringWithDate = entryDate + outputString;
+            this.lastweekHistoryArray.push(outputStringWithDate);
+            this.hasLastWeek = true;
+          };
+        }
+        if(todayMoment.diff(entryDateMoment, 'months') <= 1){
+          let outputStringWithDate = entryDate + outputString;
+          this.lastMonthHistoryArray.push(outputStringWithDate);
+          this.hasLastMonth = true;
+        };
+        let outputStringWithDate = entryDate + outputString;
+        this.moreHistoryArray.push(outputStringWithDate);
+        this.hasMore = true;
+      }
+    };
   }
 
   splitAndCheckDate(entry : string, index : number){
