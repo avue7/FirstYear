@@ -72,15 +72,11 @@ export class FeedingPage {
   setLeftBreast(){
     this.leftBreast = true;
     this.rightBreast = false;
-    console.log("Feeding::setLeftBreast: leftBreast is", this.leftBreast);
-    console.log("Feeding::setLeftBreast: rightBreast is", this.rightBreast);
   }
 
   setRightBreast(){
     this.rightBreast = true;
     this.leftBreast = false;
-    console.log("Feeding::setRightBreast: rightBreast is", this.rightBreast);
-    console.log("Feeding::setRightBreast: leftBreast is", this.leftBreast);
   }
 
   startPauseTimer(){
@@ -102,10 +98,8 @@ export class FeedingPage {
 
     if(this.leftBreast){
       breast_ = "left breast";
-      console.log("Feeding::save(): feed on the left breast");
     } else{
       breast_ = "right breast";
-      console.log("Feeding::save(): feed on the right breast");
     }
 
     // Split today with time to get time
@@ -119,9 +113,7 @@ export class FeedingPage {
       duration: this.timer.tick
     }
 
-    console.log("Feeding::save(): object is:", object);
-    console.log("Feeding::save(): today is:", today);
-    console.log("Feeding::save(): tick is:", this.timer.tick);
+    // console.log("Feeding::save(): object is:", object);
 
     this.db.saveBabyActivity("breastfeeding", object).then(() => {
       this.getLastBreastFeed();
@@ -146,7 +138,6 @@ export class FeedingPage {
       latestSnapshot.forEach(doc => {
         count = count - 1;
         if(count == 0){
-          // console.log("Feeding::getLastBreastFeed(): count is:", count);
           console.log("Feeding::getLastBreastFeed(): last date retrieved is:", doc.data().date);
 
           // If last breastfeeding exists
@@ -156,7 +147,6 @@ export class FeedingPage {
 
           // NOTE: MOMENTS AGO HACK...
           this.momentsAgoTime = moment(doc.data().date, 'MM-DD-YYYY HH:mm:ss');
-          console.log("SHIT::::", doc.data().date);
           this.createMomentObservable(this.momentsAgoTime);
 
           this.lastBreastFeed = this.ft.formatDateTimeStandard(doc.data().date);
@@ -188,7 +178,6 @@ export class FeedingPage {
 
         // This will be the value of time (duration for database)
         let totalDuration = (splitDurationArray[1] * 60) + (splitDurationArray[2]);
-        console.log("totalTime is:", totalDuration);
 
         // Extract only the date
         let dateTemp = new Date(breastFeeding.date);
@@ -197,35 +186,32 @@ export class FeedingPage {
         let monthNumber = (Number(dateTemp.getMonth()) + 1);
         let monthString: string;
 
+        // Add a 0 to month and days < 10
         if (monthNumber < 10){
           monthString = '0' + monthNumber.toString();
         } else {
           monthString = monthNumber.toString();
         };
-
         let dayNumber = (Number(dateTemp.getDay()));
         let dayString: string;
-
         if (dayNumber < 10){
           dayString = '0' + dayNumber.toString();
         } else {
           dayString = dayNumber.toString();
         };
 
+        // Concentanate the strings
         let date = monthString + '-' + dayString + '-' + dateTemp.getFullYear();
-        console.log("date is:", date);
         ///////////////////////////////////////////////////////////////
 
         // Extract only the time
         let timeTemp = new Date(breastFeeding.time);
 
-        let time = timeTemp.getHours() + ':' + this.addZeroToTime(timeTemp.getMinutes()) + ':' +
+        let time = this.addZeroToTime(timeTemp.getHours()) + ':' + this.addZeroToTime(timeTemp.getMinutes()) + ':' +
         this.addZeroToTime(timeTemp.getSeconds());
-        console.log("time is:", time);
 
         // String up date and time and call the method to standardize the time
         let dateTime = date + " " + time;
-        console.log("dateTime is:", dateTime);
         /////////////////////////////////////////////////////////////////
 
         let bfManualObject = {
@@ -274,7 +260,7 @@ export class FeedingPage {
 
   getBfHistory() {
     this.openBfHistoryModal().then((history) => {
-      console.log("BF history is", history);
+      this.getLastBreastFeed();
     });
   }
 

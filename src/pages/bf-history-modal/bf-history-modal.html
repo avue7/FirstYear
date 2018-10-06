@@ -36,7 +36,7 @@
     </ul>
   </div>
 
-  <div *ngIf="hasLastWeek">
+  <!-- <div *ngIf="hasLastWeek">
     <div class="divider-title"> Last 7 days </div>
     <ul class="timeline">
       <li *ngFor="let x of lastweekHistoryArray">
@@ -45,9 +45,9 @@
         </div>
       </li>
     </ul>
-  </div>
+  </div> -->
 
-  <div *ngIf="hasLastMonth">
+  <!-- <div *ngIf="hasLastMonth">
     <div class="divider-title"> Last 30 days </div>
     <ul class="timeline">
       <li *ngFor="let x of lastMonthHistoryArray">
@@ -56,17 +56,21 @@
         </div>
       </li>
     </ul>
-  </div>
+  </div> -->
 
   <div *ngIf="hasMore">
-    <div class="divider-title"> This Year </div>
-    <ul class="timeline">
-      <li *ngFor="let x of moreHistoryArray">
-        <div>
-          <p class="timeline-item"> {{x}}</p>
-        </div>
-      </li>
-    </ul>
+    <ion-item-group *ngFor="let x of moreHistoryArray | groupby: 'date'">
+      <div  class="divider-title">
+        {{ x.key | moment:'ll' }}
+      </div>
+      <ul class="timeline">
+        <li *ngFor="let event of x.list">
+          <div>
+            <p class="timeline-item"> {{event.output}} </p>
+          </div>
+        </li>
+      </ul>
+    </ion-item-group>
   </div>
 
 </ion-content>

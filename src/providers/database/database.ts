@@ -22,14 +22,14 @@ export class DatabaseProvider {
   noBabyYet: boolean;
   noBfHistoryYet: boolean;
   //bfHistoryObservable: new Observable();
-  bfHistoryArray: any = [];
+  bfHistoryArray: any;
   constructor(/*private alertCtrl: AlertController,*/
     private modal: ModalController,
     private baby: BabyProvider,
     private user: UserProvider,
     private datePipe: DatePipe,
     private toastCtrl: ToastController) {
-
+    this.bfHistoryArray = [];
   }
 
   setNewUserNewBaby(userId : any, babyObject?: any){
@@ -45,14 +45,14 @@ export class DatabaseProvider {
       // First check if user exists
       this.checkIfBabyExists(currentUserRef).then((retVal) => {
         if(retVal == true){
-          console.log("Database:: user already exists in the users collection.");
+          // console.log("Database:: user already exists in the users collection.");
           this.noBabyYet = false;
           resolve(false);
         } else if(retVal == "later"){
-          console.log("Database:: user decides to do baby info later");
+          // console.log("Database:: user decides to do baby info later");
           resolve("later");
         } else {
-          console.log("Database:: Successfully created new user in users collection.");
+          // console.log("Database:: Successfully created new user in users collection.");
           resolve(true);
         }
       });
@@ -63,7 +63,7 @@ export class DatabaseProvider {
     return new Promise(resolve => {
       currentUserRef.get().then((docSnapShot) => {
         if (!docSnapShot.empty){
-          console.log("Database::checkIfBabyExists(): baby doc(s) exists.")
+          // console.log("Database::checkIfBabyExists(): baby doc(s) exists.")
           this.noBabyYet = false;
           resolve(true);
         } else {
@@ -117,8 +117,8 @@ export class DatabaseProvider {
               this.babyName = baby.firstName;
               this.babyBirthday = baby.birthday;
               resolve(this.calculateAge());
-              console.log("Database::createBabyObservable: babyFirstname:", this.babyName);
-              console.log("Database::createBabyObservable: babyBirthday:", this.babyBirthday);
+              // console.log("Database::createBabyObservable: babyFirstname:", this.babyName);
+              // console.log("Database::createBabyObservable: babyBirthday:", this.babyBirthday);
             });
           });
         });
@@ -132,13 +132,13 @@ export class DatabaseProvider {
         console.log("Database::createBreastFeedingHistoryObservable(): no history yet", this.noBfHistoryYet);
         resolve(false);
       } else {
-        //let bfHistoryArray: any;
         this.getActivityReference('breastfeeding').then((breastFeedRef) => {
           breastFeedRef.onSnapshot((snapShot) => {
-            snapShot.docChanges().forEach((change) => {
-              let data = change.doc.data();
+            //snapShot.docChanges().forEach((change) => {
+            this.bfHistoryArray.splice(0, this.bfHistoryArray.length);
+            snapShot.forEach(doc => {
+              let data = doc.data();
               this.bfHistoryArray.push(data);
-              console.log("Testing bfHistory", data);
               resolve(true);
             });
           });
@@ -159,9 +159,9 @@ export class DatabaseProvider {
 
       // Calculate the year, month, day by taking the difference
       this.bdayYear = Math.abs(Number(splitToday[0]) - Number(splitBirthday[0]));
-      console.log("Year difference:", this.bdayYear);
+      // console.log("Year difference:", this.bdayYear);
       this.bdayMonth = Math.abs(Number(splitToday[1]) - Number(splitBirthday[1]));
-      console.log("Month difference:", this.bdayMonth);
+      // console.log("Month difference:", this.bdayMonth);
       // let day = Number(splitToday[2]) - Number(splitBirthday[2]);
       // console.log("Year difference:", day);
       resolve(true);

@@ -40,6 +40,8 @@ import { HoursMinutesSecondsPipe } from '../pipes/hours-minutes-seconds/hours-mi
 import { FormattedTodayProvider } from '../providers/formatted-today/formatted-today';
 import { BabyProvider } from '../providers/baby/baby';
 import { DateTimePipe } from '../pipes/date-time/date-time';
+import { GroupbyPipe } from '../pipes/groupby/groupby';
+import { MomentPipe } from '../pipes/moment/moment';
 
 @NgModule({
   declarations: [
@@ -60,7 +62,9 @@ import { DateTimePipe } from '../pipes/date-time/date-time';
     HoursMinutesSecondsPipe,
     DateTimePipe,
     BreastfeedingModalPage,
-    BfHistoryModalPage
+    BfHistoryModalPage,
+    GroupbyPipe,
+    MomentPipe
   ],
   imports: [
     BrowserModule,
@@ -105,7 +109,9 @@ import { DateTimePipe } from '../pipes/date-time/date-time';
     FormattedTodayProvider,
     BabyProvider,
     DateTimePipe,
-    HoursMinutesSecondsPipe
+    HoursMinutesSecondsPipe,
+    GroupbyPipe,
+    MomentPipe
   ]
 })
 export class AppModule {}

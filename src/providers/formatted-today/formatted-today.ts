@@ -69,7 +69,7 @@ export class FormattedTodayProvider {
       let today = this.getTodayMonthFirst(temp);
 
       let dateTime: any;
-      if(today == date){      
+      if(today == date){
         dateTime = "Today at " + timeString;
         //console.log("timestring is: ", dateTime);
         return dateTime;
@@ -147,6 +147,10 @@ export class FormattedTodayProvider {
         timeArray[0] = "12";
         break;
       };
+      case "00": {
+        timeArray[0] = "12";
+        break;
+      }
       default: {
         console.log("DateTimePipe:: error cannot convert from mil to stand.");
         break;
