@@ -19,7 +19,7 @@
 
       <ion-item>
         <ion-label>Date</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="today" formControlName="date"></ion-datetime>
+        <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="today" formControlName="date"></ion-datetime>
       </ion-item>
       <!-- checking for errors for date-->
       <ion-item no-lines *ngIf="breastForm.get('date').hasError('required')

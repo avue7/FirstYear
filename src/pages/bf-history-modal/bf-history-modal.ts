@@ -142,6 +142,17 @@ export class BfHistoryModalPage {
             this.yesterdayHistoryArray.push(outputString);
             this.hasYesterday = true;
           }
+          else {
+            let outputStringWithDate = entryDate + outputString;
+
+            let temp = {
+              date: entryDate,
+              output: outputString
+            };
+
+            this.moreHistoryArray.push(temp);
+            this.hasMore = true;
+          };
         }
         else {
           let outputStringWithDate = entryDate + outputString;
@@ -154,6 +165,16 @@ export class BfHistoryModalPage {
           this.moreHistoryArray.push(temp);
           this.hasMore = true;
         };
+      } else {
+        let outputStringWithDate = entryDate + outputString;
+
+        let temp = {
+          date: entryDate,
+          output: outputString
+        };
+
+        this.moreHistoryArray.push(temp);
+        this.hasMore = true;
       }
     };
   }
