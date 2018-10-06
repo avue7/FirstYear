@@ -95,18 +95,12 @@ export class BfHistoryModalPage {
       let am = false;
       let xSplitTimeArray = x.time.split(':');
 
-      console.log("xSplitTimeArray", xSplitTimeArray);
-
-      console.log("Number split:", Number(xSplitTimeArray[0]));
-
       let splitHour = Number(xSplitTimeArray[0]);
       // Check if pm
       if(splitHour >= 12){
         pm = true;
-        console.log("PM IS SET")
       } else {
         am = true;
-        console.log("AM IS SET");
       };
 
       let timeString: any;
@@ -156,50 +150,9 @@ export class BfHistoryModalPage {
 
           this.moreHistoryArray.push(temp);
           this.hasMore = true;
-          // this.groupHistory(entryDate, outputString).then(() => {
-          //   this.hasMore = true;
-          // });
         };
-      } //else {
-        // let outputStringWithDate = entryDate + outputString;
-        // this.moreHistoryArray.push(outputStringWithDate);
-        // this.hasMore = true;
-      //};
+      }
     };
-    //Testing
-    for(let x of this.moreHistoryArray){
-      console.log("DADADSADAS: ", x);//Object.keys(x));
-    }
-    console.log("DADADSADAS: ", this.moreHistoryArray);
-
-    // this.groupHistory().then(() => {
-    //   console.log("Group history is:", this.groupedMoreDateArray);
-    // });
-  }
-
-  groupHistory(){
-    return new Promise(resolve => {
-      let curIndex = 0;
-
-      while(curIndex < this.moreHistoryArray.length){
-        let nextIndex = curIndex + 1;
-        let curObj = this.moreHistoryArray[curIndex];
-
-        while(nextIndex < this.moreHistoryArray.length){
-          let nextObj = this.moreHistoryArray[nextIndex];
-
-          // If dates are the same append next object to first object
-          if(curObj.date == nextObj.date){
-            let tempOutput = curObj.output;
-            curObj.output = tempOutput + nextObj.output;
-            nextIndex += 1;
-          }
-        };
-        this.groupedMoreDateArray.push(curObj);
-        curIndex += 1;
-      };
-      resolve(true);
-    });
   }
 
   splitAndCheckDate(entry : string, index : number){
@@ -216,7 +169,6 @@ export class BfHistoryModalPage {
     // Calculate the entries' date distance. Once done then store the distance
     // in reference to its index number.
     this.calculateDateDistance(entryDate, splittedToday).then((days) => {
-      console.log("Days return after calculations:", days);
     });
 
   }
