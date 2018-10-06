@@ -8,7 +8,6 @@ export class HoursMinutesSecondsPipe implements PipeTransform {
    * Takes a value and makes it lowercase.
    */
   transform(value: number, args?) {
-    console.log("HMS_TRANSFORM:", value);
     let minutes = Math.floor(value / 60);
     let hours = Math.floor(minutes / 60);
     let seconds = Math.floor(value % 60);

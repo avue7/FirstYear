@@ -108,6 +108,9 @@ export class BfHistoryModalPage {
         let hour = this.ft.convertToStandardTime(xSplitTimeArray);
         timeString = hour + ':' + xSplitTimeArray[1] + ':' + xSplitTimeArray[2] + ' PM';
       } else {
+        if(xSplitTimeArray[0] == '00'){
+          xSplitTimeArray[0] = this.ft.convertToStandardTime(xSplitTimeArray);
+        };
         timeString = xSplitTimeArray[0] + ':' + xSplitTimeArray[1] + ':' + xSplitTimeArray[2] + ' AM';
       };
 
@@ -153,46 +156,6 @@ export class BfHistoryModalPage {
         };
       }
     };
-  }
-
-  splitAndCheckDate(entry : string, index : number){
-    // Split the string using space as delimiter
-    let splittedEntry = entry.split(' ');
-    // Split the date: elements => 0: date, 2: time, 5: left or right breast
-    let entryDate = splittedEntry[0].split('-');
-
-    // Get todays date
-    let todayYearFirst = this.ft.getToday();
-    let todayMonthFirst = this.ft.getTodayMonthFirst(todayYearFirst);
-    let splittedToday = todayMonthFirst.split('-');
-
-    // Calculate the entries' date distance. Once done then store the distance
-    // in reference to its index number.
-    this.calculateDateDistance(entryDate, splittedToday).then((days) => {
-    });
-
-  }
-
-  calculateDateDistance(entryDate : any, today : any) : any {
-    return new Promise(resolve => {
-      // Calculate distance of each date and store into array
-      let monthDistance = Math.abs(Number(entryDate[0]) - Number(today[0]));
-      let dayDistance = Math.abs(Number(entryDate[1]) - Number(today[1]));
-      let yearDistance = Math.abs(Number(entryDate[2]) - Number(today[2]));
-
-      // DEBUG: checking the dates distance for correctness
-      // console.log("EntryDate:", entryDate);
-      // console.log("SplittedToday:", today);
-      // console.log("Found distance month:", monthDistance);
-      // console.log("Found distance day:", dayDistance);
-      // console.log("Found distance year:", yearDistance);
-      //resolve(days);
-
-      // let daysDistance = Math.abs(
-      //   Math(monthDistance *) +
-      // );
-      resolve(true);
-    });
   }
 
   cancelModal(){

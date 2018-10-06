@@ -54,11 +54,14 @@ export class FormattedTodayProvider {
 
     let timeArray = timeNeedSplit.split(':');
 
+    let number = Number(timeArray[0]);
     // Check if am or pm
-    if(timeArray[0] >= 12){
+    if(number >= 12){
       pm = true;
+      console.log("PM IS TRUE");
     } else {
       am = true;
+      console.log("AM IS TRUE");
     };
 
     if(pm == true){
@@ -79,6 +82,10 @@ export class FormattedTodayProvider {
         return dateTime;
       };
     } else { //Time is in AM
+      if (timeArray[0] == '00'){
+        timeArray[0] = this.convertToStandardTime(timeArray);
+      };
+
       let timeString = timeArray[0] + ":" + timeArray[1] + ":" + timeArray[2] + " am";
       let temp = this.getToday();
       let today = this.getTodayMonthFirst(temp);

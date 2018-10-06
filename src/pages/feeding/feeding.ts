@@ -159,7 +159,7 @@ export class FeedingPage {
 
   createMomentObservable(momentsAgoTime : any){
     this.momentsAgoSubscription = Observable.interval(1000).subscribe(x => {
-      this.momentsAgo = momentsAgoTime.startOf().fromNow();
+      this.momentsAgo = momentsAgoTime.startOf('seconds').fromNow();
       // console.log("moments ago is:", this.momentsAgo);
     });
   }
