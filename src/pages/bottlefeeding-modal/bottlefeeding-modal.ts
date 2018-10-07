@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ViewController } from 'ionic-angular';
+import { NoteAlertProvider } from '../../providers/note-alert/note-alert';
+
 import * as moment from 'moment';
 
 @Component({
@@ -10,6 +12,7 @@ export class BottlefeedingModalPage {
   bottlefeedingModal: any;
   bottleNote: string;
   durationIsSet: boolean = false;
+  nAlert: any;
   bottle: any = {
     type: 'Formula',
     duration: '00:00:00',
@@ -19,7 +22,8 @@ export class BottlefeedingModalPage {
     time: ''
   };
 
-  constructor(private view: ViewController) {
+  constructor(private view: ViewController,
+    private noteAlertProvider: NoteAlertProvider) {
     this.bottle.date = moment().format();
     this.bottle.time = moment().format();
   }
@@ -29,9 +33,31 @@ export class BottlefeedingModalPage {
   }
 
   manualAddBottle(){
-    let obj = this.bottle;
-    console.log("Manual add bottle data:", obj);
-    this.view.dismiss(obj);
+    let manualObject = {};
+
+    if(this.bottleNote){
+      manualObject = {
+        type: this.bottle.type,
+        date: this.bottle.date,
+        volume: this.bottle.volume,
+        time: this.bottle.time,
+        duration: this.bottle.duration,
+        unit: this.bottle.unit,
+        note: this.bottleNote
+      }
+    } else {
+      manualObject = {
+        type: this.bottle.type,
+        date: this.bottle.date,
+        volume: this.bottle.volume,
+        time: this.bottle.time,
+        duration: this.bottle.duration,
+        unit: this.bottle.unit
+      }
+    };
+
+    console.log("Manual add bottle data:", manualObject);
+    this.view.dismiss(manualObject);
   }
 
   cancelBottleModal(){
@@ -40,6 +66,32 @@ export class BottlefeedingModalPage {
 
   noteAlert(){
     console.log("CAlling note alert() in feeding.ts");
-    //this.feeding.noteAlert();
+    this.nAlert = this.noteAlertProvider.alert();
+    this.nAlert.present();
+
+    this.waitForAlertReturn().then((val) => {
+      if(val == true){
+        console.log("THIS bottlenote is true: ", val);
+      } else {
+        console.log("THIS bottlenote is false: ", val);
+      };
+    });
+  }
+
+  waitForAlertReturn() : any{
+    return new Promise(resolve => {
+      this.nAlert.onDidDismiss(data => {
+        console.log("DATA IS:", data);
+        if(data != undefined){
+          this.bottleNote = data;
+          resolve(true);
+        } else {
+          this.bottleNote = null;
+          resolve(false);
+        };
+      }, (error) =>{
+        console.log("Alert on dismiss error:", error);
+      });
+    })
   }
 }

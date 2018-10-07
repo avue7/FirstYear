@@ -378,24 +378,24 @@ export class FeedingPage {
 
         let manualObject = {};
 
-        if(this.bottleNote){
+        if(bottleFeeding.note){
           manualObject = {
-            type: this.bottle.type,
+            type: bottleFeeding.type,
             date: dateTime,
-            volume: this.bottle.volume,
+            volume: bottleFeeding.volume,
             time: time,
             duration: totalDuration,
-            unit: this.bottle.unit,
-            note: this.bottleNote
+            unit: bottleFeeding.unit,
+            note: bottleFeeding.note
           }
         } else {
           manualObject = {
-            type: this.bottle.type,
+            type: bottleFeeding.type,
             date: dateTime,
-            volume: this.bottle.volume,
+            volume: bottleFeeding.volume,
             time: time,
             duration: totalDuration,
-            unit: this.bottle.unit
+            unit: bottleFeeding.unit
           }
         };
 
