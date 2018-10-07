@@ -21,8 +21,11 @@ export class DatabaseProvider {
   bdayMonth: any;
   noBabyYet: boolean;
   noBfHistoryYet: boolean;
+  noBottleHistoryYet: boolean;
   //bfHistoryObservable: new Observable();
   bfHistoryArray: any;
+  bottleHistoryArray: any;
+
   constructor(/*private alertCtrl: AlertController,*/
     private modal: ModalController,
     private baby: BabyProvider,
@@ -139,6 +142,27 @@ export class DatabaseProvider {
             snapShot.forEach(doc => {
               let data = doc.data();
               this.bfHistoryArray.push(data);
+              resolve(true);
+            });
+          });
+        });
+      }
+    })
+  }
+
+  createBottleFeedingHistoryObservable(userId: any){
+    return new Promise(resolve => {
+      if(this.noBottleHistoryYet == true){
+        console.log("Database::createBreastFeedingHistoryObservable(): no history yet", this.noBfHistoryYet);
+        resolve(false);
+      } else {
+        this.getActivityReference('bottlefeeding').then((bottleFeedRef) => {
+          bottleFeedRef.onSnapshot((snapShot) => {
+            //snapShot.docChanges().forEach((change) => {
+            this.bottleHistoryArray.splice(0, this.bottleHistoryArray.length);
+            snapShot.forEach(doc => {
+              let data = doc.data();
+              this.bottleHistoryArray.push(data);
               resolve(true);
             });
           });

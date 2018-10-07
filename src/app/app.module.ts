@@ -44,6 +44,7 @@ import { DateTimePipe } from '../pipes/date-time/date-time';
 import { GroupbyPipe } from '../pipes/groupby/groupby';
 import { MomentPipe } from '../pipes/moment/moment';
 import { NoteAlertProvider } from '../providers/note-alert/note-alert';
+import { LifoHistoryProvider } from '../providers/lifo-history/lifo-history';
 
 @NgModule({
   declarations: [
@@ -117,6 +118,7 @@ import { NoteAlertProvider } from '../providers/note-alert/note-alert';
     GroupbyPipe,
     MomentPipe,
     NoteAlertProvider,
+    LifoHistoryProvider,
   ]
 })
 export class AppModule {}

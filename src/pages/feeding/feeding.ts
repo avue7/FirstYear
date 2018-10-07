@@ -8,6 +8,7 @@ import { BreastfeedingModalPage } from '../breastfeeding-modal/breastfeeding-mod
 import { BfHistoryModalPage } from '../bf-history-modal/bf-history-modal';
 import { BottlefeedingModalPage } from '../bottlefeeding-modal/bottlefeeding-modal';
 import { NoteAlertProvider } from '../../providers/note-alert/note-alert';
+import { LifoHistoryProvider } from '../../providers/lifo-history/lifo-history';
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Rx';
 
@@ -54,12 +55,28 @@ export class FeedingPage {
   bottlefeedingModal: any;
   bottleNote: string;
   durationIsSet: boolean = false;
+  lastBottleFeed: any;
   bottle: any = {
     type: 'Formula',
     duration: '00:00:00',
     volume: 0,
     unit: 'oz'
   };
+
+  // BottleFeeding history declarations
+  todayHistoryArray: any;
+  yesterdayHistoryArray: any;
+  moreHistoryArray: any;
+
+  hasToday: boolean;
+  hasYesterday: boolean;
+  hasMore: boolean;
+
+  BottleMomentsAgoSubscription: any;
+  BottleMomentsAgoTime: any;
+  BottleMomentsAgo: any;
+  lastBottleDuration: any;
+  bottleLastAmount: any;
 
 
 
@@ -70,12 +87,15 @@ export class FeedingPage {
     private db: DatabaseProvider,
     private alertCtrl: AlertController,
     private modal: ModalController,
-    private noteAlertProvider: NoteAlertProvider) {
+    private noteAlertProvider: NoteAlertProvider,
+    private lifoHistory: LifoHistoryProvider) {
     this.momentsAgoTime = '';
+    this.BottleMomentsAgo = '';
     this.setLeftBreast();
     this.getLastBreastFeed();
     this.bottleNote = null;
     this.bottle.volume = 6;
+    this.getLastBottleFeed();
   }
 
   ionViewWillLeave(){
@@ -165,7 +185,7 @@ export class FeedingPage {
 
           // NOTE: MOMENTS AGO HACK...
           this.momentsAgoTime = moment(doc.data().date, 'MM-DD-YYYY HH:mm:ss');
-          this.createMomentObservable(this.momentsAgoTime);
+          this.createMomentObservable(this.momentsAgoTime, 'breastfeeding');
 
           this.lastBreastFeed = this.ft.formatDateTimeStandard(doc.data().date);
           this.lastBreastSide = doc.data().breast;
@@ -175,11 +195,18 @@ export class FeedingPage {
     });
   }
 
-  createMomentObservable(momentsAgoTime : any){
-    this.momentsAgoSubscription = Observable.interval(1000).subscribe(x => {
-      this.momentsAgo = momentsAgoTime.startOf('seconds').fromNow();
-      // console.log("moments ago is:", this.momentsAgo);
-    });
+  createMomentObservable(momentsAgoTime : any, activity: any){
+    if(activity == "bottlefeeding"){
+      this.BottleMomentsAgoSubscription = Observable.interval(1000).subscribe(x => {
+        this.BottleMomentsAgo = momentsAgoTime.startOf('seconds').fromNow();
+        // console.log("moments ago is:", this.momentsAgo);
+      });
+    } else {
+      this.momentsAgoSubscription = Observable.interval(1000).subscribe(x => {
+        this.momentsAgo = momentsAgoTime.startOf('seconds').fromNow();
+        // console.log("moments ago is:", this.momentsAgo);
+      });
+    };
   }
 
   manualAddBreastFeed(){
@@ -210,7 +237,7 @@ export class FeedingPage {
         } else {
           monthString = monthNumber.toString();
         };
-        let dayNumber = (Number(dateTemp.getDay()));
+        let dayNumber = (Number(dateTemp.getDate()));
         let dayString: string;
         if (dayNumber < 10){
           dayString = '0' + dayNumber.toString();
@@ -318,6 +345,7 @@ export class FeedingPage {
         this.bottleNote = null;
 
         // Set the app to remember the new
+        this.getLastBottleFeed();
 
         if(this.timer.tick != 0){
           this.timer.refreshTimer();
@@ -343,7 +371,8 @@ export class FeedingPage {
 
         // Extract only the date
         let dateTemp = new Date(bottleFeeding.date);
-
+        // console.log("bottlefeeding.date is:", bottleFeeding.date);
+        // console.log("datetemp is:", dateTemp);
         // Have to add plus one to getUTCMonth because Jan=0, Feb=1, etc..
         let monthNumber = (Number(dateTemp.getMonth()) + 1);
         let monthString: string;
@@ -354,7 +383,10 @@ export class FeedingPage {
         } else {
           monthString = monthNumber.toString();
         };
-        let dayNumber = (Number(dateTemp.getDay()));
+        let dayNumber = (Number(dateTemp.getDate()));
+
+        // console.log("daynumber is:", dateTemp.getDay());
+        console.log("daynumber is:", dayNumber);
         let dayString: string;
         if (dayNumber < 10){
           dayString = '0' + dayNumber.toString();
@@ -400,15 +432,52 @@ export class FeedingPage {
         };
 
         // Call method to store into Database
-        this.db.saveBabyActivity('breastfeeding', manualObject).then((retVal) => {
+        this.db.saveBabyActivity('bottlefeeding', manualObject).then((retVal) => {
           if(retVal = true){
             console.log("Manual bottleFeeding saved successfully");
           } else {
             console.log("Manual bottleFeeding was not saved succesfully. Something happend");
           };
-          //this.getLastBreastFeed();
+          this.getLastBottleFeed();
         });
       };
+    });
+  }
+
+  getLastBottleFeed(){
+    console.log("Getting last bottlefeed");
+    this.BottleMomentsAgo = '';
+    let count = 0;
+    let babyRef = this.db.getBabyReference();
+    babyRef.collection('bottlefeeding')
+      // .where('date', '==', 'date')
+      .get().then((latestSnapshot) => {
+        latestSnapshot.forEach(doc => {
+          count = count + 1;
+          // console.log("Feeding::getLastBreastFeed(): lastest breastfeed:", doc.data());
+        });
+    });
+
+    babyRef.collection('bottlefeeding').get().then((latestSnapshot) => {
+      latestSnapshot.forEach(doc => {
+        count = count - 1;
+        if(count == 0){
+          console.log("Feeding::getLastBottleFeed(): last date retrieved is:", doc.data().date);
+
+          // If last breastfeeding exists
+          if(this.lastBottleFeed){
+            this.BottleMomentsAgoSubscription.unsubscribe();
+          };
+
+          // NOTE: MOMENTS AGO HACK...
+          this.BottleMomentsAgoTime = moment(doc.data().date, 'MM-DD-YYYY HH:mm:ss');
+          this.createMomentObservable(this.BottleMomentsAgoTime, "bottlefeeding");
+
+          this.lastBottleFeed = this.ft.formatDateTimeStandard(doc.data().date);
+          this.lastBottleDuration = doc.data().duration;
+          this.bottleLastAmount = doc.data().volume + " " + doc.data().unit;
+        };
+      });
     });
   }
 

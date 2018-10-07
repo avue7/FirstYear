@@ -85,7 +85,7 @@
 
     <!-- Bottle feeding starts here -->
     <ion-list *ngSwitchCase="'Bottle'">
-      <!-- Manual Add -->
+      <!-- Add With timer-->
       <div id="block_container">
         <form name="bottleFeeding" (ngSubmit)="saveBottleFeeding()">
           <div class="box">
@@ -97,13 +97,6 @@
                 <ion-option value="Milk">Milk</ion-option>
               </ion-select>
             </ion-item>
-            <!-- <ion-item>
-              <ion-label>Duration:</ion-label>
-              <ion-datetime displayFormat="mm:ss" [(ngModel)]="bottle.duration" name="duration" [disabled]="timer.tick"></ion-datetime>
-                <div ng-if="bottleFeeding.duration.$touched">
-                  {{setDurationFlag()}}
-                </div>
-            </ion-item> -->
             <ion-item>
               <ion-label>Volume: </ion-label>
               <ion-input placeholder="__" type="number" [(ngModel)]="bottle.volume" name="volume"></ion-input>
@@ -144,6 +137,18 @@
       </div>
 
       <!-- Summary -->
+      <p class="center"  *ngIf="lastBottleFeed;else none">
+        <i class="momentsAgo"><b>Last bottlefeed: about {{BottleMomentsAgo}}</b></i>
+        <br>
+        <i> {{lastBottleFeed}}, {{this.bottleLastAmount}}</i>
+        <br>
+        <i>{{((lastBottleDuration) |  hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </i>
+      </p>
+      <ng-template #none>
+        <p class="center">
+          <i>Last bottlefeed: No records of bottlefeeding yet! </i>
+        </p>
+      </ng-template>
       <div class="bottle-summary">
         <p><b>Summary:</b></p>
         <br>
