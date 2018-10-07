@@ -40,7 +40,7 @@ export class BfHistoryModalPage {
     private db: DatabaseProvider,
     private ft: FormattedTodayProvider) {
     this.init().then(() => {
-      this.lifoHistory();
+
     });
   }
 
@@ -64,7 +64,8 @@ export class BfHistoryModalPage {
       this.hasLastMonth = false;
       this.hasMore = false;
     //this.laskWeekCounter = 0;
-      resolve(true);
+      //resolve(true);
+      resolve(this.lifoHistory());
     });
   }
 
@@ -177,6 +178,7 @@ export class BfHistoryModalPage {
         this.hasMore = true;
       }
     };
+    return true;
   }
 
   cancelModal(){

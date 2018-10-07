@@ -96,7 +96,8 @@ export class MyApp {
                 this.bdayMonth = this.db.bdayMonth;
                 this.babyName = this.db.babyName;
                 this.db.createBreastFeedingHistoryObservable(user.uid).then(() =>{
-
+                });
+                this.db.createBottleFeedingHistoryObservable(user.uid).then(()=>{
                 });
               });
             };

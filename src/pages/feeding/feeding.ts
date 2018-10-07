@@ -99,7 +99,11 @@ export class FeedingPage {
   }
 
   ionViewWillLeave(){
-    this.momentsAgoSubscription.unsubscribe();
+    if(this.momentsAgoSubscription){
+      this.momentsAgoSubscription.unsubscribe();
+    } else if(this.BottleMomentsAgoSubscription){
+      this.BottleMomentsAgoSubscription.unsubscribe();
+    }
   }
   // ionViewDidLoad() {
   //   console.log('ionViewDidLoad FeedingPage');
@@ -329,7 +333,6 @@ export class FeedingPage {
 
   /////////////////////////// NOTE: BOTTLE FEEDING BEGINS HERE /////////////////////////////
   saveBottleFeeding(){
-    console.log("YAY, you are tring to save bottle feeding");
     let today = this.ft.getTodayMonthFirstWithTime();
 
     // Split today with time to get time
@@ -356,7 +359,6 @@ export class FeedingPage {
 
   manuallyAddBottle(){
     this.openBottleModal().then((bottleFeeding) => {
-      console.log("Manually adding bottle returned from modal");
       if (bottleFeeding == undefined){
         console.log("Feeding::manualAdd(): user canceled modal");
       } else {
@@ -385,8 +387,6 @@ export class FeedingPage {
         };
         let dayNumber = (Number(dateTemp.getDate()));
 
-        // console.log("daynumber is:", dateTemp.getDay());
-        console.log("daynumber is:", dayNumber);
         let dayString: string;
         if (dayNumber < 10){
           dayString = '0' + dayNumber.toString();
@@ -445,7 +445,6 @@ export class FeedingPage {
   }
 
   getLastBottleFeed(){
-    console.log("Getting last bottlefeed");
     this.BottleMomentsAgo = '';
     let count = 0;
     let babyRef = this.db.getBabyReference();
@@ -462,8 +461,6 @@ export class FeedingPage {
       latestSnapshot.forEach(doc => {
         count = count - 1;
         if(count == 0){
-          console.log("Feeding::getLastBottleFeed(): last date retrieved is:", doc.data().date);
-
           // If last breastfeeding exists
           if(this.lastBottleFeed){
             this.BottleMomentsAgoSubscription.unsubscribe();
@@ -478,7 +475,25 @@ export class FeedingPage {
           this.bottleLastAmount = doc.data().volume + " " + doc.data().unit;
         };
       });
+      this.updateBottleSummary();
     });
+
+  }
+
+  updateBottleSummary(){
+    this.lifoHistory.init().then(() => {
+      this.lifoHistory.lifoHistory('bottlefeeding').then(() => {
+        this.hasToday = this.lifoHistory.hasToday;
+        this.hasYesterday = this.lifoHistory.hasYesterday;
+        this.hasMore = this.lifoHistory.hasMore;
+        if(this.hasToday == true){
+          this.todayHistoryArray = this.lifoHistory.todayHistoryArray;
+          // console.log("THIS TDOAY HISTORY ARRAY:", this.todayHistoryArray);
+        }
+        this.yesterdayHistoryArray = this.lifoHistory.yesterdayHistoryArray;
+        this.moreHistoryArray = this.lifoHistory.moreHistoryArray;
+      });
+    })
   }
 
   checkIfBottleNoteExist(today: any, splitTimeOnly: any){

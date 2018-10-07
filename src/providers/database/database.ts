@@ -33,6 +33,7 @@ export class DatabaseProvider {
     private datePipe: DatePipe,
     private toastCtrl: ToastController) {
     this.bfHistoryArray = [];
+    this.bottleHistoryArray = [];
   }
 
   setNewUserNewBaby(userId : any, babyObject?: any){
@@ -163,6 +164,7 @@ export class DatabaseProvider {
             snapShot.forEach(doc => {
               let data = doc.data();
               this.bottleHistoryArray.push(data);
+              // console.log("Database: bottleHistoryArray:", this.bottleHistoryArray);
               resolve(true);
             });
           });

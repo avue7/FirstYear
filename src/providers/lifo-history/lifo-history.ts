@@ -57,11 +57,13 @@ export class LifoHistoryProvider {
       this.hasLastMonth = false;
       this.hasMore = false;
     //this.laskWeekCounter = 0;
+      //resolve(this.lifoHistory());
       resolve(true);
     });
   }
 
   lifoHistory(activity : any){
+    return new Promise(resolve => {
     let todayTemp = this.ft.getToday();
     let today = this.ft.getTodayMonthFirst(todayTemp);
     let todayMoment = moment(today);
@@ -114,8 +116,16 @@ export class LifoHistoryProvider {
         durationString = minutes + ' mins ' + seconds + ' secs';
       };
 
-      // Combine date, time, breast, duration
-      let outputString = '@' + timeString + ', '+ x.breast + ', for ' + durationString;
+      let outputString: any;
+
+      // IF activity is bottlefeeding
+      if(activity == 'bottlefeeding'){
+        if(x.note){
+          outputString = '@' + timeString + ', ' + x.type + ', ' + x.volume + ' ' + x.unit + ', ' + durationString + ', Note: ' + x.note.note;
+        } else {
+          outputString = '@' + timeString + ', ' + x.type + ', ' + x.volume + ' ' + x.unit + ', ' + durationString;
+        };
+      }
 
       // Group the activity by days
       if(todayMoment.diff(entryDateMoment, 'years') == 0){
@@ -165,6 +175,8 @@ export class LifoHistoryProvider {
         this.hasMore = true;
       }
     };
+    resolve(true);
+    });
   }
 
 }

@@ -29,7 +29,6 @@ export class BottlefeedingModalPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad BottlefeedingModalPage');
   }
 
   manualAddBottle(){
@@ -65,7 +64,6 @@ export class BottlefeedingModalPage {
   }
 
   noteAlert(){
-    console.log("CAlling note alert() in feeding.ts");
     this.nAlert = this.noteAlertProvider.alert();
     this.nAlert.present();
 
@@ -81,7 +79,6 @@ export class BottlefeedingModalPage {
   waitForAlertReturn() : any{
     return new Promise(resolve => {
       this.nAlert.onDidDismiss(data => {
-        console.log("DATA IS:", data);
         if(data != undefined){
           this.bottleNote = data;
           resolve(true);

@@ -106,7 +106,7 @@
               </ion-select>
             </ion-item>
             <ion-item>
-              <ion-label color="gray!important">Notes</ion-label>
+              <ion-label color="gray!important">Notes:</ion-label>
               <p item-right (click)="noteAlert()">
                 <ion-icon name="clipboard"></ion-icon>
                 <ion-icon *ngIf="bottleNote" color="green" name="checkmark"></ion-icon>
@@ -149,9 +149,9 @@
           <i>Last bottlefeed: No records of bottlefeeding yet! </i>
         </p>
       </ng-template>
+
+      <!-- NOTE: Summary of bottlefeeding -->
       <div class="bottle-summary">
-        <p><b>Summary:</b></p>
-        <br>
         <div *ngIf="hasToday">
           <div class="divider-title"> Today </div>
 
