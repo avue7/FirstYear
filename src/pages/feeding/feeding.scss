@@ -45,4 +45,75 @@ page-feeding {
     // color: #42c7ff;
     color: black;
   }
+
+  ion-input{
+    input {
+      text-align: right;
+      ::-webkit-input-placeholder {
+        text-align: right;
+      }
+    }
+  }
+
+  ion-select{
+    select {
+      text-align: right;
+      ::-webkit-input-placeholder {
+        text-align: right;
+      }
+    }
+  }
+
+  .item-inner {
+    border-bottom-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  #block_container
+  {
+    width:100%;
+    height: auto;
+    display: flex;
+    text-align: center;
+  }
+
+  .box {
+    width: 100%;
+    //border: 1px solid gray;
+    border-top: 2px solid gray !important;
+    border-bottom: 1px solid gray !important;
+    border-left: 2px solid gray !important;
+    border-right: 0px !important;
+    padding: none;
+    margin: 0px;
+    // align-items: center;
+    //display: inline;
+  }
+
+  .box-right {
+    width: 100%;
+    //border: 1px solid gray;
+    border-top: 2px solid gray !important;
+    border-bottom: 1px solid gray !important;
+    border-right: 2px solid gray !important;
+    padding: none;
+    margin: 0px;
+    // align-items: center;
+    // float: right;
+    //display: inline;
+  }
+
+  .bottle-summary{
+    width: 100%;
+    padding: none;
+    margin: 0px;
+    text-align: center !important;
+    // align-items: center;
+    // float: right;
+    //display: inline;
+  }
+
+  ion-select{
+    max-width: 70% !important;
+  }
 }

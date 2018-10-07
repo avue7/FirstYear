@@ -1,0 +1,60 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Manually Add Bottlefeed</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <form class="list-form" (ngSubmit)="manualAddBottle()">
+    <ion-list>
+
+      <ion-item>
+        <ion-label>Fluid Type:</ion-label>
+        <ion-select [(ngModel)]="bottle.type" name="type" interface="popover">
+          <ion-option selected="true" value="Formula">Formula</ion-option>
+          <ion-option value="Breast">Breast</ion-option>
+          <ion-option value="Milk">Milk</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Volume: </ion-label>
+        <ion-input placeholder="__" type="number" [(ngModel)]="bottle.volume" name="volume"></ion-input>
+        <ion-select [(ngModel)]="bottle.unit" name="unit" interface="popover">
+          <ion-option selected="true" value="oz">oz</ion-option>
+          <ion-option value="ml">ml</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Date</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="bottle.date" name="date"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Time</ion-label>
+        <ion-datetime displayFormat="hh:mm:ss A" [(ngModel)]="bottle.time" name="time"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Duration:</ion-label>
+        <ion-datetime displayFormat="mm:ss" [(ngModel)]="bottle.duration" name="duration"></ion-datetime>
+      </ion-item>
+
+
+
+      <ion-item>
+        <ion-label color="gray!important">Notes</ion-label>
+          <p item-right (click)="noteAlert()">
+            <ion-icon name="clipboard"></ion-icon>
+            <ion-icon *ngIf="bottleNote" color="green" name="checkmark"></ion-icon>
+          </p>
+      </ion-item>
+
+    </ion-list>
+    <button ion-button class="baby-button" type="submit">Add</button>
+  </form>
+  <button ion-button class="baby-button" (click)="cancelBottleModal()">Cancel</button>
+
+</ion-content>

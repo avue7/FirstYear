@@ -34,6 +34,7 @@ import { CreditsPage } from '../pages/credits/credits';
 import { BabyModalPage } from '../pages/baby-modal/baby-modal';
 import { BreastfeedingModalPage } from '../pages/breastfeeding-modal/breastfeeding-modal';
 import { BfHistoryModalPage } from '../pages/bf-history-modal/bf-history-modal';
+import { BottlefeedingModalPage } from '../pages/bottlefeeding-modal/bottlefeeding-modal';
 
 import { TimerProvider } from '../providers/timer/timer';
 import { HoursMinutesSecondsPipe } from '../pipes/hours-minutes-seconds/hours-minutes-seconds';
@@ -42,6 +43,7 @@ import { BabyProvider } from '../providers/baby/baby';
 import { DateTimePipe } from '../pipes/date-time/date-time';
 import { GroupbyPipe } from '../pipes/groupby/groupby';
 import { MomentPipe } from '../pipes/moment/moment';
+import { NoteAlertProvider } from '../providers/note-alert/note-alert';
 
 @NgModule({
   declarations: [
@@ -64,7 +66,8 @@ import { MomentPipe } from '../pipes/moment/moment';
     BreastfeedingModalPage,
     BfHistoryModalPage,
     GroupbyPipe,
-    MomentPipe
+    MomentPipe,
+    BottlefeedingModalPage
   ],
   imports: [
     BrowserModule,
@@ -93,7 +96,8 @@ import { MomentPipe } from '../pipes/moment/moment';
     CreditsPage,
     BabyModalPage,
     BreastfeedingModalPage,
-    BfHistoryModalPage
+    BfHistoryModalPage,
+    BottlefeedingModalPage
   ],
   providers: [
     StatusBar,
@@ -111,7 +115,8 @@ import { MomentPipe } from '../pipes/moment/moment';
     DateTimePipe,
     HoursMinutesSecondsPipe,
     GroupbyPipe,
-    MomentPipe
+    MomentPipe,
+    NoteAlertProvider,
   ]
 })
 export class AppModule {}
