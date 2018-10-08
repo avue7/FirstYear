@@ -99,6 +99,8 @@ export class MyApp {
                 });
                 this.db.createBottleFeedingHistoryObservable(user.uid).then(()=>{
                 });
+                this.db.createDiaperingHistoryObservable(user.uid).then(()=>{
+                });
               });
             };
           });

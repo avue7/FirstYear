@@ -1,0 +1,44 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Manually Add Diapering</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <form class="list-form" (ngSubmit)="manualAddDiaper()">
+    <ion-list>
+
+      <ion-item>
+        <ion-label>Date</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="diaper.date" name="date"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Time</ion-label>
+        <ion-datetime displayFormat="hh:mm:ss A" [(ngModel)]="diaper.time" name="time"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Type:</ion-label>
+        <ion-select [(ngModel)]="diaper.type" name="type" interface="popover">
+          <ion-option selected="true" value="pee">Pee</ion-option>
+          <ion-option value="poo">Poo</ion-option>
+          <ion-option value="mixed">Mixed</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label color="gray!important">Notes</ion-label>
+          <p item-right (click)="noteAlert()">
+            <ion-icon name="clipboard"></ion-icon>
+            <ion-icon *ngIf="diaperNote" color="green" name="checkmark"></ion-icon>
+          </p>
+      </ion-item>
+
+    </ion-list>
+    <button ion-button class="baby-button" type="submit">Add</button>
+  </form>
+  <button ion-button class="baby-button" (click)="cancelBottleModal()">Cancel</button>
+
+</ion-content>

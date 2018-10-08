@@ -70,7 +70,9 @@ export class LifoHistoryProvider {
 
     if(activity == 'bottlefeeding'){
       this.historyArray = this.db.bottleHistoryArray;
-    };
+    } else if(activity == 'diapering'){
+      this.historyArray = this.db.diaperingHistoryArray;
+    }
 
     for(let v of this.historyArray){
       this.lifoHistoryArray.unshift(v);
@@ -125,7 +127,14 @@ export class LifoHistoryProvider {
         } else {
           outputString = '@' + timeString + ', ' + x.type + ', ' + x.volume + ' ' + x.unit + ', ' + durationString;
         };
+      } else if(activity == 'diapering'){
+          if(x.note){
+            outputString = '@' + timeString + ', ' + x.type + ', ' + 'Note: ' + x.note.note;
+          } else {
+            outputString = '@' + timeString + ', ' + x.type
+         };
       }
+
 
       // Group the activity by days
       if(todayMoment.diff(entryDateMoment, 'years') == 0){

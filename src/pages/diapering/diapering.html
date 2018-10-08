@@ -10,5 +10,97 @@
 
 
 <ion-content padding>
+  <div id="block_container">
+  <form name="diapering" (ngSubmit)="saveDiapering()">
+    <div class="box">
+      <ion-item>
+        <ion-label>Date</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="diaper.date" name="date"></ion-datetime>
+      </ion-item>
+
+      <!-- <ion-item>
+        <ion-label>Time</ion-label>
+        <ion-datetime displayFormat="hh:mm:ss A" [(ngModel)]="diaper.time" name="time"></ion-datetime>
+      </ion-item> -->
+
+      <ion-item>
+        <ion-label>Type:</ion-label>
+        <ion-select [(ngModel)]="diaper.type" name="type" interface="popover">
+          <ion-option selected="true" value="pee">Pee</ion-option>
+          <ion-option value="poo">Poo</ion-option>
+          <ion-option value="mixed">Mixed</ion-option>
+        </ion-select>
+      </ion-item>
+
+    </div>
+  </form>
+  <div class="box-right">
+    <ion-item>
+      <ion-label color="gray!important">Notes:</ion-label>
+      <p item-right (click)="noteAlert()">
+        <ion-icon name="clipboard"></ion-icon>
+        <ion-icon *ngIf="diaperNote" color="green" name="checkmark"></ion-icon>
+      </p>
+    </ion-item>
+    <button class="timer" ion-button type="submit" icon-only (click)="saveDiapering()">
+      <ion-icon  name='archive'></ion-icon>
+    </button>
+    <button class="timer" ion-button icon-only (click)="manuallyAddDiaper()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </div>
+  </div>
+
+  <!-- Summary -->
+  <p class="center"  *ngIf="lastDiapering;else none">
+    <i class="momentsAgo"><b>Last Daipering: about {{DiaperingMomentsAgo}}</b></i>
+    <br>
+    <i> {{lastDiapering}}, {{lastDiaperType}}</i>
+    <br>
+  </p>
+  <ng-template #none>
+    <p class="center">
+      <i>Last Daipering: No records of diapering yet! </i>
+    </p>
+  </ng-template>
+
+  <div class="diapering-summary">
+    <div *ngIf="hasToday">
+      <div class="divider-title"> Today </div>
+
+      <ul class="timeline">
+        <li *ngFor="let x of todayHistoryArray">
+          <div >
+            <p class="timeline-item"> {{x}}</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div *ngIf="hasYesterday">
+      <div class="divider-title"> Yesterday </div>
+      <ul class="timeline">
+        <li *ngFor="let x of yesterdayHistoryArray">
+          <div>
+            <p class="timeline-item"> {{x}}</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div *ngIf="hasMore">
+    <ion-item-group *ngFor="let x of moreHistoryArray | groupby: 'date'">
+      <div  class="divider-title">
+        {{ x.key | moment:'ll' }}
+      </div>
+      <ul class="timeline">
+        <li *ngFor="let event of x.list">
+          <div>
+            <p class="timeline-item"> {{event.output}} </p>
+          </div>
+        </li>
+      </ul>
+    </ion-item-group>
+  </div>
 
 </ion-content>
