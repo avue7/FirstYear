@@ -1,27 +1,24 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ModalController } from 'ionic-angular';
 import { TimerProvider } from '../../providers/timer/timer';
 import { FormattedTodayProvider} from '../../providers/formatted-today/formatted-today';
 import { DatabaseProvider } from '../../providers/database/database';
-
+import { AlertController } from 'ionic-angular';
+import { BreastfeedingModalPage } from '../breastfeeding-modal/breastfeeding-modal';
+import { BfHistoryModalPage } from '../bf-history-modal/bf-history-modal';
+import { BottlefeedingModalPage } from '../bottlefeeding-modal/bottlefeeding-modal';
+import { NoteAlertProvider } from '../../providers/note-alert/note-alert';
+import { LifoHistoryProvider } from '../../providers/lifo-history/lifo-history';
+import * as moment from 'moment';
+import { Observable } from 'rxjs/Rx';
 
 @Component({
   selector: 'page-feeding',
   templateUrl: 'feeding.html',
 })
 export class FeedingPage {
-  leftBreast: any = null;
-  rightBreast: any = null;
-  activeBreast: any;
-
-  lastBreastFeed: any;
-
-
-  // Default value for breastfeeding radio left or right
-  breastfeeding = "leftBreast";
-
-  segmentType = 'Breast';
-
+  // Segments
+  segmentType = 'Bottle';
   segments: any = {
     'Breast':[
 
@@ -34,32 +31,94 @@ export class FeedingPage {
     ]
   }
 
+  // MOMENTS
+  momentsAgoTime: any;
+  momentsAgoSubscription: any;
+  momentsAgo: any;
+  date: any = moment().format();
+  time: any = moment().format();
+
+  nAlert: any;
+
+  // Breastfeeding Declarations
+  leftBreast: any = null;
+  rightBreast: any = null;
+  activeBreast: any;
+  breastfeedingModal: any;
+  bfHistoryModal: any;
+  lastBreastFeed: any = null;
+  lastBreastSide: any = null;
+  lastDuration: any = null;
+  breastfeeding = "leftBreast";
+
+  // Bottlefeeding Declarations
+  bottlefeedingModal: any;
+  bottleNote: string;
+  durationIsSet: boolean = false;
+  lastBottleFeed: any;
+  bottle: any = {
+    type: 'Formula',
+    duration: '00:00:00',
+    volume: 0,
+    unit: 'oz'
+  };
+
+  // BottleFeeding history declarations
+  todayHistoryArray: any;
+  yesterdayHistoryArray: any;
+  moreHistoryArray: any;
+
+  hasToday: boolean;
+  hasYesterday: boolean;
+  hasMore: boolean;
+
+  BottleMomentsAgoSubscription: any;
+  BottleMomentsAgoTime: any;
+  BottleMomentsAgo: any;
+  lastBottleDuration: any;
+  bottleLastAmount: any;
+
+
+
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private timer: TimerProvider,
     private ft: FormattedTodayProvider,
-    private db: DatabaseProvider) {
+    private db: DatabaseProvider,
+    private alertCtrl: AlertController,
+    private modal: ModalController,
+    private noteAlertProvider: NoteAlertProvider,
+    private lifoHistory: LifoHistoryProvider) {
+    this.momentsAgoTime = '';
+    this.BottleMomentsAgo = '';
     this.setLeftBreast();
-    // this.tick = 0;
-
+    this.getLastBreastFeed();
+    this.bottleNote = null;
+    this.bottle.volume = 6;
+    this.getLastBottleFeed();
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad FeedingPage');
+  ionViewWillLeave(){
+    if(this.momentsAgoSubscription){
+      this.momentsAgoSubscription.unsubscribe();
+    } else if(this.BottleMomentsAgoSubscription){
+      this.BottleMomentsAgoSubscription.unsubscribe();
+    }
   }
+  // ionViewDidLoad() {
+  //   console.log('ionViewDidLoad FeedingPage');
+  //   this.getLastBreastFeed();
+  // }
 
+  ///////////////////// NOTE: BREAST FEEDING ACTIVITY /////////////////
   setLeftBreast(){
     this.leftBreast = true;
     this.rightBreast = false;
-    console.log("Feeding::setLeftBreast: leftBreast is", this.leftBreast);
-    console.log("Feeding::setLeftBreast: rightBreast is", this.rightBreast);
   }
 
   setRightBreast(){
     this.rightBreast = true;
     this.leftBreast = false;
-    console.log("Feeding::setRightBreast: rightBreast is", this.rightBreast);
-    console.log("Feeding::setRightBreast: leftBreast is", this.leftBreast);
   }
 
   startPauseTimer(){
@@ -75,34 +134,479 @@ export class FeedingPage {
   }
 
   saveBreastFeeding(){
-    let todayUnformatted = this.ft.getToday();
-    let today = this.ft.getTodayMonthFirst(todayUnformatted);
+    let today = this.ft.getTodayMonthFirstWithTime();
 
     let breast_: any;
 
     if(this.leftBreast){
       breast_ = "left breast";
-      console.log("Feeding::save(): feed on the left breast");
     } else{
       breast_ = "right breast";
-      console.log("Feeding::save(): feed on the right breast");
     }
+
+    // Split today with time to get time
+    let splitTimeArray = today.split(' ');
+    let splitTimeOnly = splitTimeArray[1];
 
     let object = {
       breast: breast_,
       date: today,
-      time: this.timer.tick
+      time: splitTimeOnly,
+      duration: this.timer.tick
     }
 
-    console.log("Feeding::save(): object is:", object);
-    console.log("Feeding::save(): today is:", today);
-    console.log("Feeding::save(): tick is:", this.timer.tick);
+    // console.log("Feeding::save(): object is:", object);
 
-    this.db.saveBabyActivity("breastfeeding", object);
+    this.db.saveBabyActivity("breastfeeding", object).then(() => {
+      this.getLastBreastFeed();
+      this.timer.refreshTimer();
+    });
   }
 
   getLastBreastFeed(){
+    this.momentsAgo = '';
+    let count = 0;
+    let babyRef = this.db.getBabyReference();
+    babyRef.collection('breastfeeding')
+      // .where('date', '==', 'date')
+      .get().then((latestSnapshot) => {
+        latestSnapshot.forEach(doc => {
+          count = count + 1;
+          // console.log("Feeding::getLastBreastFeed(): lastest breastfeed:", doc.data());
+        });
+    });
 
+    babyRef.collection('breastfeeding').get().then((latestSnapshot) => {
+      latestSnapshot.forEach(doc => {
+        count = count - 1;
+        if(count == 0){
+          console.log("Feeding::getLastBreastFeed(): last date retrieved is:", doc.data().date);
+
+          // If last breastfeeding exists
+          if(this.lastBreastFeed){
+            this.momentsAgoSubscription.unsubscribe();
+          };
+
+          // NOTE: MOMENTS AGO HACK...
+          this.momentsAgoTime = moment(doc.data().date, 'MM-DD-YYYY HH:mm:ss');
+          this.createMomentObservable(this.momentsAgoTime, 'breastfeeding');
+
+          this.lastBreastFeed = this.ft.formatDateTimeStandard(doc.data().date);
+          this.lastBreastSide = doc.data().breast;
+          this.lastDuration = doc.data().duration;
+        };
+      });
+    });
+  }
+
+  createMomentObservable(momentsAgoTime : any, activity: any){
+    if(activity == "bottlefeeding"){
+      this.BottleMomentsAgoSubscription = Observable.interval(1000).subscribe(x => {
+        this.BottleMomentsAgo = momentsAgoTime.startOf('seconds').fromNow();
+        // console.log("moments ago is:", this.momentsAgo);
+      });
+    } else {
+      this.momentsAgoSubscription = Observable.interval(1000).subscribe(x => {
+        this.momentsAgo = momentsAgoTime.startOf('seconds').fromNow();
+        // console.log("moments ago is:", this.momentsAgo);
+      });
+    };
+  }
+
+  manualAddBreastFeed(){
+    this.openModal().then((breastFeeding) => {
+      //console.log("manual breastfeeding object is", breastFeeding);
+      if (breastFeeding == undefined){
+        console.log("Feeding::manualAdd(): user canceled modal");
+      } else {
+        let durationTemp = breastFeeding.duration;
+        let splitDurationArray = durationTemp.split(':');
+
+        splitDurationArray[1] = Number(splitDurationArray[1]);
+        splitDurationArray[2] = Number(splitDurationArray[2]);
+
+        // This will be the value of time (duration for database)
+        let totalDuration = (splitDurationArray[1] * 60) + (splitDurationArray[2]);
+
+        // Extract only the date
+        let dateTemp = new Date(breastFeeding.date);
+
+        // Have to add plus one to getUTCMonth because Jan=0, Feb=1, etc..
+        let monthNumber = (Number(dateTemp.getMonth()) + 1);
+        let monthString: string;
+
+        // Add a 0 to month and days < 10
+        if (monthNumber < 10){
+          monthString = '0' + monthNumber.toString();
+        } else {
+          monthString = monthNumber.toString();
+        };
+        let dayNumber = (Number(dateTemp.getDate()));
+        let dayString: string;
+        if (dayNumber < 10){
+          dayString = '0' + dayNumber.toString();
+        } else {
+          dayString = dayNumber.toString();
+        };
+
+        // Concentanate the strings
+        let date = monthString + '-' + dayString + '-' + dateTemp.getFullYear();
+        ///////////////////////////////////////////////////////////////
+
+        // Extract only the time
+        let timeTemp = new Date(breastFeeding.time);
+
+        let time = this.addZeroToTime(timeTemp.getHours()) + ':' + this.addZeroToTime(timeTemp.getMinutes()) + ':' +
+        this.addZeroToTime(timeTemp.getSeconds());
+
+        // String up date and time and call the method to standardize the time
+        let dateTime = date + " " + time;
+        /////////////////////////////////////////////////////////////////
+
+        let bfManualObject = {
+          breast: breastFeeding.breast + ' breast',
+          date: dateTime,
+          time: time,
+          duration: totalDuration
+        };
+
+        // Call method to store into Database
+        this.db.saveBabyActivity('breastfeeding', bfManualObject).then((retVal) => {
+          if(retVal = true){
+            console.log("Manual breastfeeding saved successfully");
+          } else {
+            console.log("Manual breastfeeding was not saved succesfully. Something happend");
+          };
+          this.getLastBreastFeed();
+        });
+      };
+    });
+  }
+
+  addZeroToTime(time : any) : any{
+    if(time < 10){
+      time = "0" + time;
+    };
+    return time;
+  }
+
+  openModal() : any {
+    return new Promise(resolve =>{
+      this.breastfeedingModal = this.modal.create(BreastfeedingModalPage);
+      this.breastfeedingModal.present();
+      resolve(this.waitForReturn());
+    })
+  }
+
+  waitForReturn() : any{
+    return new Promise(resolve => {
+      this.breastfeedingModal.onDidDismiss( data => {
+        let babyObject = data;
+        resolve(babyObject);
+      });
+    });
+  }
+
+  getBfHistory() {
+    this.openBfHistoryModal().then((history) => {
+      this.getLastBreastFeed();
+    });
+  }
+
+  openBfHistoryModal(){
+    return new Promise(resolve => {
+      this.bfHistoryModal = this.modal.create(BfHistoryModalPage);
+      this.bfHistoryModal.present();
+      resolve(this.waitForBfReturn());
+    });
+  }
+
+  waitForBfReturn(){
+    return new Promise(resolve => {
+      this.bfHistoryModal.onDidDismiss( data => {
+        let history = data;
+        resolve(history);
+      });
+    })
+  }
+  /////////////////////////// BREASTFEEDING ACTIVITY ENDS /////////////////////////////
+
+  /////////////////////////// NOTE: BOTTLE FEEDING BEGINS HERE /////////////////////////////
+  saveBottleFeeding(){
+    let today = this.ft.getTodayMonthFirstWithTime();
+
+    // Split today with time to get time
+    let splitTimeArray = today.split(' ');
+    let splitTimeOnly = splitTimeArray[1];
+
+    this.checkIfBottleNoteExist(today, splitTimeOnly).then(object => {
+      this.db.saveBabyActivity("bottlefeeding", object).then(() => {
+        // this.getLastBreastFeed();
+
+        // Reset the duration counter and bottle note after saving
+        this.bottle.duration = "00:00:00";
+        this.bottleNote = null;
+
+        // Set the app to remember the new
+        this.getLastBottleFeed();
+
+        if(this.timer.tick != 0){
+          this.timer.refreshTimer();
+        };
+      });
+    });
+  }
+
+  manuallyAddBottle(){
+    this.openBottleModal().then((bottleFeeding) => {
+      if (bottleFeeding == undefined){
+        console.log("Feeding::manualAdd(): user canceled modal");
+      } else {
+        let durationTemp = bottleFeeding.duration;
+        let splitDurationArray = durationTemp.split(':');
+
+        splitDurationArray[1] = Number(splitDurationArray[1]);
+        splitDurationArray[2] = Number(splitDurationArray[2]);
+
+        // This will be the value of time (duration for database)
+        let totalDuration = (splitDurationArray[1] * 60) + (splitDurationArray[2]);
+
+        // Extract only the date
+        let dateTemp = new Date(bottleFeeding.date);
+        // console.log("bottlefeeding.date is:", bottleFeeding.date);
+        // console.log("datetemp is:", dateTemp);
+        // Have to add plus one to getUTCMonth because Jan=0, Feb=1, etc..
+        let monthNumber = (Number(dateTemp.getMonth()) + 1);
+        let monthString: string;
+
+        // Add a 0 to month and days < 10
+        if (monthNumber < 10){
+          monthString = '0' + monthNumber.toString();
+        } else {
+          monthString = monthNumber.toString();
+        };
+        let dayNumber = (Number(dateTemp.getDate()));
+
+        let dayString: string;
+        if (dayNumber < 10){
+          dayString = '0' + dayNumber.toString();
+        } else {
+          dayString = dayNumber.toString();
+        };
+
+        // Concentanate the strings
+        let date = monthString + '-' + dayString + '-' + dateTemp.getFullYear();
+        ///////////////////////////////////////////////////////////////
+
+        // Extract only the time
+        let timeTemp = new Date(bottleFeeding.time);
+
+        let time = this.addZeroToTime(timeTemp.getHours()) + ':' + this.addZeroToTime(timeTemp.getMinutes()) + ':' +
+        this.addZeroToTime(timeTemp.getSeconds());
+
+        // String up date and time and call the method to standardize the time
+        let dateTime = date + " " + time;
+        /////////////////////////////////////////////////////////////////
+
+        let manualObject = {};
+
+        if(bottleFeeding.note){
+          manualObject = {
+            type: bottleFeeding.type,
+            date: dateTime,
+            volume: bottleFeeding.volume,
+            time: time,
+            duration: totalDuration,
+            unit: bottleFeeding.unit,
+            note: bottleFeeding.note
+          }
+        } else {
+          manualObject = {
+            type: bottleFeeding.type,
+            date: dateTime,
+            volume: bottleFeeding.volume,
+            time: time,
+            duration: totalDuration,
+            unit: bottleFeeding.unit
+          }
+        };
+
+        // Call method to store into Database
+        this.db.saveBabyActivity('bottlefeeding', manualObject).then((retVal) => {
+          if(retVal = true){
+            console.log("Manual bottleFeeding saved successfully");
+          } else {
+            console.log("Manual bottleFeeding was not saved succesfully. Something happend");
+          };
+          this.getLastBottleFeed();
+        });
+      };
+    });
+  }
+
+  getLastBottleFeed(){
+    this.BottleMomentsAgo = '';
+    let count = 0;
+    let babyRef = this.db.getBabyReference();
+    babyRef.collection('bottlefeeding')
+      // .where('date', '==', 'date')
+      .get().then((latestSnapshot) => {
+        latestSnapshot.forEach(doc => {
+          count = count + 1;
+          // console.log("Feeding::getLastBreastFeed(): lastest breastfeed:", doc.data());
+        });
+    });
+
+    babyRef.collection('bottlefeeding').get().then((latestSnapshot) => {
+      latestSnapshot.forEach(doc => {
+        count = count - 1;
+        if(count == 0){
+          // If last breastfeeding exists
+          if(this.lastBottleFeed){
+            this.BottleMomentsAgoSubscription.unsubscribe();
+          };
+
+          // NOTE: MOMENTS AGO HACK...
+          this.BottleMomentsAgoTime = moment(doc.data().date, 'MM-DD-YYYY HH:mm:ss');
+          this.createMomentObservable(this.BottleMomentsAgoTime, "bottlefeeding");
+
+          this.lastBottleFeed = this.ft.formatDateTimeStandard(doc.data().date);
+          this.lastBottleDuration = doc.data().duration;
+          this.bottleLastAmount = doc.data().volume + " " + doc.data().unit;
+        };
+      });
+      this.updateBottleSummary();
+    });
+
+  }
+
+  updateBottleSummary(){
+    this.lifoHistory.init().then(() => {
+      this.lifoHistory.lifoHistory('bottlefeeding').then(() => {
+        this.hasToday = this.lifoHistory.hasToday;
+        this.hasYesterday = this.lifoHistory.hasYesterday;
+        this.hasMore = this.lifoHistory.hasMore;
+        if(this.hasToday == true){
+          this.todayHistoryArray = this.lifoHistory.todayHistoryArray;
+          // console.log("THIS TDOAY HISTORY ARRAY:", this.todayHistoryArray);
+        }
+        this.yesterdayHistoryArray = this.lifoHistory.yesterdayHistoryArray;
+        this.moreHistoryArray = this.lifoHistory.moreHistoryArray;
+      });
+    })
+  }
+
+  checkIfBottleNoteExist(today: any, splitTimeOnly: any){
+    return new Promise(resolve => {
+      let object = {};
+
+      if(this.bottleNote){
+        if(this.timer.tick != 0){
+          object = {
+            type: this.bottle.type,
+            date: today,
+            volume: this.bottle.volume,
+            time: splitTimeOnly,
+            duration: this.timer.tick,
+            unit: this.bottle.unit,
+            note: this.bottleNote
+          }
+        } else {
+          let duration = this.convertDurationToseconds();
+          object = {
+            type: this.bottle.type,
+            date: today,
+            volume: this.bottle.volume,
+            time: splitTimeOnly,
+            duration: duration,
+            unit: this.bottle.unit,
+            note: this.bottleNote
+          }
+        };
+      }else {
+        if(this.timer.tick != 0){
+          object = {
+            type: this.bottle.type,
+            date: today,
+            volume: this.bottle.volume,
+            time: splitTimeOnly,
+            duration: this.timer.tick,
+            unit: this.bottle.unit,
+          }
+        } else {
+          let duration = this.convertDurationToseconds();
+          object = {
+            type: this.bottle.type,
+            date: today,
+            volume: this.bottle.volume,
+            time: splitTimeOnly,
+            unit: this.bottle.unit,
+            duration: duration
+          }
+        };
+      };
+      resolve(object);
+    });
+  }
+
+  openBottleModal() : any {
+    return new Promise(resolve =>{
+      this.bottlefeedingModal = this.modal.create(BottlefeedingModalPage);
+      this.bottlefeedingModal.present();
+      resolve(this.waitForBottleReturn());
+    })
+  }
+
+  waitForBottleReturn() : any{
+    return new Promise(resolve => {
+      this.bottlefeedingModal.onDidDismiss( data => {
+        console.log("WAIT FOR RETURN DATA IS:", data);
+        let babyObject = data;
+        resolve(babyObject);
+      });
+    });
+  }
+
+  convertDurationToseconds():any{
+    let durationTemp = this.bottle.duration;
+    let splitDurationArray = durationTemp.split(':');
+
+    splitDurationArray[1] = Number(splitDurationArray[1]);
+    splitDurationArray[2] = Number(splitDurationArray[2]);
+
+    // This will be the value of time (duration for database)
+    let totalDuration = (splitDurationArray[1] * 60) + (splitDurationArray[2]);
+    return totalDuration;
+  }
+
+  noteAlert(){
+    this.nAlert = this.noteAlertProvider.alert();
+    this.nAlert.present();
+
+    this.waitForAlertReturn().then((val) => {
+      if(val == true){
+        console.log("THIS bottlenote is true: ", val);
+      } else {
+        console.log("THIS bottlenote is false: ", val);
+      };
+    });
+  }
+
+  waitForAlertReturn() : any{
+    return new Promise(resolve => {
+      this.nAlert.onDidDismiss(data => {
+        console.log("DATA IS:", data);
+        if(data != undefined){
+          this.bottleNote = data;
+          resolve(true);
+        } else {
+          this.bottleNote = null;
+          resolve(false);
+        };
+      }, (error) =>{
+        console.log("Alert on dismiss error:", error);
+      });
+    })
   }
 
 }

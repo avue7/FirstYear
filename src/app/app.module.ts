@@ -32,11 +32,20 @@ import { PlayingPage } from '../pages/playing/playing';
 import { CameraPage } from '../pages/camera/camera';
 import { CreditsPage } from '../pages/credits/credits';
 import { BabyModalPage } from '../pages/baby-modal/baby-modal';
+import { BreastfeedingModalPage } from '../pages/breastfeeding-modal/breastfeeding-modal';
+import { BfHistoryModalPage } from '../pages/bf-history-modal/bf-history-modal';
+import { BottlefeedingModalPage } from '../pages/bottlefeeding-modal/bottlefeeding-modal';
+import { DiaperingModalPage } from '../pages/diapering-modal/diapering-modal';
 
 import { TimerProvider } from '../providers/timer/timer';
 import { HoursMinutesSecondsPipe } from '../pipes/hours-minutes-seconds/hours-minutes-seconds';
 import { FormattedTodayProvider } from '../providers/formatted-today/formatted-today';
 import { BabyProvider } from '../providers/baby/baby';
+import { DateTimePipe } from '../pipes/date-time/date-time';
+import { GroupbyPipe } from '../pipes/groupby/groupby';
+import { MomentPipe } from '../pipes/moment/moment';
+import { NoteAlertProvider } from '../providers/note-alert/note-alert';
+import { LifoHistoryProvider } from '../providers/lifo-history/lifo-history';
 
 @NgModule({
   declarations: [
@@ -54,7 +63,14 @@ import { BabyProvider } from '../providers/baby/baby';
     CameraPage,
     CreditsPage,
     BabyModalPage,
-    HoursMinutesSecondsPipe
+    HoursMinutesSecondsPipe,
+    DateTimePipe,
+    BreastfeedingModalPage,
+    BfHistoryModalPage,
+    GroupbyPipe,
+    MomentPipe,
+    BottlefeedingModalPage,
+    DiaperingModalPage
   ],
   imports: [
     BrowserModule,
@@ -81,7 +97,11 @@ import { BabyProvider } from '../providers/baby/baby';
     PlayingPage,
     CameraPage,
     CreditsPage,
-    BabyModalPage
+    BabyModalPage,
+    BreastfeedingModalPage,
+    BfHistoryModalPage,
+    BottlefeedingModalPage,
+    DiaperingModalPage
   ],
   providers: [
     StatusBar,
@@ -95,7 +115,13 @@ import { BabyProvider } from '../providers/baby/baby';
     UserProvider,
     TimerProvider,
     FormattedTodayProvider,
-    BabyProvider
+    BabyProvider,
+    DateTimePipe,
+    HoursMinutesSecondsPipe,
+    GroupbyPipe,
+    MomentPipe,
+    NoteAlertProvider,
+    LifoHistoryProvider,
   ]
 })
 export class AppModule {}
