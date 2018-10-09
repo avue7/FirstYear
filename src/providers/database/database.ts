@@ -267,6 +267,12 @@ export class DatabaseProvider {
       console.log("Database::saveBabyActivity(): activity is", activity);
       console.log("Database::saveBabyActivity(): object is", object);
 
+      // Convert date back to YYYY/MM/DD
+      let splitDateTime = object.date.split(' ');
+      let dateArray = splitDateTime[0].split('-');
+      let newDate = dateArray[2] + '-' + dateArray[0] + '-' + dateArray[1];
+      object.date = newDate + ' ' + splitDateTime[1];
+
       let babyReference = this.getBabyReference();
       babyReference.collection(activity).doc(object.date).set(object);
 
