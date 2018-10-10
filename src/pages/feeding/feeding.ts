@@ -7,6 +7,7 @@ import { AlertController } from 'ionic-angular';
 import { BreastfeedingModalPage } from '../breastfeeding-modal/breastfeeding-modal';
 import { BfHistoryModalPage } from '../bf-history-modal/bf-history-modal';
 import { BottlefeedingModalPage } from '../bottlefeeding-modal/bottlefeeding-modal';
+import { MealModalPage } from '../meal-modal/meal-modal';
 import { NoteAlertProvider } from '../../providers/note-alert/note-alert';
 import { LifoHistoryProvider } from '../../providers/lifo-history/lifo-history';
 import * as moment from 'moment';
@@ -59,7 +60,7 @@ export class FeedingPage {
   bottle: any = {
     type: 'Formula',
     duration: '00:00:00',
-    volume: 0,
+    //volume: 0,
     unit: 'oz'
   };
 
@@ -68,15 +69,35 @@ export class FeedingPage {
   yesterdayHistoryArray: any;
   moreHistoryArray: any;
 
-  hasToday: boolean;
-  hasYesterday: boolean;
-  hasMore: boolean;
+  bottleHasToday: boolean;
+  bottleHasYesterday: boolean;
+  bottleHasMore: boolean;
 
   BottleMomentsAgoSubscription: any;
   BottleMomentsAgoTime: any;
   BottleMomentsAgo: any;
   lastBottleDuration: any;
   bottleLastAmount: any;
+
+  // MEALS
+  meal: any = {};
+  mealDetail: any;
+  lastMeal: string;
+  lastMealDetail: string;
+  mealModal: any;
+
+  // Meals history declarations
+  mealTodayHistoryArray: any;
+  mealYesterdayHistoryArray: any;
+  mealMoreHistoryArray: any;
+
+  mealHasToday: boolean;
+  mealHasYesterday: boolean;
+  mealHasMore: boolean;
+
+  MealMomentsAgoSubscription: any;
+  MealMomentsAgoTime: any;
+  MealMomentsAgo: any;
 
 
 
@@ -91,11 +112,15 @@ export class FeedingPage {
     private lifoHistory: LifoHistoryProvider) {
     this.momentsAgoTime = '';
     this.BottleMomentsAgo = '';
+    this.MealMomentsAgo = '';
+    this.mealDetail = null;
+    this.lastMealDetail = null;
     this.setLeftBreast();
     this.getLastBreastFeed();
     this.bottleNote = null;
-    this.bottle.volume = 6;
+    this.bottle.volume = undefined;
     this.getLastBottleFeed();
+    this.getLastMeal();
   }
 
   ionViewWillLeave(){
@@ -155,8 +180,6 @@ export class FeedingPage {
       duration: this.timer.tick
     }
 
-    // console.log("Feeding::save(): object is:", object);
-
     this.db.saveBabyActivity("breastfeeding", object).then(() => {
       this.getLastBreastFeed();
       this.timer.refreshTimer();
@@ -203,6 +226,11 @@ export class FeedingPage {
     if(activity == "bottlefeeding"){
       this.BottleMomentsAgoSubscription = Observable.interval(1000).subscribe(x => {
         this.BottleMomentsAgo = momentsAgoTime.startOf('seconds').fromNow();
+        // console.log("moments ago is:", this.momentsAgo);
+      });
+    } else if(activity == "meal"){
+      this.MealMomentsAgoSubscription = Observable.interval(1000).subscribe(x => {
+        this.MealMomentsAgo = momentsAgoTime.startOf('seconds').fromNow();
         // console.log("moments ago is:", this.momentsAgo);
       });
     } else {
@@ -408,6 +436,10 @@ export class FeedingPage {
         let dateTime = date + " " + time;
         /////////////////////////////////////////////////////////////////
 
+        if(bottleFeeding.volume == undefined){
+          bottleFeeding.volume = 6;
+        };
+
         let manualObject = {};
 
         if(bottleFeeding.note){
@@ -483,10 +515,10 @@ export class FeedingPage {
   updateBottleSummary(){
     this.lifoHistory.init().then(() => {
       this.lifoHistory.lifoHistory('bottlefeeding').then(() => {
-        this.hasToday = this.lifoHistory.hasToday;
-        this.hasYesterday = this.lifoHistory.hasYesterday;
-        this.hasMore = this.lifoHistory.hasMore;
-        if(this.hasToday == true){
+        this.bottleHasToday = this.lifoHistory.hasToday;
+        this.bottleHasYesterday = this.lifoHistory.hasYesterday;
+        this.bottleHasMore = this.lifoHistory.hasMore;
+        if(this.bottleHasToday == true){
           this.todayHistoryArray = this.lifoHistory.todayHistoryArray;
           // console.log("THIS TDOAY HISTORY ARRAY:", this.todayHistoryArray);
         }
@@ -499,6 +531,10 @@ export class FeedingPage {
   checkIfBottleNoteExist(today: any, splitTimeOnly: any){
     return new Promise(resolve => {
       let object = {};
+
+      if(this.bottle.volume == undefined){
+        this.bottle.volume = 6;
+      };
 
       if(this.bottleNote){
         if(this.timer.tick != 0){
@@ -609,4 +645,173 @@ export class FeedingPage {
     })
   }
 
+  ///// MEALS BEGIN HERE //////////////////
+  saveMeal(){
+    let today = this.ft.getTodayMonthFirstWithTime();
+
+    // Split today with time to get time
+    let splitTimeArray = today.split(' ');
+    let splitTimeOnly = splitTimeArray[1];
+    let object = {};
+
+    if(this.mealDetail != undefined){
+      object = {
+        date: today,
+        time: splitTimeOnly,
+        detail: this.mealDetail
+      }
+    } else {
+      object = {
+        date: today,
+        time: splitTimeOnly
+      }
+    };
+
+    this.db.saveBabyActivity("meal", object).then(() => {
+      this.mealDetail = null;
+      // Set the app to remember the new
+      this.getLastMeal();
+    });
+  }
+
+  getLastMeal(){
+    this.MealMomentsAgo = '';
+    let count = 0;
+    let babyRef = this.db.getBabyReference();
+    babyRef.collection('meal')
+      // .where('date', '==', 'date')
+      .get().then((latestSnapshot) => {
+        latestSnapshot.forEach(doc => {
+          count = count + 1;
+          // console.log("Feeding::getLastBreastFeed(): lastest breastfeed:", doc.data());
+        });
+    });
+
+    babyRef.collection('meal').get().then((latestSnapshot) => {
+      latestSnapshot.forEach(doc => {
+        count = count - 1;
+        if(count == 0){
+          // If last breastfeeding exists
+          if(this.lastMeal){
+            this.MealMomentsAgoSubscription.unsubscribe();
+            this.lastMealDetail = null;
+          };
+
+          // NOTE: MOMENTS AGO HACK...
+          this.MealMomentsAgoTime = moment(doc.data().date, 'YYYY-MM-DD HH:mm:ss');
+          this.createMomentObservable(this.MealMomentsAgoTime, "meal");
+
+          this.lastMeal = this.ft.formatDateTimeStandard(doc.data().date);
+          if(doc.data().detail){
+            this.lastMealDetail = doc.data().detail;
+          };
+        };
+      });
+      this.updateMealSummary();
+    });
+  }
+
+  updateMealSummary(){
+    this.lifoHistory.init().then(() => {
+      this.lifoHistory.lifoHistory('meal').then(() => {
+        this.mealHasToday = this.lifoHistory.hasToday;
+        // console.log("update meal has today is", this.mealHasToday);
+        this.mealHasYesterday = this.lifoHistory.hasYesterday;
+        this.mealHasMore = this.lifoHistory.hasMore;
+        if(this.mealHasToday == true){
+          this.mealTodayHistoryArray = this.lifoHistory.todayHistoryArray;
+        }
+        this.mealYesterdayHistoryArray = this.lifoHistory.yesterdayHistoryArray;
+        this.mealMoreHistoryArray = this.lifoHistory.moreHistoryArray;
+      });
+    })
+  }
+
+  manuallyAddMeal(){
+    this.openMealModal().then((meal) => {
+      if (meal == undefined){
+        console.log("Feeding::manualAdd(): user canceled modal");
+      } else {
+
+        let dateTemp = new Date(meal.date);
+        // console.log("bottlefeeding.date is:", bottleFeeding.date);
+        // console.log("datetemp is:", dateTemp);
+        // Have to add plus one to getUTCMonth because Jan=0, Feb=1, etc..
+        let monthNumber = (Number(dateTemp.getMonth()) + 1);
+        let monthString: string;
+
+        // Add a 0 to month and days < 10
+        if (monthNumber < 10){
+          monthString = '0' + monthNumber.toString();
+        } else {
+          monthString = monthNumber.toString();
+        };
+        let dayNumber = (Number(dateTemp.getDate()));
+
+        let dayString: string;
+        if (dayNumber < 10){
+          dayString = '0' + dayNumber.toString();
+        } else {
+          dayString = dayNumber.toString();
+        };
+
+        // Concentanate the strings
+        let date = monthString + '-' + dayString + '-' + dateTemp.getFullYear();
+        ///////////////////////////////////////////////////////////////
+
+        // Extract only the time
+        let timeTemp = new Date(meal.time);
+
+        let time = this.addZeroToTime(timeTemp.getHours()) + ':' + this.addZeroToTime(timeTemp.getMinutes()) + ':' +
+        this.addZeroToTime(timeTemp.getSeconds());
+
+        // String up date and time and call the method to standardize the time
+        let dateTime = date + " " + time;
+        /////////////////////////////////////////////////////////////////
+
+        let manualObject = {};
+
+        if(meal.detail){
+          manualObject = {
+            date: dateTime,
+            time: time,
+            detail: meal.detail
+          }
+        } else {
+          manualObject = {
+            date: dateTime,
+            time: time
+          }
+        };
+
+        // Call method to store into Database
+        this.db.saveBabyActivity('meal', manualObject).then((retVal) => {
+          if(retVal = true){
+            console.log("Manual bottleFeeding saved successfully");
+          } else {
+            console.log("Manual bottleFeeding was not saved succesfully. Something happend");
+          };
+          this.getLastMeal();
+        });
+      };
+    });
+  }
+
+  openMealModal() : any {
+    return new Promise(resolve =>{
+      this.mealModal = this.modal.create(MealModalPage);
+      this.mealModal.present();
+      resolve(this.waitForMealReturn());
+    })
+  }
+
+  waitForMealReturn() : any{
+    return new Promise(resolve => {
+      this.mealModal.onDidDismiss( data => {
+        // console.log("WAIT FOR RETURN DATA IS:", data);
+        let babyObject = data;
+        resolve(babyObject);
+      });
+    });
+  }
 }

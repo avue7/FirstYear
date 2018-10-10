@@ -68,11 +68,18 @@ export class LifoHistoryProvider {
     let today = this.ft.getTodayMonthFirst(todayTemp);
     let todayMoment = moment(today);
 
+    // NOTE: new activities need to be added here!!!!
+
     if(activity == 'bottlefeeding'){
       this.historyArray = this.db.bottleHistoryArray;
     } else if(activity == 'diapering'){
       this.historyArray = this.db.diaperingHistoryArray;
+    } else if(activity == 'meal'){
+      this.historyArray = this.db.mealHistoryArray;
     }
+
+    // DEBUG: Leave this for debugging
+    console.log("DEBUGGING: this history array in lifo is:", this.historyArray);
 
     for(let v of this.historyArray){
       this.lifoHistoryArray.unshift(v);
@@ -133,6 +140,12 @@ export class LifoHistoryProvider {
           } else {
             outputString = '@' + timeString + ', ' + x.type
          };
+      } else if(activity == 'meal'){
+        if(x.detail){
+          outputString = '@' + timeString + ', ' + 'Detail: ' + x.detail;
+        } else {
+          outputString = '@' + timeString;
+        };
       }
 
 

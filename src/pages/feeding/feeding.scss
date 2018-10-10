@@ -9,6 +9,11 @@ page-feeding {
   ion-title {
     text-align: center;
   }
+
+  ion-label {
+    color: gray !important;
+  }
+
   h2 {
     font-size: 35pt;
     text-align: center;
@@ -17,12 +22,22 @@ page-feeding {
     text-align: center;
     color: gray;
   }
+
+  .button-right-align {
+    text-align: right;
+  }
+
   .timer {
     // position: fixed;
     // bottom: 0;
     text-align: center;
     background-color: #42c7ff;
   }
+
+  .checkmark-green {
+    color: green !important;
+  }
+
   .border {
     border-bottom: 1px solid grey !important;
   }
@@ -46,6 +61,12 @@ page-feeding {
     color: black;
   }
 
+  .ion_input{
+      input {
+        border-bottom: none !important;
+        box-shadow: none !important;
+      }
+  }
   ion-input{
     input {
       text-align: right;
@@ -54,17 +75,44 @@ page-feeding {
       }
     }
   }
+  // .item-left-align {
+  //   input {
+  //     text-align: left !important;
+  //     ::-webkit-input-placeholder {
+  //       text-align: left !important;
+  //     }
+  //   }
+  // }
 
-  ion-select{
-    select {
-      text-align: right;
-      ::-webkit-input-placeholder {
-        text-align: right;
-      }
-    }
-  }
+
+  // ion-select{
+  //   select {
+  //     text-align: right;
+  //     ::-webkit-input-placeholder {
+  //       text-align: right;
+  //     }
+  //   }
+  // }
 
   .item-inner {
+    border-bottom-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .center-black {
+    color: black;
+    text-align: center;
+  }
+
+  #right-align {
+    text-align: right !important;
+  }
+
+  #left-align {
+    text-align: left !important;
+  }
+
+  #no_bottom {
     border-bottom-color: transparent !important;
     box-shadow: none !important;
   }
@@ -104,6 +152,17 @@ page-feeding {
     // align-items: center;
     // float: right;
     //display: inline;
+  }
+
+  .meal-box {
+    width: 100%;
+    //border: 1px solid gray;
+    border-top: 0px !important;
+    border-bottom: 1px solid gray !important;
+    border-left: 0px !important;
+    border-right: 0px !important;
+    padding: none;
+    margin: 0px;
   }
 
   .bottle-summary{

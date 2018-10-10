@@ -1,0 +1,29 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Manually Add Meal</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-list>
+
+      <ion-item>
+        <ion-label>Date</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="meal.date" name="date"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Time</ion-label>
+        <ion-datetime displayFormat="hh:mm:ss A" [(ngModel)]="meal.time" name="time"></ion-datetime>
+      </ion-item>
+
+      <ion-item class="item-left-align">
+        <ion-textarea rows="3" input="text" placeholder="Enter meal description here (optional)" [(ngModel)]="detail"></ion-textarea>
+      </ion-item>
+
+    </ion-list>
+    <button ion-button class="baby-button" (click)="manuallyAddMeal()">Add</button>
+  <button ion-button class="baby-button" (click)="cancelModal()">Cancel</button>
+
+</ion-content>

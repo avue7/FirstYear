@@ -57,15 +57,20 @@
       <h2> {{((timer.tick) | hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </h2>
       <br><br>
       <div class="center">
-        <button class="timer" ion-button icon-only [disabled]="!timer.tick || !timer.isPaused" (click)="refreshTimer()">
+        <button large class="timer" ion-button icon-only [disabled]="!timer.tick || !timer.isPaused" (click)="refreshTimer()">
           <ion-icon name='refresh'></ion-icon>
         </button>
-        <button class="timer" ion-button icon-only (click)="startPauseTimer()">
+        <button large class="timer" ion-button icon-only (click)="startPauseTimer()">
           <ion-icon [name]="timer.isPaused ? 'play' : 'pause' "></ion-icon>
         </button>
-        <button class="timer" ion-button icon-only [disabled]="!timer.tick || !timer.isPaused" (click)="saveBreastFeeding()">
+        <button large class="timer" ion-button icon-only [disabled]="!timer.tick || !timer.isPaused" (click)="saveBreastFeeding()">
           <ion-icon name='archive'></ion-icon>
         </button>
+        <ion-fab right bottom>
+          <button ion-fab class="timer" (click)="manualAddBreastFeed()">
+            <ion-icon name="add"></ion-icon>
+          </button>
+        </ion-fab>
       </div>
       <ion-footer no-border-top no-border-bottom>
         <ion-row no-padding class="other-data">
@@ -74,66 +79,70 @@
               History
             </button>
           </ion-col>
-          <ion-col no-padding class="column">
-            <button ion-button full color="light" (click)="manualAddBreastFeed()">
-              Manually Add
-            </button>
-          </ion-col>
         </ion-row>
       </ion-footer>
     </ion-list>
 
     <!-- Bottle feeding starts here -->
     <ion-list *ngSwitchCase="'Bottle'">
-      <!-- Add With timer-->
-      <div id="block_container">
-        <form name="bottleFeeding" (ngSubmit)="saveBottleFeeding()">
-          <div class="box">
-            <ion-item>
-              <ion-label>Type:</ion-label>
-              <ion-select [(ngModel)]="bottle.type" name="type" interface="popover">
-                <ion-option selected="true" value="Formula">Formula</ion-option>
-                <ion-option value="Breast">Breast</ion-option>
-                <ion-option value="Milk">Milk</ion-option>
-              </ion-select>
-            </ion-item>
-            <ion-item>
-              <ion-label>Volume: </ion-label>
-              <ion-input placeholder="__" type="number" [(ngModel)]="bottle.volume" name="volume"></ion-input>
-              <ion-select [(ngModel)]="bottle.unit" name="unit" interface="popover">
-                <ion-option selected="true" value="oz">oz</ion-option>
-                <ion-option value="ml">ml</ion-option>
-              </ion-select>
-            </ion-item>
-            <ion-item>
-              <ion-label color="gray!important">Notes:</ion-label>
-              <p item-right (click)="noteAlert()">
-                <ion-icon name="clipboard"></ion-icon>
-                <ion-icon *ngIf="bottleNote" color="green" name="checkmark"></ion-icon>
-              </p>
-            </ion-item>
-          </div>
-        </form>
-      <!-- Timer for bottle -->
-        <div class="box-right">
-          <br>
-          <h3> {{((timer.tick) | hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </h3>
-          <br>
-          <div class="center">
-            <button class="timer" ion-button icon-only [disabled]="!timer.tick || !timer.isPaused" (click)="refreshTimer()">
-              <ion-icon name='refresh'></ion-icon>
-            </button>
-            <button class="timer" ion-button icon-only [disabled]="durationIsSet" (click)="startPauseTimer()">
-              <ion-icon [name]="timer.isPaused ? 'play' : 'pause' "></ion-icon>
-            </button>
-            <button class="timer" ion-button type="submit" icon-only [disabled]="!timer.isPaused" (click)="saveBottleFeeding()">
-              <ion-icon name='archive'></ion-icon>
-            </button>
-            <button class="timer" ion-button icon-only (click)="manuallyAddBottle()">
-              <ion-icon name="add"></ion-icon>
-            </button>
-          </div>
-        </div>
+      <div class="box">
+        <!-- <form name="bottleFeeding" (ngSubmit)="saveBottleFeeding()"> -->
+          <ion-row>
+            <ion-col width-25>
+              <ion-item>
+                <ion-label>Type:</ion-label>
+                <ion-select [(ngModel)]="bottle.type" name="type" interface="popover">
+                  <ion-option selected="true" value="Formula">Formula</ion-option>
+                  <ion-option value="Breast">Breast</ion-option>
+                  <ion-option value="Milk">Milk</ion-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+            <ion-col class="center-black" width-3>
+                <h3><b>{{((timer.tick) | hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </b></h3>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col width-3>
+              <ion-item>
+                <ion-label>Volume: </ion-label>
+                <ion-input placeholder="6" type="number" [(ngModel)]="bottle.volume" name="volume"></ion-input>
+                <ion-select [(ngModel)]="bottle.unit" name="unit" interface="popover">
+                  <ion-option selected="true" value="oz">oz</ion-option>
+                  <ion-option value="ml">ml</ion-option>
+                </ion-select>
+              </ion-item>
+              <ion-item>
+                <ion-label>Details:</ion-label>
+                <p item-right (click)="noteAlert()">
+                  <ion-icon name="clipboard"></ion-icon>
+                  <ion-icon class="green-checkmark" *ngIf="bottleNote" color="green" name="checkmark"></ion-icon>
+                </p>
+              </ion-item>
+            </ion-col>
+            <ion-col width-3>
+            <!-- Timer for bottle -->
+                <div class="center">
+                  <button class="timer" ion-button icon-only [disabled]="!timer.tick || !timer.isPaused" (click)="refreshTimer()">
+                    <ion-icon name='refresh'></ion-icon>
+                  </button>
+                  <button class="timer" ion-button icon-only [disabled]="durationIsSet" (click)="startPauseTimer()">
+                    <ion-icon [name]="timer.isPaused ? 'play' : 'pause' "></ion-icon>
+                  </button>
+                  <button class="timer" ion-button type="submit" icon-only [disabled]="!timer.isPaused" (click)="saveBottleFeeding()">
+                    <ion-icon name='archive'></ion-icon>
+                  </button>
+                </div>
+              </ion-col>
+          </ion-row>
+        <!-- </form> -->
+
+        <!-- Manual add fab button -->
+        <ion-fab right bottom>
+          <button ion-fab class="timer" (click)="manuallyAddBottle()">
+            <ion-icon name="add"></ion-icon>
+          </button>
+        </ion-fab>
       </div>
 
       <!-- Summary -->
@@ -154,7 +163,7 @@
       <!-- <ion-scroll scrollY="true" overflow-scroll="false">
       <div> -->
       <div class="bottle-summary">
-        <div *ngIf="hasToday">
+        <div *ngIf="bottleHasToday">
           <div class="divider-title"> Today </div>
 
           <ul class="timeline">
@@ -166,7 +175,7 @@
           </ul>
         </div>
 
-        <div *ngIf="hasYesterday">
+        <div *ngIf="bottleHasYesterday">
           <div class="divider-title"> Yesterday </div>
           <ul class="timeline">
             <li *ngFor="let x of yesterdayHistoryArray">
@@ -177,7 +186,7 @@
           </ul>
         </div>
       </div>
-      <div *ngIf="hasMore">
+      <div *ngIf="bottleHasMore">
         <ion-item-group *ngFor="let x of moreHistoryArray | groupby: 'date'">
           <div  class="divider-title">
             {{ x.key | moment:'ll' }}
@@ -200,8 +209,77 @@
 
     <!-- Meal feeding starts here -->
     <ion-list *ngSwitchCase="'Meal'">
-      <p> do something here 3 </p>
+      <div class="meal-box">
+      <ion-item class="item-left-align">
+        <ion-textarea rows="3" input="text" placeholder="Enter meal description here (optional)" [(ngModel)]="mealDetail"></ion-textarea>
+        <button large class="timer" item-right icon-only ion-button item-right (click)="saveMeal()">
+          <ion-icon name='archive'></ion-icon>
+        </button>
+      </ion-item>
+      </div>
+      <ion-fab right bottom>
+        <button ion-fab class="timer" (click)="manuallyAddMeal()">
+          <ion-icon name="add"></ion-icon>
+        </button>
+      </ion-fab>
+
+      <!-- Summary -->
+      <p class="center"  *ngIf="lastMeal;else none">
+        <i class="momentsAgo"><b>Last meal: about {{MealMomentsAgo}}</b></i>
+        <br>
+        <i> {{lastMeal}} </i>
+        <br>
+        <i *ngIf="this.lastMealDetail"> Detail: {{lastMealDetail}}</i>
+      </p>
+      <ng-template #none>
+        <p class="center">
+          <i>Last meal: No records of any meals yet! </i>
+        </p>
+      </ng-template>
+
+      <!-- NOTE: Summary of Meals -->
+      <div class="bottle-summary">
+        <div *ngIf="mealHasToday">
+          <div class="divider-title"> Today </div>
+
+          <ul class="timeline">
+            <li *ngFor="let x of mealTodayHistoryArray">
+              <div >
+                <p class="timeline-item"> {{x}}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div *ngIf="mealHasYesterday">
+          <div class="divider-title"> Yesterday </div>
+          <ul class="timeline">
+            <li *ngFor="let x of mealYesterdayHistoryArray">
+              <div>
+                <p class="timeline-item"> {{x}}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div *ngIf="mealHasMore">
+        <ion-item-group *ngFor="let x of mealMoreHistoryArray | groupby: 'date'">
+          <div  class="divider-title">
+            {{ x.key | moment:'ll' }}
+          </div>
+          <ul class="timeline">
+            <li *ngFor="let event of x.list">
+              <div>
+                <p class="timeline-item"> {{event.output}} </p>
+              </div>
+            </li>
+          </ul>
+        </ion-item-group>
+      </div>
+
     </ion-list>
+
+    <!-- PUT THINGS HERE IF YOU WANT TO SHOW IT IN ALL SEGMENTS -->
 
   </div>
 
