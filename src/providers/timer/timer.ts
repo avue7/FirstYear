@@ -1,13 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
+import { FormattedTodayProvider} from '../../providers/formatted-today/formatted-today';
 
-/*
-  Generated class for the TimerProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class TimerProvider {
   tick: any;
@@ -15,8 +10,10 @@ export class TimerProvider {
   restartTime: number;
   isPaused: boolean;
   startedOnce: boolean;
+  isPausedDateTime: any;
 
-  constructor() {
+
+  constructor( private ft: FormattedTodayProvider) {
     // this.initTimer();
     this.tick = 0;
     this.startedOnce = false;
@@ -34,6 +31,8 @@ export class TimerProvider {
       this.timerSubscription = Observable.interval(1000).subscribe(x => {
         console.log(this.tick);
         this.tick++;
+        this.isPausedDateTime = this.ft.getTodayMonthFirstWithTime();
+        console.log("Timer: isPausedDateTime is:", this.isPausedDateTime);
       });
     } else {
       this.restartTime = this.tick;

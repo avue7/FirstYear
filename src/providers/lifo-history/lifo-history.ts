@@ -76,7 +76,10 @@ export class LifoHistoryProvider {
       this.historyArray = this.db.diaperingHistoryArray;
     } else if(activity == 'meal'){
       this.historyArray = this.db.mealHistoryArray;
+    } else if(activity == 'sleeping'){
+      this.historyArray = this.db.sleepingHistoryArray;
     }
+
 
     // DEBUG: Leave this for debugging
     console.log("DEBUGGING: this history array in lifo is:", this.historyArray);
@@ -114,15 +117,18 @@ export class LifoHistoryProvider {
       };
 
       // Convert duration
+      let hours = Math.floor(x.duration / 60);
       let minutes = Math.floor(x.duration / 60);
       let seconds =  x.duration % 60;
 
       let durationString: any;
 
-      if(minutes == 0){
-        durationString = seconds + ' secs';
-      } else {
+      if (hours >= 1){
+        durationString = hours + ' hours ' + minutes + ' mins ' + seconds + ' secs';
+      } else if(minutes >= 1){
         durationString = minutes + ' mins ' + seconds + ' secs';
+      } else {
+        durationString = seconds + ' secs';
       };
 
       let outputString: any;
@@ -146,6 +152,12 @@ export class LifoHistoryProvider {
         } else {
           outputString = '@' + timeString;
         };
+      } else if(activity == 'sleeping'){
+        if(x.note){
+          outputString = '@' + timeString + ', for ' + durationString + ', Note: ' + x.note;
+        } else {
+          outputString = '@' + timeString + ', for ' + durationString;
+        }
       }
 
 

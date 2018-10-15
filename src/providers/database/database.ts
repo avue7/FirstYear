@@ -24,11 +24,14 @@ export class DatabaseProvider {
   noBottleHistoryYet: boolean;
   noDiaperingHistoryYet: boolean;
   noMealHistoryYet: boolean;
+  noSleepingHistoryYet: boolean;
+
   //bfHistoryObservable: new Observable();
   bfHistoryArray: any;
   bottleHistoryArray: any;
   diaperingHistoryArray: any;
   mealHistoryArray: any;
+  sleepingHistoryArray: any;
 
   constructor(/*private alertCtrl: AlertController,*/
     private modal: ModalController,
@@ -40,6 +43,7 @@ export class DatabaseProvider {
     this.bottleHistoryArray = [];
     this.diaperingHistoryArray = [];
     this.mealHistoryArray = [];
+    this.sleepingHistoryArray = [];
   }
 
   setNewUserNewBaby(userId : any, babyObject?: any){
@@ -216,6 +220,28 @@ export class DatabaseProvider {
               let data = doc.data();
               this.mealHistoryArray.push(data);
               // console.log("Database: mealHistoryArray:", this.mealHistoryArray);
+              resolve(true);
+            });
+          });
+        });
+      }
+    })
+  }
+
+  createSleepHistoryObservable(userId: any){
+    return new Promise(resolve => {
+      if(this.noSleepingHistoryYet == true){
+        console.log("Database::createSleepingHistoryObservable(): no history yet", this.noBfHistoryYet);
+        resolve(false);
+      } else {
+        this.getActivityReference('sleeping').then((sleepingRef) => {
+          sleepingRef.onSnapshot((snapShot) => {
+            //snapShot.docChanges().forEach((change) => {
+            this.sleepingHistoryArray.splice(0, this.sleepingHistoryArray.length);
+            snapShot.forEach(doc => {
+              let data = doc.data();
+              this.sleepingHistoryArray.push(data);
+              // console.log("Database: diaperingHistoryArray:", this.diaperingHistoryArray);
               resolve(true);
             });
           });

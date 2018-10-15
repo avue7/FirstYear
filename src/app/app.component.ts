@@ -91,7 +91,7 @@ export class MyApp {
               this.bdayMonth = 0;
               this.babyName = "No baby added yet!";
             } else {
-              // Create all new activity observables here. 
+              // Create all new activity observables here.
               this.db.createBabyObservable(user.uid).then(() => {
                 this.bdayYear = this.db.bdayYear;
                 this.bdayMonth = this.db.bdayMonth;
@@ -103,7 +103,8 @@ export class MyApp {
                 this.db.createDiaperingHistoryObservable(user.uid).then(()=>{
                 });
                 this.db.createMealHistoryObservable(user.uid).then(()=>{
-
+                });
+                this.db.createSleepHistoryObservable(user.uid).then(()=>{
                 });
               });
             };
