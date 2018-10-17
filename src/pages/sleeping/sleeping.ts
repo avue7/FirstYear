@@ -178,25 +178,7 @@ export class SleepingPage {
           this.createMomentObservable(this.SleepingMomentsAgoTime);
 
           this.lastSleeping = this.ft.formatDateTimeStandard(doc.data().date);
-
-          let duration = doc.data().duration;
-
-          // Convert duration
-          let hours = Math.floor(duration / 60);
-          let minutes = Math.floor(duration / 60);
-          let seconds =  duration % 60;
-          let durationString: any;
-
-          if (hours >= 1){
-            durationString = hours + ' hours ' + minutes + ' mins ' + seconds + ' secs';
-          } else if(minutes >= 1){
-            durationString = minutes + ' mins ' + seconds + ' secs';
-          } else {
-            durationString = seconds + ' secs';
-          };
-
-          this.lastSleepDuration = durationString;
-
+          this.lastSleepDuration = doc.data().duration;
         };
       });
       this.updateSleepingSummary();
@@ -233,57 +215,82 @@ export class SleepingPage {
         console.log("Sleeping::manualAdd(): user canceled modal");
       } else {
         // Extract only the date
-        let dateTemp = new Date(sleeping.date);
-        let monthNumber = (Number(dateTemp.getMonth()) + 1);
-        let monthString: string;
+        let date = this.getDate(sleeping.date);
+        console.log("SLeeping::date is: ", date);
+        let dateEnd = this.getDate(sleeping.dateEnd);
+        console.log("SLeeping::dateEnd is: ", dateEnd);
 
-        // Add a 0 to month and days < 10
-        if (monthNumber < 10){
-          monthString = '0' + monthNumber.toString();
-        } else {
-          monthString = monthNumber.toString();
-        };
-        let dayNumber = (Number(dateTemp.getDate()));
-
-        let dayString: string;
-        if (dayNumber < 10){
-          dayString = '0' + dayNumber.toString();
-        } else {
-          dayString = dayNumber.toString();
-        };
-
-        // Concentanate the strings
-        let date = monthString + '-' + dayString + '-' + dateTemp.getFullYear();
         ///////////////////////////////////////////////////////////////
-
         // Extract only the time
-        let timeTemp = new Date(sleeping.time);
-
-        let time = this.addZeroToTime(timeTemp.getHours()) + ':' + this.addZeroToTime(timeTemp.getMinutes()) + ':' +
-        this.addZeroToTime(timeTemp.getSeconds());
-
-        // String up date and time and call the method to standardize the time
-        let dateTime = date + " " + time;
+        let timeStart = this.getTime(sleeping.timeStart);
+        console.log("SLeeping::time is: ", timeStart);
+        let timeEnd = this.getTime(sleeping.timeEnd);
+        console.log("SLeeping::timeEnd is: ", timeEnd);
         /////////////////////////////////////////////////////////////////
+        // String up date and time and call the method to standardize the time
+        let dateTime = date + " " + timeStart;
+        let dateTimeEnd = dateEnd + " " + timeEnd;
+
+        // Need to get the distance of the day start and day end
+        let sleepDurationMoment = moment(dateTime, "MM-DD-YYYY HH:mm:ss").diff(moment(dateTimeEnd, "MM-DD-YYYY HH:mm:ss"));
+        let sleepDuration = moment.duration(sleepDurationMoment);
+        // console.log("Days:", sleepDuration.days(), ", Hours:", sleepDuration.hours(), ", Minutes:", sleepDuration.minutes(), ", Seconds:", sleepDuration.seconds());
+
+        let sleepDurationString: any
+        if(sleepDuration.months()){
+          if(sleepDuration.months() == 1){
+            sleepDurationString = sleepDuration.months() + " month";
+          } else {
+            sleepDurationString = sleepDuration.months() + " months";
+          };
+        }
+        if(sleepDuration.days()){
+          if(sleepDuration.days() == 1){
+            sleepDurationString = sleepDuration.days() + " day";
+          } else {
+            sleepDurationString = " " + sleepDuration.days() + " days";
+          };
+        }
+        if(sleepDuration.hours()){
+          if(sleepDuration.hours() == 1){
+            sleepDurationString = sleepDuration.hours() + " hr";
+          } else {
+            sleepDurationString = " " + sleepDuration.hours() + " hrs";
+          };
+        }
+        if(sleepDuration.minutes()){
+          if(sleepDuration.minutes() == 1){
+            sleepDurationString = sleepDuration.minutes() + " min";
+          } else {
+            sleepDurationString = " " + sleepDuration.minutes() + " mins";
+          };
+        }
+        if(sleepDuration.seconds()){
+          if(sleepDuration.seconds() == 1){
+            sleepDurationString = sleepDuration.seconds() + " sec";
+          } else {
+            sleepDurationString = " " + sleepDuration.seconds() + " secs";
+          };
+        }
 
         let manualObject = {}
 
         if(this.sleepingNote){
           manualObject = {
-            date: sleeping.date,
+            date: dateTime,
             note: sleeping.note,
-            time: sleeping.timeStart,
-            dateEnd: sleeping.dateEnd,
-            timeEnd:  sleeping.timeEnd,
-            duration: sleeping.duration
+            time: timeStart,
+            dateEnd: dateTimeEnd,
+            timeEnd:  timeEnd,
+            duration: sleepDurationString
           }
         }else {
           manualObject = {
-            date: sleeping.date,
-            time: sleeping.timeStart,
-            dateEnd: sleeping.dateEnd,
-            timeEnd:  sleeping.timeEnd,
-            duration: sleeping.duration
+            date: dateTime,
+            time: timeStart,
+            dateEnd: dateTimeEnd,
+            timeEnd:  timeEnd,
+            duration: sleepDurationString
           }
         };
 
@@ -298,6 +305,38 @@ export class SleepingPage {
         });
       };
     });
+  }
+
+  getDate(dateParam : any) : any{
+    let dateTemp = new Date(dateParam);
+    let monthNumber = (Number(dateTemp.getMonth()) + 1);
+    let monthString: string;
+
+    // Add a 0 to month and days < 10
+    if (monthNumber < 10){
+      monthString = '0' + monthNumber.toString();
+    } else {
+      monthString = monthNumber.toString();
+    };
+    let dayNumber = (Number(dateTemp.getDate()));
+
+    let dayString: string;
+    if (dayNumber < 10){
+      dayString = '0' + dayNumber.toString();
+    } else {
+      dayString = dayNumber.toString();
+    };
+    // Concentanate the strings
+    let date = monthString + '-' + dayString + '-' + dateTemp.getFullYear();
+    return date;
+  }
+
+  getTime(timeParam: any){
+    let timeTemp = new Date(timeParam);
+
+    let time = this.addZeroToTime(timeTemp.getHours()) + ':' + this.addZeroToTime(timeTemp.getMinutes()) + ':' +
+    this.addZeroToTime(timeTemp.getSeconds());
+    return time;
   }
 
   openSleepingModal() : any {

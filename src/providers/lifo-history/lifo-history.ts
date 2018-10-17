@@ -116,24 +116,10 @@ export class LifoHistoryProvider {
         timeString = xSplitTimeArray[0] + ':' + xSplitTimeArray[1] + ':' + xSplitTimeArray[2] + ' AM';
       };
 
-      // Convert duration
-      let hours = Math.floor(x.duration / 60);
-      let minutes = Math.floor(x.duration / 60);
-      let seconds =  x.duration % 60;
-
-      let durationString: any;
-
-      if (hours >= 1){
-        durationString = hours + ' hours ' + minutes + ' mins ' + seconds + ' secs';
-      } else if(minutes >= 1){
-        durationString = minutes + ' mins ' + seconds + ' secs';
-      } else {
-        durationString = seconds + ' secs';
-      };
-
-      let outputString: any;
-
       // IF activity is bottlefeeding
+      let outputString: any;
+      let durationString = this.convertDuration(x.duration);
+
       if(activity == 'bottlefeeding'){
         if(x.note){
           outputString = '@' + timeString + ', ' + x.type + ', ' + x.volume + ' ' + x.unit + ', ' + durationString + ', Note: ' + x.note.note;
@@ -154,9 +140,17 @@ export class LifoHistoryProvider {
         };
       } else if(activity == 'sleeping'){
         if(x.note){
-          outputString = '@' + timeString + ', for ' + durationString + ', Note: ' + x.note;
+          if(typeof x.duration == "string"){
+            outputString = '@' + timeString + ', for' + x.duration + ', Note: ' + x.note;
+          } else {
+            outputString = '@' + timeString + ', for ' + durationString + ', Note: ' + x.note;
+          };
         } else {
-          outputString = '@' + timeString + ', for ' + durationString;
+          if(typeof x.duration == "string"){
+            outputString = '@' + timeString + ', for' + x.duration;
+          } else {
+            outputString = '@' + timeString + ', for ' + durationString;
+          };
         }
       }
 
@@ -213,4 +207,46 @@ export class LifoHistoryProvider {
     });
   }
 
+  convertDuration(duration: any){
+    // Convert duration
+    let seconds = duration;
+    let days = Math.floor(seconds / (3600*24));
+    seconds -= days*3600*24;
+    let hours = Math.floor(seconds / 3600);
+    seconds -= hours*3600;
+    let minutes = Math.floor(seconds / 60);
+    seconds -= minutes*60;
+
+    let durationString: any = "";
+
+    if (days > 0){
+      if (days <= 1){
+        durationString += days + ' day';
+      } else {
+        durationString += days + ' days';
+      };
+    }
+    if (hours > 0){
+      if (hours <= 1){
+        durationString += hours + ' hr';
+      } else {
+        durationString += hours + ' hrs';
+      };
+    }
+    if(minutes > 0){
+      if (hours <= 1){
+        durationString += minutes + ' min';
+      } else {
+        durationString += minutes + ' mins';
+      };
+    }
+    if(seconds > 0) {
+      if (seconds <= 1){
+        durationString += seconds + ' sec';
+      } else {
+        durationString += seconds + ' secs';
+      };
+    };
+    return durationString;
+  }
 }

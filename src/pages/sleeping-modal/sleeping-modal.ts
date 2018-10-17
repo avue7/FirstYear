@@ -48,7 +48,7 @@ export class SleepingModalPage {
       }
     };
 
-    console.log("Manual add diaper data:", manualObject);
+    console.log("Manual add sleeping data:", manualObject);
     this.view.dismiss(manualObject);
   }
 
