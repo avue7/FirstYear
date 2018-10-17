@@ -129,7 +129,7 @@ export class DiaperingPage {
           };
 
           // NOTE: MOMENTS AGO HACK...
-          this.DiaperingMomentsAgoTime = moment(doc.data().date, 'MM-DD-YYYY HH:mm:ss');
+          this.DiaperingMomentsAgoTime = moment(doc.data().date, 'YYYY-MM-DD HH:mm:ss');
           this.createMomentObservable(this.DiaperingMomentsAgoTime);
 
           this.lastDiapering = this.ft.formatDateTimeStandard(doc.data().date);

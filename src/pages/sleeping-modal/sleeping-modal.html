@@ -1,0 +1,45 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Manually Add Sleep</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <form class="list-form" (ngSubmit)="manuallyAddSleeping()">
+    <ion-list>
+
+      <ion-item>
+        <ion-label>Date (start):</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="sleeping.date" name="date"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Time (start):</ion-label>
+        <ion-datetime displayFormat="hh:mm:ss A" [(ngModel)]="sleeping.timeStart" name="time"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Date (end):</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="sleeping.dateEnd" name="date"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Time (end):</ion-label>
+        <ion-datetime displayFormat="hh:mm:ss A" [(ngModel)]="sleeping.timeEnd" name="time"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label color="gray!important">Note:</ion-label>
+          <p item-right (click)="noteAlert()">
+            <ion-icon name="clipboard"></ion-icon>
+            <ion-icon *ngIf="sleepingNote" color="green" name="checkmark"></ion-icon>
+          </p>
+      </ion-item>
+
+    </ion-list>
+    <button ion-button class="baby-button" type="submit">Add</button>
+  </form>
+  <button ion-button class="baby-button" (click)="cancelSleepingModal()">Cancel</button>
+
+</ion-content>

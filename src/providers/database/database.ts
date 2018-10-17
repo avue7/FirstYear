@@ -23,10 +23,15 @@ export class DatabaseProvider {
   noBfHistoryYet: boolean;
   noBottleHistoryYet: boolean;
   noDiaperingHistoryYet: boolean;
+  noMealHistoryYet: boolean;
+  noSleepingHistoryYet: boolean;
+
   //bfHistoryObservable: new Observable();
   bfHistoryArray: any;
   bottleHistoryArray: any;
   diaperingHistoryArray: any;
+  mealHistoryArray: any;
+  sleepingHistoryArray: any;
 
   constructor(/*private alertCtrl: AlertController,*/
     private modal: ModalController,
@@ -37,6 +42,8 @@ export class DatabaseProvider {
     this.bfHistoryArray = [];
     this.bottleHistoryArray = [];
     this.diaperingHistoryArray = [];
+    this.mealHistoryArray = [];
+    this.sleepingHistoryArray = [];
   }
 
   setNewUserNewBaby(userId : any, babyObject?: any){
@@ -198,6 +205,51 @@ export class DatabaseProvider {
     })
   }
 
+  // THis method is called in apps.ts
+  createMealHistoryObservable(userId: any){
+    return new Promise(resolve => {
+      if(this.noMealHistoryYet == true){
+        console.log("Database::createMealHistoryObservable(): no history yet", this.noMealHistoryYet);
+        resolve(false);
+      } else {
+        this.getActivityReference('meal').then((mealRef) => {
+          mealRef.onSnapshot((snapShot) => {
+            //snapShot.docChanges().forEach((change) => {
+            this.mealHistoryArray.splice(0, this.mealHistoryArray.length);
+            snapShot.forEach(doc => {
+              let data = doc.data();
+              this.mealHistoryArray.push(data);
+              // console.log("Database: mealHistoryArray:", this.mealHistoryArray);
+              resolve(true);
+            });
+          });
+        });
+      }
+    })
+  }
+
+  createSleepHistoryObservable(userId: any){
+    return new Promise(resolve => {
+      if(this.noSleepingHistoryYet == true){
+        console.log("Database::createSleepingHistoryObservable(): no history yet", this.noBfHistoryYet);
+        resolve(false);
+      } else {
+        this.getActivityReference('sleeping').then((sleepingRef) => {
+          sleepingRef.onSnapshot((snapShot) => {
+            //snapShot.docChanges().forEach((change) => {
+            this.sleepingHistoryArray.splice(0, this.sleepingHistoryArray.length);
+            snapShot.forEach(doc => {
+              let data = doc.data();
+              this.sleepingHistoryArray.push(data);
+              // console.log("Database: diaperingHistoryArray:", this.diaperingHistoryArray);
+              resolve(true);
+            });
+          });
+        });
+      }
+    })
+  }
+
   calculateAge(){
     return new Promise (resolve => {
       let todayUnformatted = new Date();
@@ -266,6 +318,12 @@ export class DatabaseProvider {
     return new Promise (resolve => {
       console.log("Database::saveBabyActivity(): activity is", activity);
       console.log("Database::saveBabyActivity(): object is", object);
+
+      // Convert date back to YYYY/MM/DD
+      let splitDateTime = object.date.split(' ');
+      let dateArray = splitDateTime[0].split('-');
+      let newDate = dateArray[2] + '-' + dateArray[0] + '-' + dateArray[1];
+      object.date = newDate + ' ' + splitDateTime[1];
 
       let babyReference = this.getBabyReference();
       babyReference.collection(activity).doc(object.date).set(object);

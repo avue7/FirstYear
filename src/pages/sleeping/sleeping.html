@@ -5,8 +5,111 @@
     </button>
     <ion-title> Sleeping </ion-title>
   </ion-navbar>
+
 </ion-header>
 
+
 <ion-content padding>
+  <ion-list>
+    <div class="box">
+      <ion-row>
+        <ion-col width-25>
+          <ion-item>
+            <ion-label>Date</ion-label>
+            <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="sleeping.date" name="date"></ion-datetime>
+          </ion-item>
+        </ion-col>
+        <ion-col class="center-black" width-3>
+            <h3><b>{{((timer.tick) | hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </b></h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col width-3>
+          <ion-item>
+            <ion-label color="gray!important">Note:</ion-label>
+            <p item-right (click)="noteAlert()">
+              <ion-icon name="clipboard"></ion-icon>
+              <ion-icon *ngIf="sleepingNote" color="green" name="checkmark"></ion-icon>
+            </p>
+          </ion-item>
+          <!-- <ion-item>
+
+          </ion-item> -->
+        </ion-col>
+        <ion-col width-3>
+        <!-- Timer for bottle -->
+            <div class="center">
+              <button class="timer" ion-button icon-only [disabled]="!timer.tick || !timer.isPaused" (click)="refreshTimer()">
+                <ion-icon name='refresh'></ion-icon>
+              </button>
+              <button class="timer" ion-button icon-only [disabled]="durationIsSet" (click)="startPauseTimer()">
+                <ion-icon [name]="timer.isPaused ? 'play' : 'pause' "></ion-icon>
+              </button>
+              <button class="timer" ion-button type="submit" icon-only  [disabled]="!timer.tick || !timer.isPaused" (click)="saveSleeping()">
+                <ion-icon  name='archive'></ion-icon>
+              </button>
+            </div>
+          </ion-col>
+      </ion-row>
+    </div>
+
+    <!-- Summary -->
+    <p class="center"  *ngIf="lastSleeping;else none">
+      <i class="momentsAgo"><b>Last Slept: about {{SleepingMomentsAgo}}</b></i>
+      <br>
+      <i> {{lastSleeping}}, slept for: {{lastSleepDuration}}</i>
+      <br>
+    </p>
+    <ng-template #none>
+      <p class="center">
+        <i>Last Slept: No records of sleep yet! </i>
+      </p>
+    </ng-template>
+
+    <div class="diapering-summary">
+      <div *ngIf="hasToday">
+        <div class="divider-title"> Today </div>
+
+        <ul class="timeline">
+          <li *ngFor="let x of todayHistoryArray">
+            <div >
+              <p class="timeline-item"> {{x}}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div *ngIf="hasYesterday">
+        <div class="divider-title"> Yesterday </div>
+        <ul class="timeline">
+          <li *ngFor="let x of yesterdayHistoryArray">
+            <div>
+              <p class="timeline-item"> {{x}}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div *ngIf="hasMore">
+      <ion-item-group *ngFor="let x of moreHistoryArray | groupby: 'date'">
+        <div  class="divider-title">
+          {{ x.key | moment:'ll' }}
+        </div>
+        <ul class="timeline">
+          <li *ngFor="let event of x.list">
+            <div>
+              <p class="timeline-item"> {{event.output}} </p>
+            </div>
+          </li>
+        </ul>
+      </ion-item-group>
+    </div>
+
+    <ion-fab bottom right>
+      <button ion-fab class="timer" (click)="manuallyAddSleeping()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-fab>
+  </ion-list>
 
 </ion-content>

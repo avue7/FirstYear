@@ -1,13 +1,9 @@
-page-diapering-modal {
+page-sleeping-modal {
   ion-modal{
     .modal-wrapper {
       height: 70% !important;
       width: 60% !important;
     }
-  }
-
-  ion-label {
-    color: gray !important;
   }
 
   .scroll-content {
@@ -24,9 +20,36 @@ page-diapering-modal {
     height: 100%;
   }
 
+  ion-label {
+    color: gray !important;
+  }
+
   ion-row {
     align-items: center;
     text-align: center;
+  }
+
+  ion-input{
+    input {
+      text-align: right;
+      ::-webkit-input-placeholder {
+        text-align: right;
+      }
+    }
+  }
+
+  ion-select{
+    select {
+      text-align: right;
+      ::-webkit-input-placeholder {
+        text-align: right;
+      }
+    }
+  }
+
+  .item-inner {
+    border-bottom-color: transparent !important;
+    box-shadow: none !important;
   }
 
   .baby-button {

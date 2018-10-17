@@ -1,13 +1,9 @@
-page-diapering-modal {
+page-meal-modal {
   ion-modal{
     .modal-wrapper {
       height: 70% !important;
       width: 60% !important;
     }
-  }
-
-  ion-label {
-    color: gray !important;
   }
 
   .scroll-content {
@@ -27,6 +23,29 @@ page-diapering-modal {
   ion-row {
     align-items: center;
     text-align: center;
+  }
+
+  ion-input{
+    input {
+      text-align: right;
+      ::-webkit-input-placeholder {
+        text-align: right;
+      }
+    }
+  }
+
+  ion-select{
+    select {
+      text-align: right;
+      ::-webkit-input-placeholder {
+        text-align: right;
+      }
+    }
+  }
+
+  .item-inner {
+    border-bottom-color: transparent !important;
+    box-shadow: none !important;
   }
 
   .baby-button {

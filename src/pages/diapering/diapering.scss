@@ -10,6 +10,14 @@ page-diapering {
     // overflow-x: hidden;
   }
 
+  ion-label {
+    color: gray !important;
+  }
+
+  .right-align {
+    text-align: right;
+  }
+
   .box {
     width: 100%;
     //border: 1px solid gray;
@@ -87,6 +95,11 @@ page-diapering {
   .item-inner {
     border-bottom-color: transparent !important;
     box-shadow: none !important;
+  }
+
+  .center-fab {
+    text-align: center;
+    background-color: #42c7ff;
   }
 
   .timer {

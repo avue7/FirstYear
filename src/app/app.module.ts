@@ -36,6 +36,8 @@ import { BreastfeedingModalPage } from '../pages/breastfeeding-modal/breastfeedi
 import { BfHistoryModalPage } from '../pages/bf-history-modal/bf-history-modal';
 import { BottlefeedingModalPage } from '../pages/bottlefeeding-modal/bottlefeeding-modal';
 import { DiaperingModalPage } from '../pages/diapering-modal/diapering-modal';
+import { MealModalPage } from '../pages/meal-modal/meal-modal';
+import { SleepingModalPage } from '../pages/sleeping-modal/sleeping-modal';
 
 import { TimerProvider } from '../providers/timer/timer';
 import { HoursMinutesSecondsPipe } from '../pipes/hours-minutes-seconds/hours-minutes-seconds';
@@ -70,7 +72,9 @@ import { LifoHistoryProvider } from '../providers/lifo-history/lifo-history';
     GroupbyPipe,
     MomentPipe,
     BottlefeedingModalPage,
-    DiaperingModalPage
+    DiaperingModalPage,
+    MealModalPage,
+    SleepingModalPage,
   ],
   imports: [
     BrowserModule,
@@ -101,7 +105,9 @@ import { LifoHistoryProvider } from '../providers/lifo-history/lifo-history';
     BreastfeedingModalPage,
     BfHistoryModalPage,
     BottlefeedingModalPage,
-    DiaperingModalPage
+    DiaperingModalPage,
+    MealModalPage,
+    SleepingModalPage
   ],
   providers: [
     StatusBar,
