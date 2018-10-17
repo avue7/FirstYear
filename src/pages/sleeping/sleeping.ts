@@ -178,7 +178,7 @@ export class SleepingPage {
           this.createMomentObservable(this.SleepingMomentsAgoTime);
 
           this.lastSleeping = this.ft.formatDateTimeStandard(doc.data().date);
-          this.lastSleepDuration = doc.data().duration;
+          this.lastSleepDuration = this.lifoHistory.convertDuration(doc.data().duration);
         };
       });
       this.updateSleepingSummary();
@@ -238,38 +238,38 @@ export class SleepingPage {
 
         let sleepDurationString: any
         if(sleepDuration.months()){
-          if(sleepDuration.months() == 1){
-            sleepDurationString = sleepDuration.months() + " month";
+          if(Math.abs(sleepDuration.months()) == 1){
+            sleepDurationString = Math.abs(sleepDuration.months()) + " month";
           } else {
-            sleepDurationString = sleepDuration.months() + " months";
+            sleepDurationString = Math.abs(sleepDuration.months()) + " months";
           };
         }
         if(sleepDuration.days()){
-          if(sleepDuration.days() == 1){
-            sleepDurationString = sleepDuration.days() + " day";
+          if(Math.abs(sleepDuration.days()) == 1){
+            sleepDurationString = Math.abs(sleepDuration.days()) + " day";
           } else {
-            sleepDurationString = " " + sleepDuration.days() + " days";
+            sleepDurationString = " " + Math.abs(sleepDuration.days()) + " days";
           };
         }
         if(sleepDuration.hours()){
-          if(sleepDuration.hours() == 1){
-            sleepDurationString = sleepDuration.hours() + " hr";
+          if(Math.abs(sleepDuration.hours()) == 1){
+            sleepDurationString = Math.abs(sleepDuration.hours()) + " hr";
           } else {
-            sleepDurationString = " " + sleepDuration.hours() + " hrs";
+            sleepDurationString = " " + Math.abs(sleepDuration.hours()) + " hrs";
           };
         }
         if(sleepDuration.minutes()){
-          if(sleepDuration.minutes() == 1){
-            sleepDurationString = sleepDuration.minutes() + " min";
+          if(Math.abs(sleepDuration.minutes()) == 1){
+            sleepDurationString = Math.abs(sleepDuration.minutes()) + " min";
           } else {
-            sleepDurationString = " " + sleepDuration.minutes() + " mins";
+            sleepDurationString = " " + Math.abs(sleepDuration.minutes()) + " mins";
           };
         }
         if(sleepDuration.seconds()){
-          if(sleepDuration.seconds() == 1){
-            sleepDurationString = sleepDuration.seconds() + " sec";
+          if(Math.abs(sleepDuration.seconds()) == 1){
+            sleepDurationString = Math.abs(sleepDuration.seconds()) + " sec";
           } else {
-            sleepDurationString = " " + sleepDuration.seconds() + " secs";
+            sleepDurationString = " " + Math.abs(sleepDuration.seconds()) + " secs";
           };
         }
 

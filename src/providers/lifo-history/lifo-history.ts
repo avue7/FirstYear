@@ -141,13 +141,13 @@ export class LifoHistoryProvider {
       } else if(activity == 'sleeping'){
         if(x.note){
           if(typeof x.duration == "string"){
-            outputString = '@' + timeString + ', for' + x.duration + ', Note: ' + x.note;
+            outputString = '@' + timeString + ', for ' + x.duration + ', Note: ' + x.note;
           } else {
             outputString = '@' + timeString + ', for ' + durationString + ', Note: ' + x.note;
           };
         } else {
           if(typeof x.duration == "string"){
-            outputString = '@' + timeString + ', for' + x.duration;
+            outputString = '@' + timeString + ', for ' + x.duration;
           } else {
             outputString = '@' + timeString + ', for ' + durationString;
           };
@@ -221,30 +221,30 @@ export class LifoHistoryProvider {
 
     if (days > 0){
       if (days <= 1){
-        durationString += days + ' day';
+        durationString += days + ' day' + ' ';
       } else {
-        durationString += days + ' days';
+        durationString += days + ' days' + ' ';
       };
     }
     if (hours > 0){
       if (hours <= 1){
-        durationString += hours + ' hr';
+        durationString += hours + ' hr' + ' ';
       } else {
-        durationString += hours + ' hrs';
+        durationString += hours + ' hrs' + ' ';
       };
     }
     if(minutes > 0){
       if (hours <= 1){
-        durationString += minutes + ' min';
+        durationString += minutes + ' min' + ' ';
       } else {
-        durationString += minutes + ' mins';
+        durationString += minutes + ' mins' + ' ';
       };
     }
     if(seconds > 0) {
       if (seconds <= 1){
-        durationString += seconds + ' sec';
+        durationString += seconds + ' sec' + ' ';
       } else {
-        durationString += seconds + ' secs';
+        durationString += seconds + ' secs' + ' ';
       };
     };
     return durationString;
