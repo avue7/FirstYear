@@ -129,6 +129,8 @@ export class FeedingPage {
     } else if(this.BottleMomentsAgoSubscription){
       this.BottleMomentsAgoSubscription.unsubscribe();
     }
+
+    this.navParams.get("parentPage").updateBottleSummary();
   }
   // ionViewDidLoad() {
   //   console.log('ionViewDidLoad FeedingPage');
@@ -154,7 +156,7 @@ export class FeedingPage {
     if(this.timer.timerSubscription != undefined){
       this.timer.refreshTimer();
     } else{
-      console.log("Feedings::refreshTimer(): timerSubscription is undefined");
+      //console.log("Feedings::refreshTimer(): timerSubscription is undefined");
     };
   }
 
@@ -203,7 +205,7 @@ export class FeedingPage {
       latestSnapshot.forEach(doc => {
         count = count - 1;
         if(count == 0){
-          console.log("Feeding::getLastBreastFeed(): last date retrieved is:", doc.data().date);
+          // console.log("Feeding::getLastBreastFeed(): last date retrieved is:", doc.data().date);
 
           // If last breastfeeding exists
           if(this.lastBreastFeed){
@@ -596,7 +598,6 @@ export class FeedingPage {
   waitForBottleReturn() : any{
     return new Promise(resolve => {
       this.bottlefeedingModal.onDidDismiss( data => {
-        console.log("WAIT FOR RETURN DATA IS:", data);
         let babyObject = data;
         resolve(babyObject);
       });
@@ -621,9 +622,9 @@ export class FeedingPage {
 
     this.waitForAlertReturn().then((val) => {
       if(val == true){
-        console.log("THIS bottlenote is true: ", val);
+        // console.log("THIS bottlenote is true: ", val);
       } else {
-        console.log("THIS bottlenote is false: ", val);
+        // console.log("THIS bottlenote is false: ", val);
       };
     });
   }
@@ -631,7 +632,6 @@ export class FeedingPage {
   waitForAlertReturn() : any{
     return new Promise(resolve => {
       this.nAlert.onDidDismiss(data => {
-        console.log("DATA IS:", data);
         if(data != undefined){
           this.bottleNote = data;
           resolve(true);

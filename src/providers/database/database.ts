@@ -58,16 +58,16 @@ export class DatabaseProvider {
 
       // First check if user exists
       this.checkIfBabyExists(currentUserRef).then((retVal) => {
-        if(retVal == true){
+        if(retVal == "true"){
           // console.log("Database:: user already exists in the users collection.");
           this.noBabyYet = false;
-          resolve(false);
+          resolve("true");
         } else if(retVal == "later"){
           // console.log("Database:: user decides to do baby info later");
           resolve("later");
         } else {
           // console.log("Database:: Successfully created new user in users collection.");
-          resolve(true);
+          resolve("false");
         }
       });
     });
@@ -77,20 +77,20 @@ export class DatabaseProvider {
     return new Promise(resolve => {
       currentUserRef.get().then((docSnapShot) => {
         if (!docSnapShot.empty){
-          // console.log("Database::checkIfBabyExists(): baby doc(s) exists.")
+          console.log("Database::checkIfBabyExists(): baby doc(s) exists.")
           this.noBabyYet = false;
-          resolve(true);
+          resolve("true");
         } else {
           console.log("Database::checkIfBabyExists: no baby doc(s) exists.")
           this.openModal().then((baby) => {
             let babyObject = baby;
             if (babyObject == undefined){
-              resolve("later");
               this.noBabyYet = true;
+              resolve("later");
             } else {
               currentUserRef.doc(babyObject.firstName).set(babyObject);
               this.noBabyYet = false;
-              resolve(false);
+              resolve("false");
             };
           });
         };
@@ -142,112 +142,176 @@ export class DatabaseProvider {
 
   createBreastFeedingHistoryObservable(userId: any){
     return new Promise(resolve => {
-      if(this.noBfHistoryYet == true){
-        console.log("Database::createBreastFeedingHistoryObservable(): no history yet", this.noBfHistoryYet);
-        resolve(false);
-      } else {
-        this.getActivityReference('breastfeeding').then((breastFeedRef) => {
-          breastFeedRef.onSnapshot((snapShot) => {
-            //snapShot.docChanges().forEach((change) => {
-            this.bfHistoryArray.splice(0, this.bfHistoryArray.length);
-            snapShot.forEach(doc => {
-              let data = doc.data();
-              this.bfHistoryArray.push(data);
-              resolve(true);
+      this.getActivityReference('breastfeeding').then((breastFeedRef) => {
+        breastFeedRef.get().then((query) => {
+          let collectionExists: any;
+          if(query.size == 0){
+            collectionExists = 0;
+          } else {
+            collectionExists = 1;
+          };
+
+          if (collectionExists == 1){
+            breastFeedRef.onSnapshot((snapShot) => {
+              this.bfHistoryArray.splice(0, this.bfHistoryArray.length);
+              snapShot.forEach(doc => {
+                let data = doc.data();
+                this.bfHistoryArray.push(data);
+                resolve(true);
+              });
             });
-          });
+          } else {
+            console.log("Database::createBreastFeedingHistoryObservable(): no history yet");
+            resolve(false);
+          };
         });
-      }
-    })
+      }, error => {
+        console.log("Database::createBreastFeedingHistoryObservable(): no history yet");
+        resolve(false);
+      });
+    });
   }
 
-  createBottleFeedingHistoryObservable(userId: any){
+  createBottleFeedingHistoryObservable(userId: any, bottleFeedRef: any){
     return new Promise(resolve => {
-      if(this.noBottleHistoryYet == true){
-        console.log("Database::createBreastFeedingHistoryObservable(): no history yet", this.noBfHistoryYet);
-        resolve(false);
-      } else {
-        this.getActivityReference('bottlefeeding').then((bottleFeedRef) => {
-          bottleFeedRef.onSnapshot((snapShot) => {
-            //snapShot.docChanges().forEach((change) => {
-            this.bottleHistoryArray.splice(0, this.bottleHistoryArray.length);
-            snapShot.forEach(doc => {
-              let data = doc.data();
-              this.bottleHistoryArray.push(data);
-              // console.log("Database: bottleHistoryArray:", this.bottleHistoryArray);
-              resolve(true);
+      //this.getActivityReference('bottlefeeding').then((bottleFeedRef) => {
+      //   console.log("1....database:: getActivityReferencer returned");
+      //   bottleFeedRef.get().then((query) => {
+      //     console.log("2....database:: query size is", query.size);
+      //     let collectionExists: any;
+      //     if(query.size == 0){
+      //       collectionExists = 0;
+      //     } else {
+      //       collectionExists = 1;
+      //       console.log("3. This should run")
+      //     };
+      //
+      //     if (collectionExists == 1){
+            // console.log("4. collectionExists is:", collectionExists)
+            bottleFeedRef.onSnapshot((snapShot) => {
+              console.log("4. snapshot is:", snapShot)
+              //snapShot.docChanges().forEach((change) => {
+              this.bottleHistoryArray.splice(0, this.bottleHistoryArray.length);
+              snapShot.forEach((doc, index, array) => {
+                let data = doc.data();
+                this.bottleHistoryArray.push(data);
+                console.log("5. Database: bottleHistoryArray:", this.bottleHistoryArray);
+                resolve(true);
+              });
             });
-          });
-        });
-      }
-    })
+      //     } else {
+      //       console.log("Database::createBottleFeedingHistoryObservable(): no history yet");
+      //       resolve(false);
+      //     };
+      //   });
+      // }, error => {
+      //   console.log("Database::createBottleFeedingHistoryObservable(): no history yet");
+      //   resolve(false);
+      });
+    // });
+  }
+
+  // THis method is called in apps.ts
+  createMealHistoryObservable(userId: any, mealRef: any){
+    return new Promise(resolve => {
+      // this.getActivityReference('meal').then((mealRef) => {
+      //   mealRef.get().then((query) => {
+      //     let collectionExists: any;
+      //     if(query.size == 0){
+      //       collectionExists = 0;
+      //     } else {
+      //       collectionExists = 1;
+      //     };
+      //
+      //     if (collectionExists == 1){
+            mealRef.onSnapshot((snapShot) => {
+              //snapShot.docChanges().forEach((change) => {
+              this.mealHistoryArray.splice(0, this.mealHistoryArray.length);
+              snapShot.forEach(doc => {
+                let data = doc.data();
+                this.mealHistoryArray.push(data);
+                // console.log("Database: mealHistoryArray:", this.mealHistoryArray);
+                resolve(true);
+              });
+            });
+      //     } else {
+      //       console.log("Database::createMealHistoryObservable(): no history yet");
+      //       resolve(false);
+      //     };
+      //   });
+      // }, error => {
+      //   console.log("Database::createBottleFeedingHistoryObservable(): no history yet");
+      //   resolve(false);
+      // });
+    });
   }
 
   createDiaperingHistoryObservable(userId: any){
     return new Promise(resolve => {
-      if(this.noDiaperingHistoryYet == true){
-        console.log("Database::createDiaperingHistoryObservable(): no history yet", this.noBfHistoryYet);
-        resolve(false);
-      } else {
-        this.getActivityReference('diapering').then((diaperingRef) => {
-          diaperingRef.onSnapshot((snapShot) => {
-            //snapShot.docChanges().forEach((change) => {
-            this.diaperingHistoryArray.splice(0, this.diaperingHistoryArray.length);
-            snapShot.forEach(doc => {
-              let data = doc.data();
-              this.diaperingHistoryArray.push(data);
-              // console.log("Database: diaperingHistoryArray:", this.diaperingHistoryArray);
-              resolve(true);
-            });
-          });
-        });
-      }
-    })
-  }
+      this.getActivityReference('diapering').then((diaperingRef) => {
+        diaperingRef.get().then((query) => {
+          let collectionExists: any;
+          if(query.size == 0){
+            collectionExists = 0;
+          } else {
+            collectionExists = 1;
+          };
 
-  // THis method is called in apps.ts
-  createMealHistoryObservable(userId: any){
-    return new Promise(resolve => {
-      if(this.noMealHistoryYet == true){
-        console.log("Database::createMealHistoryObservable(): no history yet", this.noMealHistoryYet);
-        resolve(false);
-      } else {
-        this.getActivityReference('meal').then((mealRef) => {
-          mealRef.onSnapshot((snapShot) => {
-            //snapShot.docChanges().forEach((change) => {
-            this.mealHistoryArray.splice(0, this.mealHistoryArray.length);
-            snapShot.forEach(doc => {
-              let data = doc.data();
-              this.mealHistoryArray.push(data);
-              // console.log("Database: mealHistoryArray:", this.mealHistoryArray);
-              resolve(true);
+          if (collectionExists == 1){
+            diaperingRef.onSnapshot((snapShot) => {
+              //snapShot.docChanges().forEach((change) => {
+              this.diaperingHistoryArray.splice(0, this.diaperingHistoryArray.length);
+              snapShot.forEach(doc => {
+                let data = doc.data();
+                this.diaperingHistoryArray.push(data);
+                // console.log("Database: mealHistoryArray:", this.mealHistoryArray);
+                resolve(true);
+              });
             });
-          });
+          } else {
+            console.log("Database::createDiaperingHistoryObservable(): no history yet");
+            resolve(false);
+          };
         });
-      }
-    })
+      }, error => {
+        console.log("Database::createDiaperingHistoryObservable(): no history yet");
+        resolve(false);
+      });
+    });
   }
 
   createSleepHistoryObservable(userId: any){
     return new Promise(resolve => {
-      if(this.noSleepingHistoryYet == true){
-        console.log("Database::createSleepingHistoryObservable(): no history yet", this.noBfHistoryYet);
-        resolve(false);
-      } else {
-        this.getActivityReference('sleeping').then((sleepingRef) => {
-          sleepingRef.onSnapshot((snapShot) => {
-            //snapShot.docChanges().forEach((change) => {
-            this.sleepingHistoryArray.splice(0, this.sleepingHistoryArray.length);
-            snapShot.forEach(doc => {
-              let data = doc.data();
-              this.sleepingHistoryArray.push(data);
-              // console.log("Database: diaperingHistoryArray:", this.diaperingHistoryArray);
-              resolve(true);
+      this.getActivityReference('sleeping').then((sleepingRef) => {
+        sleepingRef.get().then((query) => {
+          let collectionExists: any;
+          if(query.size == 0){
+            collectionExists = 0;
+          } else {
+            collectionExists = 1;
+          };
+
+          if (collectionExists == 1){
+            sleepingRef.onSnapshot((snapShot) => {
+              //snapShot.docChanges().forEach((change) => {
+              this.sleepingHistoryArray.splice(0, this.sleepingHistoryArray.length);
+              snapShot.forEach(doc => {
+                let data = doc.data();
+                this.sleepingHistoryArray.push(data);
+                // console.log("Database: mealHistoryArray:", this.mealHistoryArray);
+                resolve(true);
+              });
             });
-          });
+          } else {
+            console.log("Database::createSleepingHistoryObservable(): no history yet");
+            resolve(false);
+          };
         });
-      }
-    })
+      }, error => {
+        console.log("Database::createSleepingFeedingHistoryObservable(): no history yet");
+        resolve(false);
+      });
+    });
   }
 
   calculateAge(){
@@ -309,11 +373,17 @@ export class DatabaseProvider {
       // let firstName = this.baby.getBabyFirstName();
       // console.log("firstName is ", this.babyName);
 
-      let activityRef = db.collection('users').doc(this.user.id).collection('babies').doc(this.babyName)
-      .collection(activity);
-      resolve(activityRef);
+      let activityRef: any;
+      resolve(activityRef = db.collection('users').doc(this.user.id).collection('babies').doc(this.babyName)
+      .collection(activity));
+      // resolve(activityRef);
     });
   }
+
+  getAllActivity(){
+
+  }
+
   saveBabyActivity(activity : any, object : any){
     return new Promise (resolve => {
       console.log("Database::saveBabyActivity(): activity is", activity);

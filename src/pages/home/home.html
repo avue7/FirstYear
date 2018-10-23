@@ -33,6 +33,57 @@
 
     <ion-list *ngSwitchCase="'Activities'">
       <p> Summary </p>
+      <div class="bottle-summary">
+        <div *ngIf="bottleHasToday">
+          <div class="divider-title"> Today </div>
+
+          <ul class="timeline">
+            <li *ngFor="let x of bottleTodayHistoryArray">
+              <div >
+                <p class="timeline-item"> {{x}}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div *ngIf="mealHasToday">
+          <div class="divider-title"> Today </div>
+
+          <ul class="timeline">
+            <li *ngFor="let x of mealTodayHistoryArray">
+              <div >
+                <p class="timeline-item"> {{x}}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div *ngIf="bottleHasYesterday">
+          <div class="divider-title"> Yesterday </div>
+          <ul class="timeline">
+            <li *ngFor="let x of bottleYesterdayHistoryArray">
+              <div>
+                <p class="timeline-item"> {{x}}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div *ngIf="bottleHasMore">
+        <ion-item-group *ngFor="let x of bottleMoreHistoryArray | groupby: 'date'">
+          <div  class="divider-title">
+            {{ x.key | moment:'ll' }}
+          </div>
+          <ul class="timeline">
+            <li *ngFor="let event of x.list">
+              <div>
+                <p class="timeline-item"> {{event.output}} </p>
+              </div>
+            </li>
+          </ul>
+        </ion-item-group>
+      </div>
+
 
       <ion-footer>
         <!--
@@ -43,9 +94,6 @@
           </p>
             </div>
         </ion-scroll> -->
-
-
-
         <strong style="color:#e1e1e1;font-size:7;"> Add an activity by clicking on any icon below: </strong>
         <ion-scroll scrollX="true">
           <div class="scroll-item" *ngFor="let activity of segments['Activities']">

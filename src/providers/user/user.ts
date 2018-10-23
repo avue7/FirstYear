@@ -20,7 +20,10 @@ export class UserProvider {
   }
 
   setUserId(id_param: any){
-    this.id = id_param;
+    return new Promise(resolve => {
+      this.id = id_param;
+      resolve();      
+    });
   }
 
   // This is a url to the photo
@@ -35,4 +38,7 @@ export class UserProvider {
     this.id = null;
   }
 
+  getUserId() : any{
+    return this.id;
+  }
 }

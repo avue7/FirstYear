@@ -71,11 +71,13 @@ export class LifoHistoryProvider {
     // NOTE: new activities need to be added here!!!!
 
     if(activity == 'bottlefeeding'){
+      console.log("LIFO:: bottle feeding history:", this.db.bottleHistoryArray);
       this.historyArray = this.db.bottleHistoryArray;
     } else if(activity == 'diapering'){
       this.historyArray = this.db.diaperingHistoryArray;
     } else if(activity == 'meal'){
       this.historyArray = this.db.mealHistoryArray;
+      console.log("LIFO:: meal feeding history:", this.db.mealHistoryArray);
     } else if(activity == 'sleeping'){
       this.historyArray = this.db.sleepingHistoryArray;
     }
@@ -122,34 +124,34 @@ export class LifoHistoryProvider {
 
       if(activity == 'bottlefeeding'){
         if(x.note){
-          outputString = '@' + timeString + ', ' + x.type + ', ' + x.volume + ' ' + x.unit + ', ' + durationString + ', Note: ' + x.note.note;
+          outputString = timeString + ', ' + x.type + ', ' + x.volume + ' ' + x.unit + ', ' + durationString + ', Note: ' + x.note.note;
         } else {
-          outputString = '@' + timeString + ', ' + x.type + ', ' + x.volume + ' ' + x.unit + ', ' + durationString;
+          outputString = timeString + ', ' + x.type + ', ' + x.volume + ' ' + x.unit + ', ' + durationString;
         };
       } else if(activity == 'diapering'){
           if(x.note){
-            outputString = '@' + timeString + ', ' + x.type + ', ' + 'Note: ' + x.note.note;
+            outputString = timeString + ', ' + x.type + ', ' + 'Note: ' + x.note.note;
           } else {
-            outputString = '@' + timeString + ', ' + x.type
+            outputString = timeString + ', ' + x.type
          };
       } else if(activity == 'meal'){
         if(x.detail){
-          outputString = '@' + timeString + ', ' + 'Detail: ' + x.detail;
+          outputString = timeString + ', ' + 'Detail: ' + x.detail;
         } else {
-          outputString = '@' + timeString;
+          outputString = timeString;
         };
       } else if(activity == 'sleeping'){
         if(x.note){
           if(typeof x.duration == "string"){
-            outputString = '@' + timeString + ', for ' + x.duration + ', Note: ' + x.note;
+            outputString = timeString + ', for ' + x.duration + ', Note: ' + x.note;
           } else {
-            outputString = '@' + timeString + ', for ' + durationString + ', Note: ' + x.note;
+            outputString = timeString + ', for ' + durationString + ', Note: ' + x.note;
           };
         } else {
           if(typeof x.duration == "string"){
-            outputString = '@' + timeString + ', for ' + x.duration;
+            outputString = timeString + ', for ' + x.duration;
           } else {
-            outputString = '@' + timeString + ', for ' + durationString;
+            outputString = timeString + ', for ' + durationString;
           };
         }
       }
