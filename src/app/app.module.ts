@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { IonicApp, IonicErrorHandler, IonicModule, ViewController } from 'ionic-angular';
 import { NgxErrorsModule } from '@ultimate/ngxerrors';
 import { MyApp } from './app.component';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -127,7 +127,7 @@ import { LifoHistoryProvider } from '../providers/lifo-history/lifo-history';
     GroupbyPipe,
     MomentPipe,
     NoteAlertProvider,
-    LifoHistoryProvider,
+    LifoHistoryProvider
   ]
 })
 export class AppModule {}

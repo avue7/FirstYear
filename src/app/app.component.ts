@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, MenuController } from 'ionic-angular';
+import { Nav, Platform, MenuController} from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Subscription} from 'rxjs/Subscription';
@@ -30,7 +30,7 @@ import { async } from '@firebase/util';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any;
+  rootPage: any = HomePage;
   userSubscription: Subscription;
   summaryArray: string[] = new Array();
 
@@ -87,6 +87,7 @@ export class MyApp {
       //   this.summaryArray.splice(0, this.summaryArray.length);
       // };
       this.createAuthObservable();
+
     });
   }
 
@@ -117,13 +118,8 @@ export class MyApp {
                     this.bdayMonth = this.db.bdayMonth;
                     this.babyName = this.db.babyName;
                     this.babyObservableDone = true;
-                    // this.db.createBottleFeedingHistoryObservable(user.uid).then(() => {
-                    //   console.log("APPS:: BottleFeedingHistoryObservable updated");
-                    console.log("App:: done creating baby observable!");
-                    this.createHistoryObservables(user).then(() => {
-                      console.log("6. App:: done with history observable creation: history array :", this.summaryArray);
-                      resolve(this.nav.setRoot(HomePage, {flags: this.summaryArray}));
-                    });
+                    console.log("APP:: done creating baby observable!");
+                    this.nav.setRoot(HomePage);
                   });
                 }
               });
@@ -144,40 +140,6 @@ export class MyApp {
       resolve(true);
     });
   }
-
-  async createHistoryObservables(user: any){
-      for (let activity of this.activitiesArray){
-        let activityRef: any;
-        await this.db.getActivityReference(activity).then( async(_activityRef) => {
-          console.log("1....database:: getActivityReference returned");
-          activityRef = _activityRef;
-        }).then(async() => {
-          // await activityRef.get().then( async(query) => {
-          //   console.log("2....database:: query size is", query.size, "for <", activity, ">");
-          //   let collectionExists: any;
-          //   if(query.size == 0){
-          //     console.log("3. no history exists for <", activity, ">");
-          //     //return false;
-          //   } else {
-              console.log("2. Creating observable for <", activity, "> ....");
-              if(activity == "bottlefeeding"){
-                console.log("3b) activity is bottlefeeding");
-                await this.db.createBottleFeedingHistoryObservable(user.uid, activityRef).then(async() => {
-                  await this.updateSummaryArray("bottlefeeding");
-                });
-              } else if(activity == "meal"){
-                await this.db.createMealHistoryObservable(user.uid, activityRef).then(async() => {
-                  await this.updateSummaryArray("meal");
-                });
-              };
-              //return true;
-          //   };
-          // });
-        });
-        console.log("-----Done creating history observable-----");
-      };
-  }
-
 
   openPage(page) {
     // Reset the content nav to have just this page

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ModalController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, ViewController } from 'ionic-angular';
 import { TimerProvider } from '../../providers/timer/timer';
 import { FormattedTodayProvider} from '../../providers/formatted-today/formatted-today';
 import { DatabaseProvider } from '../../providers/database/database';
@@ -10,6 +10,7 @@ import { BottlefeedingModalPage } from '../bottlefeeding-modal/bottlefeeding-mod
 import { MealModalPage } from '../meal-modal/meal-modal';
 import { NoteAlertProvider } from '../../providers/note-alert/note-alert';
 import { LifoHistoryProvider } from '../../providers/lifo-history/lifo-history';
+import { HomePage } from '../home/home';
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Rx';
 
@@ -109,7 +110,8 @@ export class FeedingPage {
     private alertCtrl: AlertController,
     private modal: ModalController,
     private noteAlertProvider: NoteAlertProvider,
-    private lifoHistory: LifoHistoryProvider) {
+    private lifoHistory: LifoHistoryProvider,
+    private viewCtrl: ViewController) {
     this.momentsAgoTime = '';
     this.BottleMomentsAgo = '';
     this.MealMomentsAgo = '';
@@ -123,6 +125,15 @@ export class FeedingPage {
     this.getLastMeal();
   }
 
+  // NOTE: Need to add this to other pages so that it wont break the init()
+  //       method that is inside of the home page.
+  ionViewDidLeave(){
+    this.navCtrl.popToRoot();
+    if((this.navParams.get("parentPage")) != undefined){
+      this.navParams.get("parentPage").init();
+    }
+  }
+
   ionViewWillLeave(){
     if(this.momentsAgoSubscription){
       this.momentsAgoSubscription.unsubscribe();
@@ -130,7 +141,10 @@ export class FeedingPage {
       this.BottleMomentsAgoSubscription.unsubscribe();
     }
 
-    this.navParams.get("parentPage").updateBottleSummary();
+    // Need to call this to reload the home page when this child page is popped.
+    // this.navParams.get("parentPage").hello();//init();
+    // // this.navParams.get();
+    // console.log("Parent page is:", this.navParams.get("parentPage"));
   }
   // ionViewDidLoad() {
   //   console.log('ionViewDidLoad FeedingPage');

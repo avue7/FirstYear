@@ -140,176 +140,91 @@ export class DatabaseProvider {
     });
   }
 
-  createBreastFeedingHistoryObservable(userId: any){
+  createBreastFeedingHistoryObservable(userId: any, breastFeedRef: any){
     return new Promise(resolve => {
-      this.getActivityReference('breastfeeding').then((breastFeedRef) => {
-        breastFeedRef.get().then((query) => {
-          let collectionExists: any;
-          if(query.size == 0){
-            collectionExists = 0;
-          } else {
-            collectionExists = 1;
-          };
-
-          if (collectionExists == 1){
-            breastFeedRef.onSnapshot((snapShot) => {
-              this.bfHistoryArray.splice(0, this.bfHistoryArray.length);
-              snapShot.forEach(doc => {
-                let data = doc.data();
-                this.bfHistoryArray.push(data);
-                resolve(true);
-              });
-            });
-          } else {
-            console.log("Database::createBreastFeedingHistoryObservable(): no history yet");
-            resolve(false);
-          };
+      breastFeedRef.onSnapshot((snapShot) => {
+        if(snapShot.empty){
+          resolve(false);
+        }
+        this.bfHistoryArray.splice(0, this.bfHistoryArray.length);
+        snapShot.forEach(doc => {
+          let data = doc.data();
+          this.bfHistoryArray.push(data);
+          resolve(true);
         });
-      }, error => {
-        console.log("Database::createBreastFeedingHistoryObservable(): no history yet");
-        resolve(false);
       });
     });
   }
 
   createBottleFeedingHistoryObservable(userId: any, bottleFeedRef: any){
     return new Promise(resolve => {
-      //this.getActivityReference('bottlefeeding').then((bottleFeedRef) => {
-      //   console.log("1....database:: getActivityReferencer returned");
-      //   bottleFeedRef.get().then((query) => {
-      //     console.log("2....database:: query size is", query.size);
-      //     let collectionExists: any;
-      //     if(query.size == 0){
-      //       collectionExists = 0;
-      //     } else {
-      //       collectionExists = 1;
-      //       console.log("3. This should run")
-      //     };
-      //
-      //     if (collectionExists == 1){
-            // console.log("4. collectionExists is:", collectionExists)
-            bottleFeedRef.onSnapshot((snapShot) => {
-              console.log("4. snapshot is:", snapShot)
-              //snapShot.docChanges().forEach((change) => {
-              this.bottleHistoryArray.splice(0, this.bottleHistoryArray.length);
-              snapShot.forEach((doc, index, array) => {
-                let data = doc.data();
-                this.bottleHistoryArray.push(data);
-                console.log("5. Database: bottleHistoryArray:", this.bottleHistoryArray);
-                resolve(true);
-              });
-            });
-      //     } else {
-      //       console.log("Database::createBottleFeedingHistoryObservable(): no history yet");
-      //       resolve(false);
-      //     };
-      //   });
-      // }, error => {
-      //   console.log("Database::createBottleFeedingHistoryObservable(): no history yet");
-      //   resolve(false);
-      });
-    // });
+      bottleFeedRef.onSnapshot((snapShot) => {
+        // console.log("4. snapshot is:", snapShot)
+        if(snapShot.empty){
+          resolve(false);
+        }
+        //snapShot.docChanges().forEach((change) => {
+        this.bottleHistoryArray.splice(0, this.bottleHistoryArray.length);
+        snapShot.forEach((doc, index, array) => {
+          let data = doc.data();
+          this.bottleHistoryArray.push(data);
+            resolve(true);
+          });
+        });
+    });
   }
 
   // THis method is called in apps.ts
-  createMealHistoryObservable(userId: any, mealRef: any){
+  async createMealHistoryObservable(userId: any, mealRef: any){
     return new Promise(resolve => {
-      // this.getActivityReference('meal').then((mealRef) => {
-      //   mealRef.get().then((query) => {
-      //     let collectionExists: any;
-      //     if(query.size == 0){
-      //       collectionExists = 0;
-      //     } else {
-      //       collectionExists = 1;
-      //     };
-      //
-      //     if (collectionExists == 1){
-            mealRef.onSnapshot((snapShot) => {
-              //snapShot.docChanges().forEach((change) => {
-              this.mealHistoryArray.splice(0, this.mealHistoryArray.length);
-              snapShot.forEach(doc => {
-                let data = doc.data();
-                this.mealHistoryArray.push(data);
-                // console.log("Database: mealHistoryArray:", this.mealHistoryArray);
-                resolve(true);
-              });
-            });
-      //     } else {
-      //       console.log("Database::createMealHistoryObservable(): no history yet");
-      //       resolve(false);
-      //     };
-      //   });
-      // }, error => {
-      //   console.log("Database::createBottleFeedingHistoryObservable(): no history yet");
-      //   resolve(false);
-      // });
-    });
-  }
-
-  createDiaperingHistoryObservable(userId: any){
-    return new Promise(resolve => {
-      this.getActivityReference('diapering').then((diaperingRef) => {
-        diaperingRef.get().then((query) => {
-          let collectionExists: any;
-          if(query.size == 0){
-            collectionExists = 0;
-          } else {
-            collectionExists = 1;
-          };
-
-          if (collectionExists == 1){
-            diaperingRef.onSnapshot((snapShot) => {
-              //snapShot.docChanges().forEach((change) => {
-              this.diaperingHistoryArray.splice(0, this.diaperingHistoryArray.length);
-              snapShot.forEach(doc => {
-                let data = doc.data();
-                this.diaperingHistoryArray.push(data);
-                // console.log("Database: mealHistoryArray:", this.mealHistoryArray);
-                resolve(true);
-              });
-            });
-          } else {
-            console.log("Database::createDiaperingHistoryObservable(): no history yet");
-            resolve(false);
-          };
+      mealRef.onSnapshot((snapShot) => {
+        // console.log("4. meal snapshot is:", snapShot)
+        if(snapShot.empty){
+          // console.log("4.b snapshot is empty");
+          resolve(false);
+        }
+        this.mealHistoryArray.splice(0, this.mealHistoryArray.length);
+        snapShot.forEach(doc => {
+          let data = doc.data();
+          this.mealHistoryArray.push(data);
+          resolve(true);
         });
-      }, error => {
-        console.log("Database::createDiaperingHistoryObservable(): no history yet");
-        resolve(false);
       });
     });
   }
 
-  createSleepHistoryObservable(userId: any){
+  createDiaperingHistoryObservable(userId: any, diaperingRef: any){
     return new Promise(resolve => {
-      this.getActivityReference('sleeping').then((sleepingRef) => {
-        sleepingRef.get().then((query) => {
-          let collectionExists: any;
-          if(query.size == 0){
-            collectionExists = 0;
-          } else {
-            collectionExists = 1;
-          };
-
-          if (collectionExists == 1){
-            sleepingRef.onSnapshot((snapShot) => {
-              //snapShot.docChanges().forEach((change) => {
-              this.sleepingHistoryArray.splice(0, this.sleepingHistoryArray.length);
-              snapShot.forEach(doc => {
-                let data = doc.data();
-                this.sleepingHistoryArray.push(data);
-                // console.log("Database: mealHistoryArray:", this.mealHistoryArray);
-                resolve(true);
-              });
-            });
-          } else {
-            console.log("Database::createSleepingHistoryObservable(): no history yet");
-            resolve(false);
-          };
+      diaperingRef.onSnapshot((snapShot) => {
+        if(snapShot.empty){
+          resolve(false);
+        }
+        //snapShot.docChanges().forEach((change) => {
+        this.diaperingHistoryArray.splice(0, this.diaperingHistoryArray.length);
+        snapShot.forEach(doc => {
+          let data = doc.data();
+          this.diaperingHistoryArray.push(data);
+          // console.log("Database: mealHistoryArray:", this.mealHistoryArray);
+          resolve(true);
         });
-      }, error => {
-        console.log("Database::createSleepingFeedingHistoryObservable(): no history yet");
-        resolve(false);
+      });
+    });
+  }
+
+  createSleepHistoryObservable(userId: any, sleepingRef){
+    return new Promise(resolve => {
+      sleepingRef.onSnapshot((snapShot) => {
+        if(snapShot.empty){
+          resolve(false);
+        }
+        //snapShot.docChanges().forEach((change) => {
+        this.sleepingHistoryArray.splice(0, this.sleepingHistoryArray.length);
+        snapShot.forEach(doc => {
+          let data = doc.data();
+          this.sleepingHistoryArray.push(data);
+          // console.log("Database: mealHistoryArray:", this.mealHistoryArray);
+          resolve(true);
+        });
       });
     });
   }

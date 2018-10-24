@@ -32,13 +32,18 @@
   <div [ngSwitch]="segmentType">
 
     <ion-list *ngSwitchCase="'Activities'">
-      <p> Summary </p>
+      <!-- <p class="center"><u> Summary </u></p> -->
       <div class="bottle-summary">
-        <div *ngIf="bottleHasToday">
+
+        <div *ngIf="noHistoryYet">
+          <div class="divider-title"> No History Yet! </div>
+        </div>
+
+        <div *ngIf="hasToday">
           <div class="divider-title"> Today </div>
 
           <ul class="timeline">
-            <li *ngFor="let x of bottleTodayHistoryArray">
+            <li *ngFor="let x of todayHistoryArray">
               <div >
                 <p class="timeline-item"> {{x}}</p>
               </div>
@@ -46,31 +51,21 @@
           </ul>
         </div>
 
-        <div *ngIf="mealHasToday">
-          <div class="divider-title"> Today </div>
-
-          <ul class="timeline">
-            <li *ngFor="let x of mealTodayHistoryArray">
-              <div >
-                <p class="timeline-item"> {{x}}</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <div *ngIf="bottleHasYesterday">
+        <div *ngIf="hasYesterday">
           <div class="divider-title"> Yesterday </div>
           <ul class="timeline">
-            <li *ngFor="let x of bottleYesterdayHistoryArray">
+            <li *ngFor="let x of yesterdayHistoryArray">
               <div>
                 <p class="timeline-item"> {{x}}</p>
               </div>
             </li>
           </ul>
         </div>
+
       </div>
-      <div *ngIf="bottleHasMore">
-        <ion-item-group *ngFor="let x of bottleMoreHistoryArray | groupby: 'date'">
+
+      <div *ngIf="hasMore">
+        <ion-item-group *ngFor="let x of moreHistoryArray | groupby: 'date'">
           <div  class="divider-title">
             {{ x.key | moment:'ll' }}
           </div>

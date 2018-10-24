@@ -71,20 +71,20 @@ export class LifoHistoryProvider {
     // NOTE: new activities need to be added here!!!!
 
     if(activity == 'bottlefeeding'){
-      console.log("LIFO:: bottle feeding history:", this.db.bottleHistoryArray);
       this.historyArray = this.db.bottleHistoryArray;
     } else if(activity == 'diapering'){
       this.historyArray = this.db.diaperingHistoryArray;
     } else if(activity == 'meal'){
       this.historyArray = this.db.mealHistoryArray;
-      console.log("LIFO:: meal feeding history:", this.db.mealHistoryArray);
     } else if(activity == 'sleeping'){
       this.historyArray = this.db.sleepingHistoryArray;
+    } else if(activity == 'breastfeeding'){
+      this.historyArray = this.db.bfHistoryArray;
     }
 
 
     // DEBUG: Leave this for debugging
-    console.log("DEBUGGING: this history array in lifo is:", this.historyArray);
+    console.log("DEBUGGING: this history array for <", activity, "> in lifo is:", this.historyArray);
 
     for(let v of this.historyArray){
       this.lifoHistoryArray.unshift(v);
@@ -154,6 +154,8 @@ export class LifoHistoryProvider {
             outputString = timeString + ', for ' + durationString;
           };
         }
+      } else if(activity == 'breastfeeding'){
+        outputString = timeString + ', '+ x.breast + ', for ' + durationString;
       }
 
 
