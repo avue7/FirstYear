@@ -83,7 +83,12 @@ export class AuthServiceProvider {
 			return this.afAuth.auth.getRedirectResult().then( result => {
 				// This gives you a Google Access Token.
 				// You can use it to access the Google API.
-				let token = result.credential.accessToken;
+        let myProp = 'accessToken';
+        let token: any;
+        if(result.credential.hasOwnProperty(myProp)){
+          token = result.credential[myProp];
+        }
+				// let token = result.credential.accessToken;
 			 	let user = result.user;
 			  console.log(token, user);
 			}).catch(function(error) {
