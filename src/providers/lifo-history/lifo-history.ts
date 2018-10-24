@@ -78,11 +78,13 @@ export class LifoHistoryProvider {
       this.historyArray = this.db.mealHistoryArray;
     } else if(activity == 'sleeping'){
       this.historyArray = this.db.sleepingHistoryArray;
+    } else if(activity == 'breastfeeding'){
+      this.historyArray = this.db.bfHistoryArray;
     }
 
 
     // DEBUG: Leave this for debugging
-    console.log("DEBUGGING: this history array in lifo is:", this.historyArray);
+    console.log("DEBUGGING: this history array for <", activity, "> in lifo is:", this.historyArray);
 
     for(let v of this.historyArray){
       this.lifoHistoryArray.unshift(v);
@@ -122,36 +124,38 @@ export class LifoHistoryProvider {
 
       if(activity == 'bottlefeeding'){
         if(x.note){
-          outputString = '@' + timeString + ', ' + x.type + ', ' + x.volume + ' ' + x.unit + ', ' + durationString + ', Note: ' + x.note.note;
+          outputString = timeString + ', ' + x.type + ', ' + x.volume + ' ' + x.unit + ', ' + durationString + ', Note: ' + x.note.note;
         } else {
-          outputString = '@' + timeString + ', ' + x.type + ', ' + x.volume + ' ' + x.unit + ', ' + durationString;
+          outputString = timeString + ', ' + x.type + ', ' + x.volume + ' ' + x.unit + ', ' + durationString;
         };
       } else if(activity == 'diapering'){
           if(x.note){
-            outputString = '@' + timeString + ', ' + x.type + ', ' + 'Note: ' + x.note.note;
+            outputString = timeString + ', ' + x.type + ', ' + 'Note: ' + x.note.note;
           } else {
-            outputString = '@' + timeString + ', ' + x.type
+            outputString = timeString + ', ' + x.type
          };
       } else if(activity == 'meal'){
         if(x.detail){
-          outputString = '@' + timeString + ', ' + 'Detail: ' + x.detail;
+          outputString = timeString + ', ' + 'Detail: ' + x.detail;
         } else {
-          outputString = '@' + timeString;
+          outputString = timeString;
         };
       } else if(activity == 'sleeping'){
         if(x.note){
           if(typeof x.duration == "string"){
-            outputString = '@' + timeString + ', for ' + x.duration + ', Note: ' + x.note;
+            outputString = timeString + ', for ' + x.duration + ', Note: ' + x.note;
           } else {
-            outputString = '@' + timeString + ', for ' + durationString + ', Note: ' + x.note;
+            outputString = timeString + ', for ' + durationString + ', Note: ' + x.note;
           };
         } else {
           if(typeof x.duration == "string"){
-            outputString = '@' + timeString + ', for ' + x.duration;
+            outputString = timeString + ', for ' + x.duration;
           } else {
-            outputString = '@' + timeString + ', for ' + durationString;
+            outputString = timeString + ', for ' + durationString;
           };
         }
+      } else if(activity == 'breastfeeding'){
+        outputString = timeString + ', '+ x.breast + ', for ' + durationString;
       }
 
 

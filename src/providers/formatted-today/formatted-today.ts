@@ -58,10 +58,10 @@ export class FormattedTodayProvider {
     // Check if am or pm
     if(number >= 12){
       pm = true;
-      console.log("PM IS TRUE");
+      // console.log("PM IS TRUE");
     } else {
       am = true;
-      console.log("AM IS TRUE");
+      // console.log("AM IS TRUE");
     };
 
     if(pm == true){

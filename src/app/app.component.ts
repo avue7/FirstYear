@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, MenuController } from 'ionic-angular';
+import { Nav, Platform, MenuController} from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Subscription} from 'rxjs/Subscription';
@@ -21,6 +21,7 @@ import { CameraPage } from '../pages/camera/camera';
 
 import firebase from 'firebase';
 import 'firebase/firestore';
+import { async } from '@firebase/util';
 
 
 @Component({
@@ -29,8 +30,9 @@ import 'firebase/firestore';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any;
+  rootPage: any = HomePage;
   userSubscription: Subscription;
+  summaryArray: string[] = new Array();
 
   pages: Array<{title: string, component: any, icon: string}>;
   activePage: any;
@@ -41,6 +43,15 @@ export class MyApp {
   babyBirthday: any;
   bdayYear: number;
   bdayMonth: number;
+
+  // Observable flags
+  babyObservableDone: boolean = false;
+
+  // Has history Flags
+  hasHistoryFlagsArray: string[] = new Array();
+
+  // NOTE: Add to this damn list as activities grows.
+  activitiesArray: string[] = new Array("bottlefeeding", "breastfeeding", "meal", "diapering", "sleeping");
 
   constructor(public platform: Platform,
     public statusBar: StatusBar,
@@ -72,52 +83,61 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       //this.statusBar.styleDefault();
       this.splashScreen.hide();
+      // if(this.summaryArray.length != 0){
+      //   this.summaryArray.splice(0, this.summaryArray.length);
+      // };
+      this.createAuthObservable();
+
     });
-    this.createAuthObservable();
   }
 
   createAuthObservable(){
-    // Logic to check if users are logged in or not.
-    this.userSubscription = this.auth.afAuth.authState.subscribe( user => {
-      if(user){
-        if(user.email){
-          this.user.setUserEmail(user.email);
-        };
-        if(user.uid){
-          this.user.setUserId(user.uid);
-          this.db.setNewUserNewBaby(user.uid).then(retVal => {
-            if(retVal == "later"){
-              this.bdayYear = 0;
-              this.bdayMonth = 0;
-              this.babyName = "No baby added yet!";
-            } else {
-              // Create all new activity observables here.
-              this.db.createBabyObservable(user.uid).then(() => {
-                this.bdayYear = this.db.bdayYear;
-                this.bdayMonth = this.db.bdayMonth;
-                this.babyName = this.db.babyName;
-                this.db.createBreastFeedingHistoryObservable(user.uid).then(() =>{
-                });
-                this.db.createBottleFeedingHistoryObservable(user.uid).then(()=>{
-                });
-                this.db.createDiaperingHistoryObservable(user.uid).then(()=>{
-                });
-                this.db.createMealHistoryObservable(user.uid).then(()=>{
-                });
-                this.db.createSleepHistoryObservable(user.uid).then(()=>{
-                });
+    return new Promise(resolve => {
+      // Logic to check if users are logged in or not.
+      this.userSubscription = this.auth.afAuth.authState.subscribe( user => {
+        if(user){
+          if(user.email){
+            this.user.setUserEmail(user.email);
+          };
+          if(user.uid){
+            this.user.setUserId(user.uid).then(() =>{
+              this.db.setNewUserNewBaby(user.uid).then(retVal => {
+                // User decided to add baby later
+                if(retVal == "later"){
+                  this.bdayYear = 0;
+                  this.bdayMonth = 0;
+                  this.babyName = "No baby added yet!";
+                  resolve();
+                }
+                // No baby file found but user added baby
+                else {
+                  // Create a baby observable as soon as the user adds him or her
+                  console.log("App:: Creating baby observable...");
+                  this.db.createBabyObservable(user.uid).then((retVal) => {
+                    this.bdayYear = this.db.bdayYear;
+                    this.bdayMonth = this.db.bdayMonth;
+                    this.babyName = this.db.babyName;
+                    this.babyObservableDone = true;
+                    console.log("APP:: done creating baby observable!");
+                    this.nav.setRoot(HomePage);
+                  });
+                }
               });
-            };
-          });
+            });
+          } else {
+            console.log("App::initializeApp(): No user exists...going to WelcomePage.");
+            this.nav.setRoot(WelcomePage);
+            resolve();
+          };
         };
+      });
+    });
+  }
 
-        console.log("App::initializeApp(): User logged in: ", user);
-        console.log("Subscription: ", this.userSubscription);
-        this.nav.setRoot(HomePage);
-      } else {
-        console.log("App::initializeApp(): No user exists...going to WelcomePage.");
-        this.nav.setRoot(WelcomePage);
-      };
+  updateSummaryArray(activity: any){
+    return new Promise(resolve => {
+      this.summaryArray.push(activity);
+      resolve(true);
     });
   }
 
@@ -143,6 +163,7 @@ export class MyApp {
     this.user.deleteUser();
 	  this.nav.setRoot(WelcomePage);
     this.activePage = this.pages[0];
+    this.summaryArray.splice(0, this.summaryArray.length);
     console.log("App::logOut(): User logged out");
   }
 

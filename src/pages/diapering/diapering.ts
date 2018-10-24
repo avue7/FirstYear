@@ -50,7 +50,8 @@ export class DiaperingPage {
     private alertCtrl: AlertController,
     private modal: ModalController,
     private noteAlertProvider: NoteAlertProvider,
-    private lifoHistory: LifoHistoryProvider) {
+    private lifoHistory: LifoHistoryProvider,
+    private navParams: NavParams) {
     this.diaper.date = moment().format();
     this.diaper.time = moment().format();
     this.DiaperingMomentsAgo = '';
@@ -64,6 +65,10 @@ export class DiaperingPage {
       this.momentsAgoSubscription.unsubscribe();
     } else if(this.DiaperingMomentsAgoSubscription){
       this.DiaperingMomentsAgoSubscription.unsubscribe();
+    }
+
+    if((this.navParams.get("parentPage")) != undefined){
+      this.navParams.get("parentPage").init();
     }
   }
 

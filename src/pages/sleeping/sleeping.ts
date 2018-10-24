@@ -59,7 +59,8 @@ export class SleepingPage {
     private timer: TimerProvider,
     private modal: ModalController,
     private noteAlertProvider: NoteAlertProvider,
-    private lifoHistory: LifoHistoryProvider) {
+    private lifoHistory: LifoHistoryProvider,
+    private navParams: NavParams) {
     this.sleeping.date = moment().format();
     this.sleeping.time = moment().format();
     this.SleepingMomentsAgo = '';
@@ -75,6 +76,10 @@ export class SleepingPage {
       this.momentsAgoSubscription.unsubscribe();
     } else if(this.SleepingMomentsAgoSubscription){
       this.SleepingMomentsAgoSubscription.unsubscribe();
+    }
+
+    if((this.navParams.get("parentPage")) != undefined){
+      this.navParams.get("parentPage").init();
     }
   }
 

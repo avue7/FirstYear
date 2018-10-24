@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ModalController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, ViewController } from 'ionic-angular';
 import { TimerProvider } from '../../providers/timer/timer';
 import { FormattedTodayProvider} from '../../providers/formatted-today/formatted-today';
 import { DatabaseProvider } from '../../providers/database/database';
@@ -10,6 +10,7 @@ import { BottlefeedingModalPage } from '../bottlefeeding-modal/bottlefeeding-mod
 import { MealModalPage } from '../meal-modal/meal-modal';
 import { NoteAlertProvider } from '../../providers/note-alert/note-alert';
 import { LifoHistoryProvider } from '../../providers/lifo-history/lifo-history';
+import { HomePage } from '../home/home';
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Rx';
 
@@ -109,7 +110,8 @@ export class FeedingPage {
     private alertCtrl: AlertController,
     private modal: ModalController,
     private noteAlertProvider: NoteAlertProvider,
-    private lifoHistory: LifoHistoryProvider) {
+    private lifoHistory: LifoHistoryProvider,
+    private viewCtrl: ViewController) {
     this.momentsAgoTime = '';
     this.BottleMomentsAgo = '';
     this.MealMomentsAgo = '';
@@ -123,12 +125,26 @@ export class FeedingPage {
     this.getLastMeal();
   }
 
+  // NOTE: Need to add this to other pages so that it wont break the init()
+  //       method that is inside of the home page.
+  ionViewDidLeave(){
+    this.navCtrl.popToRoot();
+    if((this.navParams.get("parentPage")) != undefined){
+      this.navParams.get("parentPage").init();
+    }
+  }
+
   ionViewWillLeave(){
     if(this.momentsAgoSubscription){
       this.momentsAgoSubscription.unsubscribe();
     } else if(this.BottleMomentsAgoSubscription){
       this.BottleMomentsAgoSubscription.unsubscribe();
     }
+
+    // Need to call this to reload the home page when this child page is popped.
+    // this.navParams.get("parentPage").hello();//init();
+    // // this.navParams.get();
+    // console.log("Parent page is:", this.navParams.get("parentPage"));
   }
   // ionViewDidLoad() {
   //   console.log('ionViewDidLoad FeedingPage');
@@ -154,7 +170,7 @@ export class FeedingPage {
     if(this.timer.timerSubscription != undefined){
       this.timer.refreshTimer();
     } else{
-      console.log("Feedings::refreshTimer(): timerSubscription is undefined");
+      //console.log("Feedings::refreshTimer(): timerSubscription is undefined");
     };
   }
 
@@ -203,7 +219,7 @@ export class FeedingPage {
       latestSnapshot.forEach(doc => {
         count = count - 1;
         if(count == 0){
-          console.log("Feeding::getLastBreastFeed(): last date retrieved is:", doc.data().date);
+          // console.log("Feeding::getLastBreastFeed(): last date retrieved is:", doc.data().date);
 
           // If last breastfeeding exists
           if(this.lastBreastFeed){
@@ -596,7 +612,6 @@ export class FeedingPage {
   waitForBottleReturn() : any{
     return new Promise(resolve => {
       this.bottlefeedingModal.onDidDismiss( data => {
-        console.log("WAIT FOR RETURN DATA IS:", data);
         let babyObject = data;
         resolve(babyObject);
       });
@@ -621,9 +636,9 @@ export class FeedingPage {
 
     this.waitForAlertReturn().then((val) => {
       if(val == true){
-        console.log("THIS bottlenote is true: ", val);
+        // console.log("THIS bottlenote is true: ", val);
       } else {
-        console.log("THIS bottlenote is false: ", val);
+        // console.log("THIS bottlenote is false: ", val);
       };
     });
   }
@@ -631,7 +646,6 @@ export class FeedingPage {
   waitForAlertReturn() : any{
     return new Promise(resolve => {
       this.nAlert.onDidDismiss(data => {
-        console.log("DATA IS:", data);
         if(data != undefined){
           this.bottleNote = data;
           resolve(true);
