@@ -190,6 +190,7 @@ export class FeedingPage {
     let splitTimeOnly = splitTimeArray[1];
 
     let object = {
+      activity: 'breastfeeding',
       breast: breast_,
       date: today,
       time: splitTimeOnly,
@@ -308,6 +309,7 @@ export class FeedingPage {
         /////////////////////////////////////////////////////////////////
 
         let bfManualObject = {
+          activity: 'breastfeeding',
           breast: breastFeeding.breast + ' breast',
           date: dateTime,
           time: time,
@@ -460,6 +462,7 @@ export class FeedingPage {
 
         if(bottleFeeding.note){
           manualObject = {
+            activity: 'bottlefeeding',
             type: bottleFeeding.type,
             date: dateTime,
             volume: bottleFeeding.volume,
@@ -470,6 +473,7 @@ export class FeedingPage {
           }
         } else {
           manualObject = {
+            activity: 'bottlefeeding',
             type: bottleFeeding.type,
             date: dateTime,
             volume: bottleFeeding.volume,
@@ -555,6 +559,7 @@ export class FeedingPage {
       if(this.bottleNote){
         if(this.timer.tick != 0){
           object = {
+            activity: 'bottlefeeding',
             type: this.bottle.type,
             date: today,
             volume: this.bottle.volume,
@@ -566,6 +571,7 @@ export class FeedingPage {
         } else {
           let duration = this.convertDurationToseconds();
           object = {
+            activity: 'bottlefeeding',
             type: this.bottle.type,
             date: today,
             volume: this.bottle.volume,
@@ -578,6 +584,7 @@ export class FeedingPage {
       }else {
         if(this.timer.tick != 0){
           object = {
+            activity: 'bottlefeeding',
             type: this.bottle.type,
             date: today,
             volume: this.bottle.volume,
@@ -588,6 +595,7 @@ export class FeedingPage {
         } else {
           let duration = this.convertDurationToseconds();
           object = {
+            activity: 'bottlefeeding',
             type: this.bottle.type,
             date: today,
             volume: this.bottle.volume,
@@ -670,12 +678,14 @@ export class FeedingPage {
 
     if(this.mealDetail != undefined){
       object = {
+        activity: 'meal',
         date: today,
         time: splitTimeOnly,
         detail: this.mealDetail
       }
     } else {
       object = {
+        activity: 'meal',
         date: today,
         time: splitTimeOnly
       }
@@ -787,12 +797,14 @@ export class FeedingPage {
 
         if(meal.detail){
           manualObject = {
+            activity: 'meal',
             date: dateTime,
             time: time,
             detail: meal.detail
           }
         } else {
           manualObject = {
+            activity: 'meal',
             date: dateTime,
             time: time
           }

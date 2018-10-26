@@ -94,6 +94,7 @@ export class DiaperingPage {
 
       if(this.diaperNote){
         object = {
+          activity: 'diapering',
           type: this.diaper.type,
           date: today,
           note: this.diaperNote,
@@ -101,6 +102,7 @@ export class DiaperingPage {
         }
       }else {
         object = {
+          activity: 'diapering',
           type: this.diaper.type,
           date: today,
           time: splitTimeOnly
@@ -212,6 +214,7 @@ export class DiaperingPage {
 
         if(diapering.note){
           manualObject = {
+            activity: 'diapering',
             type: diapering.type,
             date: dateTime,
             time: time,
@@ -219,6 +222,7 @@ export class DiaperingPage {
           }
         } else {
           manualObject = {
+            activity: 'diapering',
             type: diapering.type,
             date: dateTime,
             time: time,

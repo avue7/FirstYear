@@ -32,6 +32,8 @@
   <div [ngSwitch]="segmentType">
 
     <ion-list *ngSwitchCase="'Activities'">
+      <!-- <ion-icon name="custom-diaper"></ion-icon> -->
+
       <!-- <p class="center"><u> Summary </u></p> -->
       <div class="bottle-summary">
 
@@ -42,63 +44,150 @@
         <div *ngIf="hasToday">
           <div class="divider-title"> Today </div>
 
-          <ul class="timeline">
-            <li *ngFor="let x of todayHistoryArray">
-              <div >
-                <p class="timeline-item"> {{x}}</p>
-              </div>
-            </li>
-          </ul>
+          <div  class="timeline" *ngFor="let x of todayHistoryArray">
+            <ul>
+              <ion-item class="summary" *ngIf="x.activity=='bottlefeeding'">
+                <p><b>Bottlefeed</b></p>
+                <p item right> {{x.output}} </p>
+                <p *ngIf="x.note">Notes: {{x.note}} </p>
+              </ion-item>
+            </ul>
+            <ul>
+              <ion-item class="summary" *ngIf="x.activity=='breastfeeding'">
+                <p><b>Breastfeed</b></p>
+                <p item right> {{x.output}} </p>
+                <p *ngIf="x.note">Notes: {{x.note}} </p>
+              </ion-item>
+            </ul>
+            <ul>
+              <ion-item class="summary" *ngIf="x.activity=='meal'">
+                <p><b>Meal</b></p>
+                <p item right> {{x.output}} </p>
+                <p *ngIf="x.note">Notes: {{x.note}} </p>
+              </ion-item>
+            </ul>
+            <ul>
+              <ion-item class="summary" *ngIf="x.activity=='diapering'">
+                <p><b>Diaper</b></p>
+                <p item right> {{x.output}} </p>
+                <p *ngIf="x.note">Notes: {{x.note}} </p>
+              </ion-item>
+            </ul>
+            <ul>
+              <ion-item class="summary" *ngIf="x.activity=='sleeping'">
+                <p><b>Sleep</b></p>
+                <p item right> {{x.output}} </p>
+                <p *ngIf="x.note">Notes: {{x.note}} </p>
+              </ion-item>
+            </ul>
+          </div>
         </div>
+        <!-- </div> -->
 
+        <br>
         <div *ngIf="hasYesterday">
           <div class="divider-title"> Yesterday </div>
-          <ul class="timeline">
-            <li *ngFor="let x of yesterdayHistoryArray">
-              <div>
-                <p class="timeline-item"> {{x}}</p>
-              </div>
-            </li>
-          </ul>
+
+          <div  class="timeline" *ngFor="let x of yesterdayHistoryArray">
+            <ul>
+              <ion-item class="summary" *ngIf="x.activity=='bottlefeeding'">
+                <p><b>Bottlefeed</b></p>
+                <p item right> {{x.output}} </p>
+                <p *ngIf="x.note">Notes: {{x.note}} </p>
+              </ion-item>
+            </ul>
+            <ul>
+              <ion-item class="summary" *ngIf="x.activity=='breastfeeding'">
+                <p><b>Breastfeed</b></p>
+                <p item right> {{x.output}} </p>
+                <p *ngIf="x.note">Notes: {{x.note}} </p>
+              </ion-item>
+            </ul>
+            <ul>
+              <ion-item class="summary" *ngIf="x.activity=='meal'">
+                <p><b>Meal</b></p>
+                <p item right> {{x.output}} </p>
+                <p *ngIf="x.note">Notes: {{x.note}} </p>
+              </ion-item>
+            </ul>
+            <ul>
+              <ion-item class="summary" *ngIf="x.activity=='diapering'">
+                <p><b>Diaper</b></p>
+                <p item right> {{x.output}} </p>
+                <p *ngIf="x.note">Notes: {{x.note}} </p>
+              </ion-item>
+            </ul>
+            <ul>
+              <ion-item class="summary" *ngIf="x.activity=='sleeping'">
+                <p><b>Sleep</b></p>
+                <p item right> {{x.output}} </p>
+                <p *ngIf="x.note">Notes: {{x.note}} </p>
+              </ion-item>
+            </ul>
+          </div>
         </div>
 
       </div>
 
+      <br>
       <div *ngIf="hasMore">
         <ion-item-group *ngFor="let x of moreHistoryArray | groupby: 'date'">
           <div  class="divider-title">
             {{ x.key | moment:'ll' }}
           </div>
-          <ul class="timeline">
-            <li *ngFor="let event of x.list">
-              <div>
-                <p class="timeline-item"> {{event.output}} </p>
-              </div>
-            </li>
-          </ul>
+          <div  class="timeline" *ngFor="let event of x.list">
+            <ul>
+              <ion-item class="summary" *ngIf="event.activity=='bottlefeeding'">
+                <p><b>Bottlefeed</b></p>
+                <p item right> {{event.output}} </p>
+                <p *ngIf="x.note">Notes: {{event.note}} </p>
+              </ion-item>
+            </ul>
+            <ul>
+              <ion-item class="summary" *ngIf="event.activity=='breastfeeding'">
+                <p><b>Breastfeed</b></p>
+                <p item right> {{event.output}} </p>
+                <p *ngIf="x.note">Notes: {{event.note}} </p>
+              </ion-item>
+            </ul>
+            <ul>
+              <ion-item class="summary" *ngIf="event.activity=='meal'">
+                <p><b>Meal</b></p>
+                <p item right> {{event.output}} </p>
+                <p *ngIf="x.note">Notes: {{event.note}} </p>
+              </ion-item>
+            </ul>
+            <ul>
+              <ion-item class="summary" *ngIf="event.activity=='diapering'">
+                <p><b>Diaper</b></p>
+                <p item right> {{event.output}} </p>
+                <p *ngIf="x.note">Notes: {{event.note}} </p>
+              </ion-item>
+            </ul>
+            <ul>
+              <ion-item class="summary" *ngIf="event.activity=='sleeping'">
+                <p><b>Sleep</b></p>
+                <p item right> {{event.output}} </p>
+                <p *ngIf="x.note">Notes: {{event.note}} </p>
+              </ion-item>
+            </ul>
+          </div>
         </ion-item-group>
       </div>
 
-
+      <!-- FOOTER -->
       <ion-footer>
-        <!--
-        <ion-scroll scrollX="true">
-          <div class="scroll-item">
-          <p *ngFor="let activity of segments['Activities']">
-            <ion-icon class="avatar" [name]="activity.icon" (click)="openPage(activity)"></ion-icon>
-          </p>
-            </div>
-        </ion-scroll> -->
         <strong style="color:#e1e1e1;font-size:7;"> Add an activity by clicking on any icon below: </strong>
         <ion-scroll scrollX="true">
           <div class="scroll-item" *ngFor="let activity of segments['Activities']">
             <ion-icon [name]="activity.icon" (click)="openPage(activity)" class="scroll-item selectable-icon avatar"></ion-icon>
           </div>
         </ion-scroll>
-
       </ion-footer>
+
     </ion-list>
 
+    <!-- Segments -->
     <ion-list *ngSwitchCase="'Charts'">
       <p> do something here 2 </p>
     </ion-list>
@@ -113,28 +202,4 @@
 
   </div>
 
-  <!-- <ion-list >
-    <ion-list-header class="float-left">Latest Events:</ion-list-header>
-    <ion-item>
-      something ehre
-    </ion-item>
-    <ion-item no-lines *ngFor="let activity of segments['Activities']">
-      sdafdasfs
-      <ion-icon [name]="activity.icon" (click)="openPage(activity)"></ion-icon>
-    </ion-item>
-  </ion-list> -->
-  <!-- <ion-grid>
-    <ion-row>
-      <ion-col>
-        <div class="left-scrollbar">
-          <ion-item *ngFor="let activity of segments['Activities']">
-            <ion-icon [name]="activity.icon" item-left (click)="openPage(activity)"></ion-icon>
-          </ion-item>
-        </div>
-      </ion-col>
-      <ion-col>
-        Latest Events:
-      </ion-col>
-    </ion-row>
-  </ion-grid> -->
 </ion-content>

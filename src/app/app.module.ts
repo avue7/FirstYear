@@ -32,6 +32,7 @@ import { PlayingPage } from '../pages/playing/playing';
 import { CameraPage } from '../pages/camera/camera';
 import { CreditsPage } from '../pages/credits/credits';
 import { BabyModalPage } from '../pages/baby-modal/baby-modal';
+import { EditBabyModalPage } from '../pages/edit-baby-modal/edit-baby-modal';
 import { BreastfeedingModalPage } from '../pages/breastfeeding-modal/breastfeeding-modal';
 import { BfHistoryModalPage } from '../pages/bf-history-modal/bf-history-modal';
 import { BottlefeedingModalPage } from '../pages/bottlefeeding-modal/bottlefeeding-modal';
@@ -75,6 +76,7 @@ import { LifoHistoryProvider } from '../providers/lifo-history/lifo-history';
     DiaperingModalPage,
     MealModalPage,
     SleepingModalPage,
+    EditBabyModalPage
   ],
   imports: [
     BrowserModule,
@@ -107,7 +109,8 @@ import { LifoHistoryProvider } from '../providers/lifo-history/lifo-history';
     BottlefeedingModalPage,
     DiaperingModalPage,
     MealModalPage,
-    SleepingModalPage
+    SleepingModalPage,
+    EditBabyModalPage
   ],
   providers: [
     StatusBar,

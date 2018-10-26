@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, MenuController} from 'ionic-angular';
+import { Nav, Platform, MenuController, ModalController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Subscription} from 'rxjs/Subscription';
@@ -18,6 +18,7 @@ import { GrowthPage } from '../pages/growth/growth';
 import { PlayingPage } from '../pages/playing/playing';
 import { CreditsPage } from '../pages/credits/credits';
 import { CameraPage } from '../pages/camera/camera';
+import { EditBabyModalPage } from '../pages/edit-baby-modal/edit-baby-modal';
 
 import firebase from 'firebase';
 import 'firebase/firestore';
@@ -53,6 +54,8 @@ export class MyApp {
   // NOTE: Add to this damn list as activities grows.
   activitiesArray: string[] = new Array("bottlefeeding", "breastfeeding", "meal", "diapering", "sleeping");
 
+  myModal: any;
+
   constructor(public platform: Platform,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
@@ -60,7 +63,8 @@ export class MyApp {
     private menu: MenuController,
     private user: UserProvider,
     private googlePlus: GooglePlus,
-    private db: DatabaseProvider) {
+    private db: DatabaseProvider,
+    private modal: ModalController) {
     this.initializeApp();
 
     this.pages = [
@@ -77,8 +81,8 @@ export class MyApp {
     this.activePage = this.pages[0];
   }
 
-  initializeApp() {
-    this.platform.ready().then(() => {
+  async initializeApp() {
+    await this.platform.ready().then(async () => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       //this.statusBar.styleDefault();
@@ -86,9 +90,9 @@ export class MyApp {
       // if(this.summaryArray.length != 0){
       //   this.summaryArray.splice(0, this.summaryArray.length);
       // };
-      this.createAuthObservable();
-
+      await this.createAuthObservable();
     });
+
   }
 
   createAuthObservable(){
@@ -134,10 +138,42 @@ export class MyApp {
     });
   }
 
-  updateSummaryArray(activity: any){
+  // NOTE: working on this...settings are lagging away by one set
+  async editBabyProfile(){
+    console.log("Editing baby profile");
+    this.db.getUserReference().then((currentUserRef) => {
+      // console.log("1");
+      this.db.getBabyObject().then((babyObject) => {
+        // console.log("2");
+        this.openModal(babyObject).then(async (baby) => {
+          // console.log("3. baby birthday", baby.birthday);
+          await currentUserRef.doc(baby.firstName).set(baby);
+          this.bdayYear = this.db.bdayYear;
+          // console.log("4. baby birthday", this.bdayYear);
+          this.bdayMonth = this.db.bdayMonth;
+          this.babyName = this.db.babyName;
+        });
+      });
+    });
+  }
+
+  openModal(babyObject: any) : any{
     return new Promise(resolve => {
-      this.summaryArray.push(activity);
-      resolve(true);
+      this.myModal = this.modal.create(EditBabyModalPage, {babyObject: babyObject});
+      this.myModal.present();
+      resolve(this.waitForReturn());
+    });
+  }
+
+  // This method serves as a condition while loop and waits for the
+  // modal to dismiss before it goes to the next line of the caller.
+  waitForReturn() : any{
+    return new Promise(resolve => {
+      this.myModal.onDidDismiss( data => {
+        let babyObject = data;
+        // console.log("This babyObject_", babyObject);
+        resolve(babyObject);
+      });
     });
   }
 

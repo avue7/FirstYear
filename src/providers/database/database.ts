@@ -16,7 +16,9 @@ import 'firebase/firestore';
 export class DatabaseProvider {
   myModal: any;
   babyName: any;
+  babyLastName: any;
   babyBirthday: any;
+  babyGender: any;
   bdayYear: any;
   bdayMonth: any;
   noBabyYet: boolean;
@@ -126,10 +128,12 @@ export class DatabaseProvider {
       } else {
         this.getUserReference().then((currentUserRef) => {
           currentUserRef.onSnapshot((snapShot) => {
-            snapShot.docChanges().forEach((change) => {
-              let baby = change.doc.data();
+            snapShot.forEach((doc) => {
+              let baby = doc.data();
               this.babyName = baby.firstName;
               this.babyBirthday = baby.birthday;
+              this.babyLastName = baby.lastName;
+              this.babyGender = baby.gender;
               resolve(this.calculateAge());
               // console.log("Database::createBabyObservable: babyFirstname:", this.babyName);
               // console.log("Database::createBabyObservable: babyBirthday:", this.babyBirthday);
@@ -137,6 +141,18 @@ export class DatabaseProvider {
           });
         });
       };
+    });
+  }
+
+  getBabyObject(){
+    return new Promise(resolve => {
+      let babyObject = {
+        firstName: this.babyName,
+        lastName: this.babyLastName,
+        birthday: this.babyBirthday,
+        gender: this.babyGender
+      };
+      resolve(babyObject);
     });
   }
 
@@ -289,9 +305,14 @@ export class DatabaseProvider {
       // console.log("firstName is ", this.babyName);
 
       let activityRef: any;
-      resolve(activityRef = db.collection('users').doc(this.user.id).collection('babies').doc(this.babyName)
-      .collection(activity));
-      // resolve(activityRef);
+      let userId = this.user.getUserId();
+      // console.log("userId", userId, "babyname", this.babyName, activity);
+      if(userId == null || this.babyName == undefined){
+        console.log("Database:: Cannot get activity ref yet");
+      } else {
+        resolve(activityRef = db.collection('users').doc(userId).collection('babies').doc(this.babyName)
+        .collection(activity));
+      };
     });
   }
 

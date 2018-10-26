@@ -1,4 +1,4 @@
-page-home {
+page-home, .md, .wp, .ios {
   ion-toolbar {
     ion-segment {
       text-color: white !important;
@@ -7,17 +7,17 @@ page-home {
   ion-title {
     color: #42c7ff !important;
   }
-  // ion-item {
-  //   //float: left !important;
-  //   border: 3px solid #73AD21 !important;
-  //   padding: 10px !important;
-  //   width: 50% !important;
-  // }
+
+
+  ion-row {
+    // height: 20px;
+  }
 
   ion-footer{
     text-align: center;
     //border: 3px solid #42c7ff !important;
     position: fixed !important;
+    background-color: white;
 
     ion-scroll[scrollX] {
       white-space: nowrap;
@@ -56,8 +56,48 @@ page-home {
     background-color: #42c7ff;
     // #39acdc;111
   }
+
+  // custom icons
+  ion-icon {
+    &[class*="custom-"] {
+      mask-size: contain;
+      mask-position: 50% 50%;
+      mask-repeat: no-repeat;
+      background: currentColor;
+    }
+
+    &[class*="custom-bottle"] {
+      mask-image: url(../../assets/icon/baby-bottle1.png);
+    }
+    &[class*="custom-diaper"] {
+      mask-image: url(../assets/icon/diaper.png);
+    }
+    &[class*="custom-baby-with-diaper"] {
+      mask-image: url(../assets/icon/baby-with-diaper.png);
+    }
+    &[class*="custom-cited"] {
+      mask-image: url(../assets/icon/cited.png);
+    }
+    &[class*="custom-sleeping-baby"] {
+      mask-image: url(../assets/icon/sleeping-baby.png);
+    }
+    &[class*="custom-cubes"] {
+      mask-image: url(../assets/icon/cubes.png);
+    }
+    &[class*="custom-growth"] {
+      mask-image: url(../assets/icon/growth.png);
+    }
+    &[class*="custom-camera"] {
+      mask-image: url(../assets/icon/camera.png);
+    }
+  }
+
   ion-title {
     text-align: center;
+  }
+
+  .item {
+    min-height: 1rem;
   }
 
   ion-label {
@@ -232,13 +272,22 @@ page-home {
   /*Timeline*/
 
   .pos-absolute-right {
-      position: absolute;
+      position: center;
       right: 8px;
+      border-bottom: 1px solid #ccc;
   }
 
   .timeline {
       position: relative;
-      margin: 15px 0 0 0;
+      //margin: 15px 0 0 0;
+      // max-height: 2rem;
+  }
+
+  .summary {
+    //float: left !important;
+    border: 1px solid #73AD21 !important;
+    padding-left: 10px !important;
+    width: 90% !important;
   }
 
   .timeline:before {
@@ -248,7 +297,7 @@ page-home {
       bottom: 0;
       width: 5px;
       background: #afdcf8;
-      left: 44px;
+      left: 40px;
       margin-left: -10px;
       z-index: 1;
   }
@@ -275,7 +324,7 @@ page-home {
   }
 
   .timeline .timeline-item {
-      margin-left: 72px;
+      // margin-right: 80px;
       border-bottom: 1px solid #ccc;
       padding-bottom: 8px;
   }
