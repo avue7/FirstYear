@@ -21,7 +21,7 @@ page-home, .md, .wp, .ios {
 
     ion-scroll[scrollX] {
       white-space: nowrap;
-      height: 90px;
+      height: 60px;
       overflow: hidden;
       width: 100vw;
 
@@ -58,39 +58,39 @@ page-home, .md, .wp, .ios {
   }
 
   // custom icons
-  ion-icon {
-    &[class*="custom-"] {
-      mask-size: contain;
-      mask-position: 50% 50%;
-      mask-repeat: no-repeat;
-      background: currentColor;
-    }
-
-    &[class*="custom-bottle"] {
-      mask-image: url(../../assets/icon/baby-bottle1.png);
-    }
-    &[class*="custom-diaper"] {
-      mask-image: url(../assets/icon/diaper.png);
-    }
-    &[class*="custom-baby-with-diaper"] {
-      mask-image: url(../assets/icon/baby-with-diaper.png);
-    }
-    &[class*="custom-cited"] {
-      mask-image: url(../assets/icon/cited.png);
-    }
-    &[class*="custom-sleeping-baby"] {
-      mask-image: url(../assets/icon/sleeping-baby.png);
-    }
-    &[class*="custom-cubes"] {
-      mask-image: url(../assets/icon/cubes.png);
-    }
-    &[class*="custom-growth"] {
-      mask-image: url(../assets/icon/growth.png);
-    }
-    &[class*="custom-camera"] {
-      mask-image: url(../assets/icon/camera.png);
-    }
-  }
+  // ion-icon {
+  //   &[class*="custom-"] {
+  //     mask-size: contain;
+  //     mask-position: 50% 50%;
+  //     mask-repeat: no-repeat;
+  //     background: currentColor;
+  //   }
+  //
+  //   &[class*="custom-bottle"] {
+  //     mask-image: url(../assets/icon/baby-bottle.png);
+  //   }
+  //   &[class*="custom-diaper"] {
+  //     mask-image: url(../assets/icon/diaper.png);
+  //   }
+  //   &[class*="custom-baby-with-diaper"] {
+  //     mask-image: url(../assets/icon/baby-with-diaper.png);
+  //   }
+  //   &[class*="custom-cited"] {
+  //     mask-image: url(../assets/icon/cited.png);
+  //   }
+  //   &[class*="custom-sleeping-baby"] {
+  //     mask-image: url(../assets/icon/sleeping-baby.png);
+  //   }
+  //   &[class*="custom-cubes"] {
+  //     mask-image: url(../assets/icon/cubes.png);
+  //   }
+  //   &[class*="custom-growth"] {
+  //     mask-image: url(../assets/icon/growth.png);
+  //   }
+  //   &[class*="custom-camera"] {
+  //     mask-image: url(../assets/icon/camera.png);
+  //   }
+  // }
 
   ion-title {
     text-align: center;

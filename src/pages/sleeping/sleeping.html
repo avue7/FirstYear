@@ -73,7 +73,9 @@
         <ul class="timeline">
           <li *ngFor="let x of todayHistoryArray">
             <div >
-              <p class="timeline-item"> {{x}}</p>
+              <p class="timeline-item"> {{x.output}}
+                <b *ngIf="x.note"> , Note: {{x.note}} </b>
+              </p>
             </div>
           </li>
         </ul>
@@ -84,7 +86,9 @@
         <ul class="timeline">
           <li *ngFor="let x of yesterdayHistoryArray">
             <div>
-              <p class="timeline-item"> {{x}}</p>
+              <p class="timeline-item"> {{x.output}}
+                <b *ngIf="x.note"> , Note: {{x.note}} </b>
+              </p>
             </div>
           </li>
         </ul>
@@ -98,7 +102,8 @@
         <ul class="timeline">
           <li *ngFor="let event of x.list">
             <div>
-              <p class="timeline-item"> {{event.output}} </p>
+              <p class="timeline-item"> {{event.output}}
+                <b *ngIf="x.note"> , Note: {{event.note}} </b>
             </div>
           </li>
         </ul>

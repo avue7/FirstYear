@@ -135,6 +135,7 @@ export class SleepingPage {
 
       if(this.sleepingNote){
         object = {
+          activity: 'sleeping',
           date: this.dateTimeStart,
           note: this.sleepingNote,
           time: splitTimeOnly,
@@ -144,6 +145,7 @@ export class SleepingPage {
         }
       }else {
         object = {
+          activity: 'sleeping',
           date: this.dateTimeStart,
           time: splitTimeOnly,
           dateEnd: splitDate,
@@ -282,6 +284,7 @@ export class SleepingPage {
 
         if(this.sleepingNote){
           manualObject = {
+            activity: 'sleeping',
             date: dateTime,
             note: sleeping.note,
             time: timeStart,
@@ -291,6 +294,7 @@ export class SleepingPage {
           }
         }else {
           manualObject = {
+            activity: 'sleeping',
             date: dateTime,
             time: timeStart,
             dateEnd: dateTimeEnd,

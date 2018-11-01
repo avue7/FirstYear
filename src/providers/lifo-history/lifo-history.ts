@@ -149,12 +149,21 @@ export class LifoHistoryProvider {
           // Todays
           if(todayMoment.diff(entryDateMoment, 'days') == 0){
             let tempToday: any;
-            if(x.note && x.activity == "bottlefeeding"){
-              tempToday = {
-                note: x.note.note,
-                time: timeString,
-                activity: x.activity,
-                output: outputString
+            if(x.note){
+              if((x.activity == "bottlefeeding") || (x.activity == "sleeping") || (x.activity == "diapering")){
+                tempToday = {
+                  note: x.note.note,
+                  time: timeString,
+                  activity: x.activity,
+                  output: outputString
+                }
+              } else {
+                tempToday = {
+                  note: x.note,
+                  time: timeString,
+                  activity: x.activity,
+                  output: outputString
+                }
               };
             } else {
               tempToday = {
@@ -182,6 +191,7 @@ export class LifoHistoryProvider {
 
             let temp = {
               date: entryDate,
+              dateTime: x.date,
               activity: x.activity,
               output: outputString
             };
@@ -195,6 +205,7 @@ export class LifoHistoryProvider {
 
           let temp = {
             date: entryDate,
+            dateTime: x.date,
             activity: x.activity,
             output: outputString
           };
@@ -207,6 +218,7 @@ export class LifoHistoryProvider {
 
         let temp = {
           date: entryDate,
+          dateTime: x.date,
           activity: x.activity,
           output: outputString
         };

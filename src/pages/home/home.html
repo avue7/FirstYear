@@ -32,9 +32,6 @@
   <div [ngSwitch]="segmentType">
 
     <ion-list *ngSwitchCase="'Activities'">
-      <!-- <ion-icon name="custom-diaper"></ion-icon> -->
-
-      <!-- <p class="center"><u> Summary </u></p> -->
       <div class="bottle-summary">
 
         <div *ngIf="noHistoryYet">
@@ -83,8 +80,6 @@
           </div>
         </div>
         <!-- </div> -->
-
-        <br>
         <div *ngIf="hasYesterday">
           <div class="divider-title"> Yesterday </div>
 
@@ -114,7 +109,7 @@
               <ion-item class="summary" *ngIf="x.activity=='diapering'">
                 <p><b>Diaper</b></p>
                 <p item right> {{x.output}} </p>
-                <p *ngIf="x.note">Notes: {{x.note}} </p>
+                <p *ngIf="x.note">Notes: {{x.note.note}} </p>
               </ion-item>
             </ul>
             <ul>
@@ -128,8 +123,6 @@
         </div>
 
       </div>
-
-      <br>
       <div *ngIf="hasMore">
         <ion-item-group *ngFor="let x of moreHistoryArray | groupby: 'date'">
           <div  class="divider-title">
@@ -161,7 +154,7 @@
               <ion-item class="summary" *ngIf="event.activity=='diapering'">
                 <p><b>Diaper</b></p>
                 <p item right> {{event.output}} </p>
-                <p *ngIf="x.note">Notes: {{event.note}} </p>
+                <p *ngIf="x.note">Notes: {{event.note.note}} </p>
               </ion-item>
             </ul>
             <ul>
@@ -176,18 +169,17 @@
       </div>
 
       <!-- FOOTER -->
-      <ion-footer>
+      <!-- <ion-footer>
         <strong style="color:#e1e1e1;font-size:7;"> Add an activity by clicking on any icon below: </strong>
         <ion-scroll scrollX="true">
           <div class="scroll-item" *ngFor="let activity of segments['Activities']">
             <ion-icon [name]="activity.icon" (click)="openPage(activity)" class="scroll-item selectable-icon avatar"></ion-icon>
           </div>
         </ion-scroll>
-      </ion-footer>
-
+      </ion-footer> -->
     </ion-list>
 
-    <!-- Segments -->
+
     <ion-list *ngSwitchCase="'Charts'">
       <p> do something here 2 </p>
     </ion-list>
@@ -203,3 +195,12 @@
   </div>
 
 </ion-content>
+
+<ion-footer>
+  <strong style="color:#e1e1e1;font-size:7;"> Add an activity by clicking on any icon below: </strong>
+  <ion-scroll scrollX="true">
+    <div class="scroll-item" *ngFor="let activity of segments['Activities']">
+      <ion-icon [name]="activity.icon" (click)="openPage(activity)" class="scroll-item selectable-icon avatar"></ion-icon>
+    </div>
+  </ion-scroll>
+</ion-footer>

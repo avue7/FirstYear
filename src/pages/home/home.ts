@@ -150,23 +150,25 @@ export class HomePage {
       // Then sort:
       if(this.hasToday){
         this.todayHistoryArray = await this.todayHistoryArray.sort((a,b) => {
-          return b.time > a.time;
+          return (a.time > b.time ? -1 : a.time < b.time ? 1 : 0);
         });
+        // console.log("This todayHistoryArray: ", this.todayHistoryArray);
       };
       // console.log("SORTY TODAY ARRAY IS", this.todayHistoryArray);
     }).then(async() => {
       await this.groupYesterdayArray();
       if(this.hasYesterday){
         this.yesterdayHistoryArray = await this.yesterdayHistoryArray.sort((a,b) => {
-          return b.time > a.time;
+          return (a.time > b.time ? -1 : a.time < b.time ? 1 : 0);
         });
       };
     }).then(async() => {
       await this.groupMoreArray();
       if(this.hasMore){
         this.moreHistoryArray = await this.moreHistoryArray.sort((a,b) => {
-          return b.time > a.time;
+          return (a.dateTime > b.dateTime ? -1 : a.dateTime < b.dateTime ? 1 : 0);
         });
+        // console.log("This moreHistoryArray: ", this.moreHistoryArray);
       };
     }).then(async() => {
       await this.checkForNoHistory();
@@ -311,7 +313,7 @@ export class HomePage {
 
   async groupTodayArray(){
     if(this.todayHistoryArray != undefined){
-      this.todayHistoryArray.splice(0, this.todayHistoryArray.length);
+      await this.todayHistoryArray.splice(0, this.todayHistoryArray.length);
     }
 
     if(this.breastHasToday){
@@ -349,16 +351,16 @@ export class HomePage {
     if(this.sleepingHasToday){
       this.hasToday = true;
       if(this.todayHistoryArray != undefined){
-        this.todayHistoryArray = this.todayHistoryArray.concat(this.sleepingTodayHistoryArray);
+        this.todayHistoryArray =  this.todayHistoryArray.concat(this.sleepingTodayHistoryArray);
       } else {
         this.todayHistoryArray = this.sleepingTodayHistoryArray;
       };
     }
   }
 
-  groupYesterdayArray(){
+  async groupYesterdayArray(){
     if(this.yesterdayHistoryArray != undefined){
-      this.yesterdayHistoryArray.splice(0, this.yesterdayHistoryArray.length);
+      await this.yesterdayHistoryArray.splice(0, this.yesterdayHistoryArray.length);
     }
 
     if(this.breastHasYesterday){
@@ -372,7 +374,7 @@ export class HomePage {
     if(this.bottleHasYesterday){
       this.hasYesterday = true;
       if(this.yesterdayHistoryArray != undefined){
-        this.yesterdayHistoryArray = this.yesterdayHistoryArray.concat(this.bottleYesterdayHistoryArray);
+        this.yesterdayHistoryArray =  this.yesterdayHistoryArray.concat(this.bottleYesterdayHistoryArray);
       } else {
         this.yesterdayHistoryArray = this.bottleYesterdayHistoryArray;
       };
@@ -404,9 +406,9 @@ export class HomePage {
     // console.log("hasYesterday", this.hasYesterday);
   }
 
-  groupMoreArray(){
+  async groupMoreArray(){
     if(this.moreHistoryArray != undefined){
-      this.moreHistoryArray.splice(0, this.moreHistoryArray.length);
+      await this.moreHistoryArray.splice(0, this.moreHistoryArray.length);
     }
 
     if(this.breastHasMore){
