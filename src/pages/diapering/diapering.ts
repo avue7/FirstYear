@@ -96,7 +96,7 @@ export class DiaperingPage {
         object = {
           activity: 'diapering',
           type: this.diaper.type,
-          date: today,
+          dateTime: today,
           note: this.diaperNote,
           time: splitTimeOnly
         }
@@ -104,7 +104,7 @@ export class DiaperingPage {
         object = {
           activity: 'diapering',
           type: this.diaper.type,
-          date: today,
+          dateTime: today,
           time: splitTimeOnly
         }
       };
@@ -136,10 +136,10 @@ export class DiaperingPage {
           };
 
           // NOTE: MOMENTS AGO HACK...
-          this.DiaperingMomentsAgoTime = moment(doc.data().date, 'YYYY-MM-DD HH:mm:ss');
+          this.DiaperingMomentsAgoTime = moment(doc.data().dateTime, 'YYYY-MM-DD HH:mm:ss');
           this.createMomentObservable(this.DiaperingMomentsAgoTime);
 
-          this.lastDiapering = this.ft.formatDateTimeStandard(doc.data().date);
+          this.lastDiapering = this.ft.formatDateTimeStandard(doc.data().dateTime);
           this.lastDiaperType = doc.data().type;
         };
       });
@@ -216,7 +216,7 @@ export class DiaperingPage {
           manualObject = {
             activity: 'diapering',
             type: diapering.type,
-            date: dateTime,
+            dateTime: dateTime,
             time: time,
             note: diapering.note
           }
@@ -224,7 +224,7 @@ export class DiaperingPage {
           manualObject = {
             activity: 'diapering',
             type: diapering.type,
-            date: dateTime,
+            dateTime: dateTime,
             time: time,
           }
         };

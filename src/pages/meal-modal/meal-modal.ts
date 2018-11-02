@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ViewController } from 'ionic-angular';
+import { ViewController, NavParams } from 'ionic-angular';
 import { NoteAlertProvider } from '../../providers/note-alert/note-alert';
 
 import * as moment from 'moment';
@@ -10,26 +10,42 @@ import * as moment from 'moment';
 })
 export class MealModalPage {
   mealModal: any;
-  detail: string;
+  mealNote: string;
   meal: any = {
     date: '',
     time: '',
   }
 
+  edit: boolean;
+
   constructor(private view: ViewController,
-    private noteAlertProvider: NoteAlertProvider) {
-    this.meal.date = moment().format();
-    this.meal.time = moment().format();
+    private noteAlertProvider: NoteAlertProvider,
+    private params: NavParams) {
+
+    let object = this.params.get('object');
+    if(object){
+      this.edit = true;
+      let splitDateTime = object.dateTime.split(' ');
+      this.meal.date = splitDateTime[0];
+      this.meal.time = splitDateTime[1];
+      if(object.note){
+        this.mealNote = object.note.note;
+      };
+    } else {
+      this.edit = false;
+      this.meal.date = moment().format();
+      this.meal.time = moment().format();
+    };
   }
 
   manuallyAddMeal(){
     let manualObject = {};
 
-    if(this.detail){
+    if(this.mealNote){
       manualObject = {
         date: this.meal.date,
         time: this.meal.time,
-        detail: this.detail
+        note: {note: this.mealNote}
       }
     } else {
         manualObject = {

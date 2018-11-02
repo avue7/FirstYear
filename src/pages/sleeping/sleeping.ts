@@ -136,7 +136,7 @@ export class SleepingPage {
       if(this.sleepingNote){
         object = {
           activity: 'sleeping',
-          date: this.dateTimeStart,
+          dateTime: this.dateTimeStart,
           note: this.sleepingNote,
           time: splitTimeOnly,
           dateEnd: splitDate,
@@ -146,7 +146,7 @@ export class SleepingPage {
       }else {
         object = {
           activity: 'sleeping',
-          date: this.dateTimeStart,
+          dateTime: this.dateTimeStart,
           time: splitTimeOnly,
           dateEnd: splitDate,
           timeEnd:  splitTime,
@@ -181,10 +181,10 @@ export class SleepingPage {
           };
 
           // NOTE: MOMENTS AGO HACK...
-          this.SleepingMomentsAgoTime = moment(doc.data().date, 'YYYY-MM-DD HH:mm:ss');
+          this.SleepingMomentsAgoTime = moment(doc.data().dateTime, 'YYYY-MM-DD HH:mm:ss');
           this.createMomentObservable(this.SleepingMomentsAgoTime);
 
-          this.lastSleeping = this.ft.formatDateTimeStandard(doc.data().date);
+          this.lastSleeping = this.ft.formatDateTimeStandard(doc.data().dateTime);
           this.lastSleepDuration = this.lifoHistory.convertDuration(doc.data().duration);
         };
       });
@@ -285,7 +285,7 @@ export class SleepingPage {
         if(this.sleepingNote){
           manualObject = {
             activity: 'sleeping',
-            date: dateTime,
+            dateTime: dateTime,
             note: sleeping.note,
             time: timeStart,
             dateEnd: dateTimeEnd,
@@ -295,7 +295,7 @@ export class SleepingPage {
         }else {
           manualObject = {
             activity: 'sleeping',
-            date: dateTime,
+            dateTime: dateTime,
             time: timeStart,
             dateEnd: dateTimeEnd,
             timeEnd:  timeEnd,

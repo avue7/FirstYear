@@ -10,7 +10,7 @@ page-home, .md, .wp, .ios {
 
 
   ion-row {
-    // height: 20px;
+    //height: 20px;
   }
 
   ion-footer{
@@ -94,6 +94,14 @@ page-home, .md, .wp, .ios {
 
   ion-title {
     text-align: center;
+  }
+
+  .absolute-right{
+    text-align: right;
+  }
+
+  .vertical-center{
+    vertical-align: middle !important;
   }
 
   .item {

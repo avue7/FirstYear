@@ -145,6 +145,10 @@ export class HomePage {
       await this.updateDiaperingSummary();
       await this.updateBreastSummary();
       await this.updateSleepSummary();
+    }).then(() => {
+      this.hasToday = false;
+      this.hasYesterday = false;
+      this.hasMore = false;
     }).then(async() => {
       await this.groupTodayArray();
       // Then sort:
@@ -164,6 +168,7 @@ export class HomePage {
       };
     }).then(async() => {
       await this.groupMoreArray();
+      console.log("MORE HISTORY:", this.moreHistoryArray)
       if(this.hasMore){
         this.moreHistoryArray = await this.moreHistoryArray.sort((a,b) => {
           return (a.dateTime > b.dateTime ? -1 : a.dateTime < b.dateTime ? 1 : 0);
@@ -465,6 +470,22 @@ export class HomePage {
     }
   }
 
+  async editEvent(slidingItem: any, event: any){
+    await this.db.editEvent(event).then(async() => {
+      this.init();
+    });
+    console.log("CLICKED ON EVENT");
+    slidingItem.close();
+  }
+
+  async deleteEvent(slidingItem: any, event: any){
+    console.log("CLICKED ON DELETE EVENT", event);
+    slidingItem.close();
+    await this.db.deleteEvent(event).then(() => {
+      this.init();
+    });
+  }
+
   openPage(page: any) {
     this.navCtrl.push(page.component, {parentPage: this});
   }
@@ -476,4 +497,13 @@ export class HomePage {
   enableMenu(){
     this.menu.enable(true);
   }
+
+  async refresh(refresher){
+    console.log('Begin async operation', refresher);
+    await this.init();
+    refresher.complete();
+  }
 }
+
+
+//NOTE: you need to work on deleting the other ones now.

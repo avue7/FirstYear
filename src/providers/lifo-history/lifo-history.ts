@@ -91,7 +91,7 @@ export class LifoHistoryProvider {
     };
 
     for(let x of this.lifoHistoryArray){
-      let entryDate = this.ft.getDateFromDateTime(x.date);
+      let entryDate = this.ft.getDateFromDateTime(x.dateTime);
       let entryDateMoment = moment(entryDate);
 
       // Check for am pm and convert if necessary
@@ -121,6 +121,7 @@ export class LifoHistoryProvider {
       // IF activity is bottlefeeding
       let outputString: any;
       let durationString = this.convertDuration(x.duration);
+      console.log("x duration is", x.duration);
 
       if(activity == 'bottlefeeding'){
         if(x.duration) {
@@ -139,7 +140,11 @@ export class LifoHistoryProvider {
           outputString = timeString + ', for ' + durationString;
         };
       } else if(activity == 'breastfeeding'){
-        outputString = timeString + ', '+ x.breast + ', for ' + durationString;
+        if(durationString == ""){
+          outputString = timeString + ', ' + x.breast;
+        } else {
+          outputString = timeString + ', '+ x.breast + ', for ' + durationString;
+        }
       }
 
 
@@ -150,24 +155,17 @@ export class LifoHistoryProvider {
           if(todayMoment.diff(entryDateMoment, 'days') == 0){
             let tempToday: any;
             if(x.note){
-              if((x.activity == "bottlefeeding") || (x.activity == "sleeping") || (x.activity == "diapering")){
-                tempToday = {
-                  note: x.note.note,
-                  time: timeString,
-                  activity: x.activity,
-                  output: outputString
-                }
-              } else {
-                tempToday = {
-                  note: x.note,
-                  time: timeString,
-                  activity: x.activity,
-                  output: outputString
-                }
-              };
+              tempToday = {
+                note: x.note.note,
+                dateTime: x.dateTime,
+                time: timeString,
+                activity: x.activity,
+                output: outputString
+              }
             } else {
               tempToday = {
                 activity: x.activity,
+                dateTime: x.dateTime,
                 time: timeString,
                 output: outputString
               };
@@ -178,22 +176,46 @@ export class LifoHistoryProvider {
           }
           // Yesterdays
           else if(todayMoment.diff(entryDateMoment, 'days') == 1){
-            let tempYesterday = {
-              activity: x.activity,
-              time: timeString,
-              output: outputString
+            let tempYesterday: any;
+            if(x.note){
+              tempYesterday = {
+                note: x.note.note,
+                dateTime: x.dateTime,
+                time: timeString,
+                activity: x.activity,
+                output: outputString
+              }
+            } else {
+              tempYesterday = {
+                activity: x.activity,
+                dateTime: x.dateTime,
+                time: timeString,
+                output: outputString
+              };
             };
+
             this.yesterdayHistoryArray.push(tempYesterday);
             this.hasYesterday = true;
           }
           else {
             let outputStringWithDate = entryDate + outputString;
 
-            let temp = {
-              date: entryDate,
-              dateTime: x.date,
-              activity: x.activity,
-              output: outputString
+            let temp: any;
+            if(x.note){
+              temp = {
+                note: x.note.note,
+                date: entryDate,
+                dateTime: x.dateTime,
+                activity: x.activity,
+                output: outputString
+              }
+            } else {
+              temp = {
+                activity: x.activity,
+                dateTime: x.dateTime,
+                date: entryDate,
+                output: outputString
+              };
             };
 
             this.moreHistoryArray.push(temp);
@@ -203,11 +225,22 @@ export class LifoHistoryProvider {
         else {
           let outputStringWithDate = entryDate + outputString;
 
-          let temp = {
-            date: entryDate,
-            dateTime: x.date,
-            activity: x.activity,
-            output: outputString
+          let temp: any;
+          if(x.note){
+            temp = {
+              note: x.note.note,
+              date: entryDate,
+              dateTime: x.dateTime,
+              activity: x.activity,
+              output: outputString
+            }
+          } else {
+            temp = {
+              activity: x.activity,
+              dateTime: x.dateTime,
+              date: entryDate,
+              output: outputString
+            };
           };
 
           this.moreHistoryArray.push(temp);
@@ -216,11 +249,22 @@ export class LifoHistoryProvider {
       } else {
         let outputStringWithDate = entryDate + outputString;
 
-        let temp = {
-          date: entryDate,
-          dateTime: x.date,
-          activity: x.activity,
-          output: outputString
+        let temp: any;
+        if(x.note){
+          temp = {
+            note: x.note.note,
+            date: entryDate,
+            dateTime: x.dateTime,
+            activity: x.activity,
+            output: outputString
+          }
+        } else {
+          temp = {
+            activity: x.activity,
+            dateTime: x.dateTime,
+            date: entryDate,
+            output: outputString
+          };
         };
 
         this.moreHistoryArray.push(temp);
@@ -242,7 +286,6 @@ export class LifoHistoryProvider {
     seconds -= minutes*60;
 
     let durationString: any = "";
-
     if (days > 0){
       if (days <= 1){
         durationString += days + ' day' + ' ';
@@ -258,7 +301,7 @@ export class LifoHistoryProvider {
       };
     }
     if(minutes > 0){
-      if (hours <= 1){
+      if (minutes <= 1){
         durationString += minutes + ' min' + ' ';
       } else {
         durationString += minutes + ' mins' + ' ';
@@ -271,6 +314,7 @@ export class LifoHistoryProvider {
         durationString += seconds + ' secs' + ' ';
       };
     };
+
     return durationString;
   }
 }

@@ -1,7 +1,8 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Manually Add Meal</ion-title>
+    <ion-title *ngIf="!edit">Manually Add Meal</ion-title>
+    <ion-title *ngIf="edit">Edit Meal</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -19,11 +20,12 @@
       </ion-item>
 
       <ion-item class="item-left-align">
-        <ion-textarea rows="3" input="text" placeholder="Enter meal description here (optional)" [(ngModel)]="detail"></ion-textarea>
+        <ion-textarea rows="3" input="text" placeholder="Enter meal description here (optional)" [(ngModel)]="mealNote"></ion-textarea>
       </ion-item>
 
     </ion-list>
-    <button ion-button class="baby-button" (click)="manuallyAddMeal()">Add</button>
+    <button *ngIf="!edit" ion-button class="baby-button" (click)="manuallyAddMeal()">Add</button>
+    <button *ngIf="edit" ion-button class="baby-button" (click)="manuallyAddMeal()">Save</button>
   <button ion-button class="baby-button" (click)="cancelModal()">Cancel</button>
 
 </ion-content>

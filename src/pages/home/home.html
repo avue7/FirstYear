@@ -28,6 +28,11 @@
 
 <ion-content no-border-top>
 
+  <!-- Refresher -->
+  <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <!-- This is where you can do individual things inside the segments -->
   <div [ngSwitch]="segmentType">
 
@@ -43,39 +48,109 @@
 
           <div  class="timeline" *ngFor="let x of todayHistoryArray">
             <ul>
-              <ion-item class="summary" *ngIf="x.activity=='bottlefeeding'">
-                <p><b>Bottlefeed</b></p>
-                <p item right> {{x.output}} </p>
-                <p *ngIf="x.note">Notes: {{x.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="x.activity=='bottlefeeding'">
+                <ion-item>
+                  <p><b>Bottlefeed</b></p>
+                  <p item right> {{x.output}} </p>
+                  <p *ngIf="x.note">Note: {{x.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, x)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, x)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
             <ul>
-              <ion-item class="summary" *ngIf="x.activity=='breastfeeding'">
-                <p><b>Breastfeed</b></p>
-                <p item right> {{x.output}} </p>
-                <p *ngIf="x.note">Notes: {{x.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="x.activity=='breastfeeding'">
+                <ion-item>
+                  <p><b>Breastfeed</b></p>
+                  <p item right> {{x.output}} </p>
+                  <p *ngIf="x.note">Note: {{x.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, x)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, x)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
             <ul>
-              <ion-item class="summary" *ngIf="x.activity=='meal'">
-                <p><b>Meal</b></p>
-                <p item right> {{x.output}} </p>
-                <p *ngIf="x.note">Notes: {{x.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="x.activity=='meal'">
+                <ion-item>
+                  <p><b>Meal</b></p>
+                  <p item right> {{x.output}} </p>
+                  <p *ngIf="x.note">Note: {{x.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, x)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, x)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
             <ul>
-              <ion-item class="summary" *ngIf="x.activity=='diapering'">
-                <p><b>Diaper</b></p>
-                <p item right> {{x.output}} </p>
-                <p *ngIf="x.note">Notes: {{x.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="x.activity=='diapering'">
+                <ion-item>
+                  <p><b>Diaper</b></p>
+                  <p item right> {{x.output}} </p>
+                  <p *ngIf="x.note">Note: {{x.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, x)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, x)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
             <ul>
-              <ion-item class="summary" *ngIf="x.activity=='sleeping'">
-                <p><b>Sleep</b></p>
-                <p item right> {{x.output}} </p>
-                <p *ngIf="x.note">Notes: {{x.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="x.activity=='sleeping'">
+                <ion-item>
+                  <p><b>Sleeping</b></p>
+                  <p item right> {{x.output}} </p>
+                  <p *ngIf="x.note">Note: {{x.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, x)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, x)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
           </div>
         </div>
@@ -85,39 +160,109 @@
 
           <div  class="timeline" *ngFor="let x of yesterdayHistoryArray">
             <ul>
-              <ion-item class="summary" *ngIf="x.activity=='bottlefeeding'">
-                <p><b>Bottlefeed</b></p>
-                <p item right> {{x.output}} </p>
-                <p *ngIf="x.note">Notes: {{x.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="x.activity=='bottlefeeding'">
+                <ion-item>
+                  <p><b>Bottlefeed</b></p>
+                  <p item right> {{x.output}} </p>
+                  <p *ngIf="x.note">Note: {{x.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, x)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, x)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
             <ul>
-              <ion-item class="summary" *ngIf="x.activity=='breastfeeding'">
-                <p><b>Breastfeed</b></p>
-                <p item right> {{x.output}} </p>
-                <p *ngIf="x.note">Notes: {{x.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="x.activity=='breastfeeding'">
+                <ion-item>
+                  <p><b>Breastfeed</b></p>
+                  <p item right> {{x.output}} </p>
+                  <p *ngIf="x.note">Note: {{x.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, x)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, x)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
             <ul>
-              <ion-item class="summary" *ngIf="x.activity=='meal'">
-                <p><b>Meal</b></p>
-                <p item right> {{x.output}} </p>
-                <p *ngIf="x.note">Notes: {{x.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="x.activity=='meal'">
+                <ion-item>
+                  <p><b>Meal</b></p>
+                  <p item right> {{x.output}} </p>
+                  <p *ngIf="x.note">Note: {{x.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, x)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, x)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
             <ul>
-              <ion-item class="summary" *ngIf="x.activity=='diapering'">
-                <p><b>Diaper</b></p>
-                <p item right> {{x.output}} </p>
-                <p *ngIf="x.note">Notes: {{x.note.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="x.activity=='diapering'">
+                <ion-item>
+                  <p><b>Diaper</b></p>
+                  <p item right> {{x.output}} </p>
+                  <p *ngIf="x.note">Note: {{x.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, x)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, x)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
             <ul>
-              <ion-item class="summary" *ngIf="x.activity=='sleeping'">
-                <p><b>Sleep</b></p>
-                <p item right> {{x.output}} </p>
-                <p *ngIf="x.note">Notes: {{x.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="x.activity=='sleeping'">
+                <ion-item>
+                  <p><b>Sleep</b></p>
+                  <p item right> {{x.output}} </p>
+                  <p *ngIf="x.note">Note: {{x.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, x)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, x)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
           </div>
         </div>
@@ -130,53 +275,114 @@
           </div>
           <div  class="timeline" *ngFor="let event of x.list">
             <ul>
-              <ion-item class="summary" *ngIf="event.activity=='bottlefeeding'">
-                <p><b>Bottlefeed</b></p>
-                <p item right> {{event.output}} </p>
-                <p *ngIf="x.note">Notes: {{event.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="event.activity=='bottlefeeding'">
+                <ion-item>
+                  <p><b>Bottlefeed</b></p>
+                  <p item right> {{event.output}}</p>
+                  <p *ngIf="event.note">Note: {{event.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, event)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, event)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
             <ul>
-              <ion-item class="summary" *ngIf="event.activity=='breastfeeding'">
-                <p><b>Breastfeed</b></p>
-                <p item right> {{event.output}} </p>
-                <p *ngIf="x.note">Notes: {{event.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="event.activity=='breastfeeding'">
+                <ion-item>
+                  <p><b>Breastfeed</b></p>
+                  <p item right> {{event.output}} </p>
+                  <p *ngIf="event.note">Note: {{event.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, event)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, event)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
             <ul>
-              <ion-item class="summary" *ngIf="event.activity=='meal'">
-                <p><b>Meal</b></p>
-                <p item right> {{event.output}} </p>
-                <p *ngIf="x.note">Notes: {{event.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="event.activity=='meal'">
+                <ion-item>
+                  <p><b>Meal</b></p>
+                  <p item right> {{event.output}} </p>
+                  <p *ngIf="event.note">Note: {{event.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, event)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, event)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
             <ul>
-              <ion-item class="summary" *ngIf="event.activity=='diapering'">
-                <p><b>Diaper</b></p>
-                <p item right> {{event.output}} </p>
-                <p *ngIf="x.note">Notes: {{event.note.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="event.activity=='diapering'">
+                <ion-item>
+                  <p><b>Diaper</b></p>
+                  <p item right> {{event.output}} </p>
+                  <p *ngIf="event.note">Note: {{event.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, event)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, event)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
             <ul>
-              <ion-item class="summary" *ngIf="event.activity=='sleeping'">
-                <p><b>Sleep</b></p>
-                <p item right> {{event.output}} </p>
-                <p *ngIf="x.note">Notes: {{event.note}} </p>
-              </ion-item>
+              <ion-item-sliding #slidingItem class="summary" *ngIf="event.activity=='sleeping'">
+                <ion-item>
+                  <p><b>Sleep</b></p>
+                  <p item right> {{event.output}} </p>
+                  <p *ngIf="event.note">Note: {{event.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, event)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, event)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
             </ul>
           </div>
         </ion-item-group>
       </div>
 
-      <!-- FOOTER -->
-      <!-- <ion-footer>
-        <strong style="color:#e1e1e1;font-size:7;"> Add an activity by clicking on any icon below: </strong>
-        <ion-scroll scrollX="true">
-          <div class="scroll-item" *ngFor="let activity of segments['Activities']">
-            <ion-icon [name]="activity.icon" (click)="openPage(activity)" class="scroll-item selectable-icon avatar"></ion-icon>
-          </div>
-        </ion-scroll>
-      </ion-footer> -->
     </ion-list>
 
 

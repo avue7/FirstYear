@@ -8,6 +8,12 @@ import { ToastController } from 'ionic-angular';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 
+// Modals
+import { BottlefeedingModalPage } from '../../pages/bottlefeeding-modal/bottlefeeding-modal';
+import { BreastfeedingModalPage } from '../../pages/breastfeeding-modal/breastfeeding-modal';
+import { MealModalPage } from '../../pages/meal-modal/meal-modal';
+
+
 // Testing firestore
 import firebase from 'firebase';
 import 'firebase/firestore';
@@ -34,6 +40,15 @@ export class DatabaseProvider {
   diaperingHistoryArray: any;
   mealHistoryArray: any;
   sleepingHistoryArray: any;
+
+  // Toast flags
+  silent: boolean;
+
+  // Modals
+  bottlefeedingModal: any;
+  breastfeedingModal: any;
+  mealModal: any;
+
 
   constructor(/*private alertCtrl: AlertController,*/
     private modal: ModalController,
@@ -316,7 +331,290 @@ export class DatabaseProvider {
     });
   }
 
-  getAllActivity(){
+  async editEvent(event: any){
+    return new Promise( async resolve => {
+      let activityRef: any;
+      await this.getActivityReference(event.activity).then((_activityRef) => {
+        activityRef = _activityRef;
+      }).then( async() => {
+        if(activityRef.doc(event.dateTime)){
+          activityRef.doc(event.dateTime).get().then(async(doc) => {
+            let object = doc.data();
+            console.log("Data for doc is", object);
+            // Note: bottlefeeding
+            if(event.activity == "bottlefeeding"){
+              await this.editBottle(object, event).then(() => {
+                resolve();
+              });
+            } else if(event.activity == "meal"){
+              await this.editMeal(object, event).then(() => {
+                resolve();
+              })
+            } else if(event.activity == "breastfeeding"){
+              await this.editBreast(object, event).then(() => {
+                resolve();
+              });
+            } else if(event.activity == "sleeping"){
+
+            };
+          })
+        };
+      });
+    });
+  }
+
+  editMeal(object: any, event: any){
+    return new Promise(resolve => {
+      this.openMealModal(object).then( async(meal) => {
+        if(meal == undefined){
+          console.log("Database:: editMeal(): user canceled modal");
+        } else {
+          // // Extract only the date
+          let dateTempSplit = meal.date.split('-');
+          let date = dateTempSplit[1] + '-' + dateTempSplit[2] + '-' + dateTempSplit[0];
+          let time: any;
+          time = meal.time;
+          let dateTime = date + " " + time;
+
+          if(meal.note){
+            object = {
+              activity: 'meal',
+              dateTime: dateTime,
+              time: meal.time,
+              note: meal.note
+            }
+          } else {
+            object = {
+              activity: 'meal',
+              dateTime: dateTime,
+              time: meal.time
+            }
+          };
+
+          await this.deleteEvent(event);
+          
+          this.saveBabyActivity("meal", object).then((retVal) => {
+            if(retVal){
+              console.log("Database:: editMeal(): succesfully saved:", object);
+            } else {
+              console.log("Database:: editMeal(): cannot save activity:", object);
+            };
+            resolve();
+          });
+        };
+      });
+    });
+  }
+
+  openMealModal(object_: any) : any {
+    return new Promise(resolve =>{
+      this.mealModal = this.modal.create(MealModalPage, {object: object_});
+      this.mealModal.present();
+      resolve(this.waitForMealReturn());
+    })
+  }
+
+  waitForMealReturn() : any{
+    return new Promise(resolve => {
+      this.mealModal.onDidDismiss( data => {
+        let babyObject = data;
+        resolve(babyObject);
+      });
+    });
+  }
+
+  editBreast(object: any, event: any){
+    return new Promise(resolve => {
+      this.openBfModal(object).then( async(breastFeeding) => {
+        if(breastFeeding == undefined){
+          console.log("Database::editBreast(): user canceled modal");
+        } else {
+          let totalDuration: any;
+          // Take care of duration if it is a number or moment
+          if(typeof breastFeeding.duration == "number"){
+            totalDuration = breastFeeding.duration;
+          } else {
+            let durationTemp = breastFeeding.duration;
+            let splitDurationArray = durationTemp.split(':');
+            splitDurationArray[1] = Number(splitDurationArray[1]);
+            splitDurationArray[2] = Number(splitDurationArray[2]);
+            // This will be the value of time (duration for database)
+            totalDuration = (splitDurationArray[1] * 60) + (splitDurationArray[2]);
+          };
+          // // Extract only the date
+          let dateTempSplit = breastFeeding.date.split('-');
+          let date = dateTempSplit[1] + '-' + dateTempSplit[2] + '-' + dateTempSplit[0];
+          let time: any;
+          time = breastFeeding.time;
+          let dateTime = date + " " + time;
+
+          let manualObject = {};
+
+          if(breastFeeding.note){
+            manualObject = {
+              activity: 'breastfeeding',
+              breast: breastFeeding.breast,
+              dateTime: dateTime,
+              time: time,
+              duration: totalDuration,
+              note: breastFeeding.note
+            }
+          } else {
+            manualObject = {
+              activity: 'breastfeeding',
+              breast: breastFeeding.breast,
+              dateTime: dateTime,
+              time: time,
+              duration: totalDuration,
+            }
+          };
+
+          // Delete old object first then update (save another one)
+          await this.deleteEvent(event);
+
+          // Call method to store into Database
+          this.saveBabyActivity('breastfeeding', manualObject).then((retVal) => {
+          if(retVal = true){
+            console.log("Edited breastFeeding saved successfully");
+          } else {
+            console.log("Edited breaastFeeding was not saved succesfully. Something happend");
+          };
+            //this.getLastBottleFeed();
+            resolve();
+          });
+        };
+      });
+    });
+  }
+
+  openBfModal(object_: any) : any {
+    return new Promise(resolve =>{
+      this.breastfeedingModal = this.modal.create(BreastfeedingModalPage, {object: object_});
+      this.breastfeedingModal.present();
+      resolve(this.waitForBreastReturn());
+    })
+  }
+
+  waitForBreastReturn() : any{
+    return new Promise(resolve => {
+      this.breastfeedingModal.onDidDismiss( data => {
+        let babyObject = data;
+        resolve(babyObject);
+      });
+    });
+  }
+
+  editBottle(object: any, event: any){
+    return new Promise(resolve => {
+      this.openBottleModal(object).then( async(bottleFeeding) => {
+        if (bottleFeeding == undefined){
+          console.log("Database:: editBottle(): user canceled modal");
+        } else {
+          let totalDuration: any;
+          // Take care of duration if it is a number or moment
+          if(typeof bottleFeeding.duration == "number"){
+            totalDuration = bottleFeeding.duration;
+          } else {
+            let durationTemp = bottleFeeding.duration;
+            let splitDurationArray = durationTemp.split(':');
+            splitDurationArray[1] = Number(splitDurationArray[1]);
+            splitDurationArray[2] = Number(splitDurationArray[2]);
+            // This will be the value of time (duration for database)
+            totalDuration = (splitDurationArray[1] * 60) + (splitDurationArray[2]);
+          };
+          let dateTempSplit = bottleFeeding.date.split('-');
+          let date = dateTempSplit[1] + '-' + dateTempSplit[2] + '-' + dateTempSplit[0];
+          let time: any;
+          // if(bottleFeeding.edit){
+          time = bottleFeeding.time;
+          let dateTime = date + " " + time;
+
+          if(bottleFeeding.volume == undefined){
+            bottleFeeding.volume = 6;
+          };
+
+          let manualObject = {};
+
+          if(bottleFeeding.note){
+            manualObject = {
+              activity: 'bottlefeeding',
+              type: bottleFeeding.type,
+              dateTime: dateTime,
+              volume: bottleFeeding.volume,
+              time: time,
+              duration: totalDuration,
+              unit: bottleFeeding.unit,
+              note: bottleFeeding.note
+            }
+          } else {
+            manualObject = {
+              activity: 'bottlefeeding',
+              type: bottleFeeding.type,
+              dateTime: dateTime,
+              volume: bottleFeeding.volume,
+              time: time,
+              duration: totalDuration,
+              unit: bottleFeeding.unit
+            }
+          };
+
+          // Delete old object first then update (save another one)
+          await this.deleteEvent(event);
+
+          // Call method to store into Database
+          this.saveBabyActivity('bottlefeeding', manualObject).then((retVal) => {
+          if(retVal = true){
+            console.log("Edited bottleFeeding saved successfully");
+          } else {
+            console.log("Edited bottleFeeding was not saved succesfully. Something happend");
+          };
+            //this.getLastBottleFeed();
+            resolve();
+          });
+        };
+      });
+    });
+  }
+
+  addZeroToTime(time : any) : any{
+    if(time < 10){
+      time = "0" + time;
+    };
+    return time;
+  }
+
+  openBottleModal(object_: any) : any {
+    return new Promise(resolve =>{
+      this.bottlefeedingModal = this.modal.create(BottlefeedingModalPage, {object: object_});
+      this.bottlefeedingModal.present();
+      resolve(this.waitForBottleReturn());
+    })
+  }
+
+  waitForBottleReturn() : any{
+    return new Promise(resolve => {
+      this.bottlefeedingModal.onDidDismiss( data => {
+        let babyObject = data;
+        resolve(babyObject);
+      });
+    });
+  }
+
+  async deleteEvent(event: any){
+    let activityRef: any;
+    await this.getActivityReference(event.activity).then( async(_activityRef) => {
+      activityRef = _activityRef;
+    }).then( () => {
+      if(activityRef.doc(event.dateTime)){
+        console.log("Yes it exists..deleting");
+        activityRef.doc(event.dateTime).delete().then(() => {
+          this.deleteToast(event.activity);
+        }).catch((error) => {
+          console.log("Database:: deleteEvent(): Error removing document", error);
+        });
+      }
+    });
+
 
   }
 
@@ -326,16 +624,16 @@ export class DatabaseProvider {
       console.log("Database::saveBabyActivity(): object is", object);
 
       // Convert date back to YYYY/MM/DD
-      let splitDateTime = object.date.split(' ');
+      let splitDateTime = object.dateTime.split(' ');
       let dateArray = splitDateTime[0].split('-');
       let newDate = dateArray[2] + '-' + dateArray[0] + '-' + dateArray[1];
-      object.date = newDate + ' ' + splitDateTime[1];
+      object.dateTime = newDate + ' ' + splitDateTime[1];
 
       let babyReference = this.getBabyReference();
-      babyReference.collection(activity).doc(object.date).set(object);
+      babyReference.collection(activity).doc(object.dateTime).set(object);
 
       // Check if saved was Successful
-      babyReference.collection(activity).doc(object.date).get().then((doc) => {
+      babyReference.collection(activity).doc(object.dateTime).get().then((doc) => {
         if (doc.exists){
           this.successToast(activity);
           console.log("Database::saveBabyActivity(): doc was successfully saved to database");
@@ -358,6 +656,20 @@ export class DatabaseProvider {
 
     toast.onDidDismiss(() => {
       console.log("Database::presentToaast(): toast was dismissed");
+    });
+
+    toast.present();
+  }
+
+  deleteToast(activity: any){
+    let toast = this.toastCtrl.create({
+      message: this.babyName + '\'s ' + activity + " activity was deleted successfully.",
+      duration: 3000,
+      position: 'bottom'
+    });
+
+    toast.onDidDismiss(() => {
+      console.log("Database::deleteToast(): toast was dismissed");
     });
 
     toast.present();

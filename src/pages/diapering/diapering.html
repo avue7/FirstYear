@@ -14,10 +14,20 @@
     <ion-row>
       <ion-col width-25>
         <ion-item>
-          <ion-label>Date</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="diaper.date" name="date"></ion-datetime>
+          <ion-label>Type:</ion-label>
+          <ion-select [(ngModel)]="diaper.type" name="type" interface="popover">
+            <ion-option selected="true" value="pee">Pee</ion-option>
+            <ion-option value="poo">Poo</ion-option>
+            <ion-option value="mixed">Mixed</ion-option>
+          </ion-select>
         </ion-item>
       </ion-col>
+      <ion-col width-25>
+        <ion-item>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
       <ion-col width-25>
         <ion-item>
           <ion-label color="gray!important">Note:</ion-label>
@@ -25,18 +35,6 @@
             <ion-icon name="clipboard"></ion-icon>
             <ion-icon *ngIf="diaperNote" color="green" name="checkmark"></ion-icon>
           </p>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col width-25>
-        <ion-item>
-          <ion-label>Type:</ion-label>
-          <ion-select [(ngModel)]="diaper.type" name="type" interface="popover">
-            <ion-option selected="true" value="pee">Pee</ion-option>
-            <ion-option value="poo">Poo</ion-option>
-            <ion-option value="mixed">Mixed</ion-option>
-          </ion-select>
         </ion-item>
       </ion-col>
       <ion-col width-25>
@@ -99,7 +97,7 @@
         <li *ngFor="let event of x.list">
           <div>
             <p class="timeline-item"> {{event.output}}
-              <b *ngIf="x.note"> , Note: {{event.note}} </b>
+              <b *ngIf="event.note"> , Note: {{event.note}} </b>
             </p>
           </div>
         </li>
