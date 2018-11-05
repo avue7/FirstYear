@@ -104,5 +104,6 @@
         <variable name="ANDROID_HOST" value=" " />
         <variable name="ANDROID_PATHPREFIX" value="/" />
     </plugin>
+    <plugin name="cordova-plugin-firebase" spec="^2.0.5" />
     <engine name="android" spec="7.1.1" />
 </widget>
