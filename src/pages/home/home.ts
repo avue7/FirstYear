@@ -118,12 +118,12 @@ export class HomePage {
     private platform: Platform,
     private fcm: FcmProvider,
     private toastCtrl: ToastController) {
-    this.waitForPlatFormReady().then(() => {
+    // this.waitForPlatFormReady().then(() => {
       this.enableMenu();
-      // this.startFCMService();
-    }).then(() => {
+      this.startFCMService();
+    // }).then(() => {
       this.init();
-    });
+    // });
   }
 
   async waitForPlatFormReady(){

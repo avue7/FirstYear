@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { Firebase } from '@ionic-native/firebase';
+import { UserProvider } from '../user/user';
 import * as firebase from 'firebase/app';
 import 'firebase/firestore';
 
@@ -12,7 +13,8 @@ import 'firebase/firestore';
 export class FcmProvider {
 
   constructor(private platform: Platform,
-    private firebase: Firebase) {
+    private firebase: Firebase,
+    private user: UserProvider) {
     console.log('Hello FcmProvider Provider');
   }
 
@@ -41,10 +43,11 @@ export class FcmProvider {
     });
 
     const devicesRef = db.collection('devices');
+    let userId = this.user.getUserId();
 
     const docData = {
       token,
-      userId: "testUser"
+      userId: userId
     };
 
     return devicesRef.doc(token).set(docData);
