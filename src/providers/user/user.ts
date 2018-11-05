@@ -22,7 +22,7 @@ export class UserProvider {
   setUserId(id_param: any){
     return new Promise(resolve => {
       this.id = id_param;
-      resolve();      
+      resolve();
     });
   }
 

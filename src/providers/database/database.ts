@@ -12,10 +12,11 @@ import { Subject } from 'rxjs/Subject';
 import { BottlefeedingModalPage } from '../../pages/bottlefeeding-modal/bottlefeeding-modal';
 import { BreastfeedingModalPage } from '../../pages/breastfeeding-modal/breastfeeding-modal';
 import { MealModalPage } from '../../pages/meal-modal/meal-modal';
+import { SleepingModalPage } from '../../pages/sleeping-modal/sleeping-modal';
 
 
 // Testing firestore
-import firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import 'firebase/firestore';
 
 @Injectable()
@@ -48,6 +49,7 @@ export class DatabaseProvider {
   bottlefeedingModal: any;
   breastfeedingModal: any;
   mealModal: any;
+  sleepModal: any;
 
 
   constructor(/*private alertCtrl: AlertController,*/
@@ -135,6 +137,7 @@ export class DatabaseProvider {
     });
   }
 
+  // NOTE: Add the current baby id from local storage here.
   createBabyObservable(userId: any){
     return new Promise(resolve => {
       if(this.noBabyYet == true){
@@ -355,10 +358,41 @@ export class DatabaseProvider {
                 resolve();
               });
             } else if(event.activity == "sleeping"){
-
+              await this.editSleep(object, event).then(() => {
+                resolve();
+              });
             };
           })
         };
+      });
+    });
+  }
+
+  editSleep(object: any, event: any){
+    return new Promise(resolve => {
+      this.openSleepModal(object).then( async(sleep) => {
+        if(sleep == undefined){
+          console.log("Database:: editSleep(): user canceled modal");
+        } else {
+          console.log("YOU FIRST NEED TO CALCULATE THE DURATION ANDDDD then yyou caan implement thiis.")
+        }
+      });
+    });
+  }
+
+  openSleepModal(object_: any) : any {
+    return new Promise(resolve =>{
+      this.sleepModal = this.modal.create(SleepingModalPage, {object: object_});
+      this.sleepModal.present();
+      resolve(this.waitForSleepReturn());
+    })
+  }
+
+  waitForSleepReturn() : any{
+    return new Promise(resolve => {
+      this.sleepModal.onDidDismiss( data => {
+        let babyObject = data;
+        resolve(babyObject);
       });
     });
   }
@@ -392,7 +426,7 @@ export class DatabaseProvider {
           };
 
           await this.deleteEvent(event);
-          
+
           this.saveBabyActivity("meal", object).then((retVal) => {
             if(retVal){
               console.log("Database:: editMeal(): succesfully saved:", object);

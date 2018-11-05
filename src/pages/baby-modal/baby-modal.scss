@@ -23,6 +23,24 @@
       height: 100%;
     }
 
+    ion-input{
+      input {
+        text-align: right;
+        ::-webkit-input-placeholder {
+          text-align: right;
+        }
+      }
+    }
+
+    ion-select{
+      select {
+        text-align: right;
+        ::-webkit-input-placeholder {
+          text-align: right;
+        }
+      }
+    }
+    
     ion-row {
       align-items: center;
       text-align: center;

@@ -3,6 +3,7 @@ import { NavController, MenuController, NavParams, Platform} from 'ionic-angular
 import { LifoHistoryProvider } from '../../providers/lifo-history/lifo-history';
 import { UserProvider } from '../../providers/user/user';
 import { DatabaseProvider } from '../../providers/database/database';
+import { FcmProvider } from '../../providers/fcm/fcm';
 
 
 // Pages:
@@ -109,28 +110,21 @@ export class HomePage {
     private user: UserProvider,
     private db: DatabaseProvider,
     private navParams: NavParams,
-    private platform: Platform) {
+    private platform: Platform,
+    private fcm: FcmProvider) {
     this.waitForPlatFormReady().then(() => {
       this.enableMenu();
+      this.fcm.getToken();
     }).then(() => {
       this.init();
     });
-
-    // this.activities = [
-    //   { type_: 'bottlefeeding', icon: 'custom-bottle' },
-    //   { type_: 'meal', icon: 'custom-cubes' },
-    //   { type_: 'diapering', icon: 'custom-diaper' },
-    //   { type_: 'sleeping', icon: 'custom-sleeping-baby' },
-    //   // {type: 'bottlefeeding', icon: 'custom-bottle'},
-    // ];
   }
 
   async waitForPlatFormReady(){
     return new Promise(async resolve => {
       await this.platform.ready().then(() => {
-
+        resolve(true);
       });
-      resolve(true);
     });
   }
   // ionViewDidLoad(){
@@ -168,7 +162,6 @@ export class HomePage {
       };
     }).then(async() => {
       await this.groupMoreArray();
-      console.log("MORE HISTORY:", this.moreHistoryArray)
       if(this.hasMore){
         this.moreHistoryArray = await this.moreHistoryArray.sort((a,b) => {
           return (a.dateTime > b.dateTime ? -1 : a.dateTime < b.dateTime ? 1 : 0);

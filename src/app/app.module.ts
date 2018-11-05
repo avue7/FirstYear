@@ -50,6 +50,11 @@ import { MomentPipe } from '../pipes/moment/moment';
 import { NoteAlertProvider } from '../providers/note-alert/note-alert';
 import { LifoHistoryProvider } from '../providers/lifo-history/lifo-history';
 import { EventSettingProvider } from '../providers/event-setting/event-setting';
+// import { NativeStorage } from '@ionic-native/native-storage';
+import { FcmProvider } from '../providers/fcm/fcm';
+// import { Firebase } from '@ionic-native/firebase';
+
+
 
 @NgModule({
   declarations: [
@@ -132,7 +137,10 @@ import { EventSettingProvider } from '../providers/event-setting/event-setting';
     MomentPipe,
     NoteAlertProvider,
     LifoHistoryProvider,
-    EventSettingProvider
+    EventSettingProvider,
+    // NativeStorage,
+    FcmProvider,
+    // Firebase
   ]
 })
 export class AppModule {}

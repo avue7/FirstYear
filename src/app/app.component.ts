@@ -7,6 +7,7 @@ import { UserProvider } from '../providers/user/user';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { DatabaseProvider } from '../providers/database/database';
+// import { FcmProvider } from '../providers/fcm/fcm';
 
 // Pages:
 import { HomePage } from '../pages/home/home';
@@ -64,7 +65,9 @@ export class MyApp {
     private user: UserProvider,
     private googlePlus: GooglePlus,
     private db: DatabaseProvider,
-    private modal: ModalController) {
+    private modal: ModalController,
+    // private fcm: FcmProvider
+    ) {
     this.initializeApp();
 
     this.pages = [
@@ -90,13 +93,20 @@ export class MyApp {
       // if(this.summaryArray.length != 0){
       //   this.summaryArray.splice(0, this.summaryArray.length);
       // };
-      await this.createAuthObservable();
+    }).then(async () => {
+      await this.createAuthObservable().then((retVal) => {
+        if(retVal == true){
+          this.nav.setRoot(HomePage);
+        } else {
+          this.nav.setRoot(WelcomePage);
+        }
+      });
     });
 
   }
 
-  createAuthObservable(){
-    return new Promise(resolve => {
+  async createAuthObservable(){
+    return new Promise(async resolve => {
       // Logic to check if users are logged in or not.
       this.userSubscription = this.auth.afAuth.authState.subscribe( user => {
         if(user){
@@ -104,34 +114,35 @@ export class MyApp {
             this.user.setUserEmail(user.email);
           };
           if(user.uid){
-            this.user.setUserId(user.uid).then(() =>{
-              this.db.setNewUserNewBaby(user.uid).then(retVal => {
+            this.user.setUserId(user.uid).then(async () =>{
+              await this.db.setNewUserNewBaby(user.uid).then( async retVal => {
                 // User decided to add baby later
                 if(retVal == "later"){
                   this.bdayYear = 0;
                   this.bdayMonth = 0;
                   this.babyName = "No baby added yet!";
-                  resolve();
+                  resolve(true);
                 }
                 // No baby file found but user added baby
                 else {
                   // Create a baby observable as soon as the user adds him or her
                   console.log("App:: Creating baby observable...");
-                  this.db.createBabyObservable(user.uid).then((retVal) => {
+                  await this.db.createBabyObservable(user.uid).then((retVal) => {
                     this.bdayYear = this.db.bdayYear;
                     this.bdayMonth = this.db.bdayMonth;
                     this.babyName = this.db.babyName;
                     this.babyObservableDone = true;
                     console.log("APP:: done creating baby observable!");
-                    this.nav.setRoot(HomePage);
+                    //this.nav.setRoot(HomePage);
+                    resolve(true);
                   });
                 }
               });
             });
           } else {
             console.log("App::initializeApp(): No user exists...going to WelcomePage.");
-            this.nav.setRoot(WelcomePage);
-            resolve();
+            //this.nav.setRoot(WelcomePage);
+            resolve(false);
           };
         };
       });

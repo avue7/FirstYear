@@ -228,7 +228,7 @@ export class FeedingPage {
           };
 
           // NOTE: MOMENTS AGO HACK...
-          this.momentsAgoTime = moment(doc.data().dateTime, 'YYYY-MM-DD HH:mm:ss');
+          this.momentsAgoTime = moment(doc.data().dateTIme, 'YYYY-MM-DD HH:mm:ss');
           this.createMomentObservable(this.momentsAgoTime, 'breastfeeding');
 
           this.lastBreastFeed = this.ft.formatDateTimeStandard(doc.data().dateTime);
@@ -590,7 +590,6 @@ export class FeedingPage {
       });
       this.updateBottleSummary();
     });
-
   }
 
   updateBottleSummary(){
@@ -726,8 +725,8 @@ export class FeedingPage {
           this.createMomentObservable(this.MealMomentsAgoTime, "meal");
 
           this.lastMeal = this.ft.formatDateTimeStandard(doc.data().dateTime);
-          if(doc.data().note){
-            this.lastMealDetail = doc.data().note.note;
+          if(doc.data().detail){
+            this.lastMealDetail = doc.data().detail;
           };
         };
       });
