@@ -7,7 +7,7 @@ import { UserProvider } from '../providers/user/user';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { DatabaseProvider } from '../providers/database/database';
-// import { FcmProvider } from '../providers/fcm/fcm';
+import { FcmProvider } from '../providers/fcm/fcm';
 
 // Pages:
 import { HomePage } from '../pages/home/home';
@@ -66,7 +66,7 @@ export class MyApp {
     private googlePlus: GooglePlus,
     private db: DatabaseProvider,
     private modal: ModalController,
-    // private fcm: FcmProvider
+    private fcm: FcmProvider
     ) {
     this.initializeApp();
 
@@ -137,6 +137,8 @@ export class MyApp {
           console.log("App::initializeApp(): No user exists...going to WelcomePage.");
           resolve(this.nav.setRoot(WelcomePage));
         };
+      }, error => {
+        console.log("Error while subscribing to authstate", error);
       });
     });
   }

@@ -14,6 +14,7 @@ import { UserProvider } from '../providers/user/user';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatabaseProvider } from '../providers/database/database';
 import { DatePipe } from '@angular/common';
+import { Firebase } from '@ionic-native/firebase';
 
 // Testing firestore
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -140,7 +141,7 @@ import { FcmProvider } from '../providers/fcm/fcm';
     EventSettingProvider,
     // NativeStorage,
     FcmProvider,
-    // Firebase
+    Firebase
   ]
 })
 export class AppModule {}

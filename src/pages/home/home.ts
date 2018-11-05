@@ -3,7 +3,12 @@ import { NavController, MenuController, NavParams, Platform} from 'ionic-angular
 import { LifoHistoryProvider } from '../../providers/lifo-history/lifo-history';
 import { UserProvider } from '../../providers/user/user';
 import { DatabaseProvider } from '../../providers/database/database';
+
+// Push implementation (testing)
 import { FcmProvider } from '../../providers/fcm/fcm';
+import { ToastController } from 'ionic-angular';
+import { Subject } from 'rxjs/Subject';
+import { tap } from 'rxjs/operators';
 
 
 // Pages:
@@ -111,10 +116,11 @@ export class HomePage {
     private db: DatabaseProvider,
     private navParams: NavParams,
     private platform: Platform,
-    private fcm: FcmProvider) {
+    private fcm: FcmProvider,
+    private toastCtrl: ToastController) {
     this.waitForPlatFormReady().then(() => {
       this.enableMenu();
-      this.fcm.getToken();
+      // this.startFCMService();
     }).then(() => {
       this.init();
     });
@@ -126,6 +132,20 @@ export class HomePage {
         resolve(true);
       });
     });
+  }
+
+  startFCMService(){
+    this.fcm.getToken();
+    this.fcm.listenToNotifications().pipe(
+      tap(msg => {
+        // show a toast
+        const toast = this.toastCtrl.create({
+          message: msg.body,
+          duration: 3000
+        });
+        toast.present();
+      })
+    ).subscribe();
   }
   // ionViewDidLoad(){
   //   console.log("Home:: ionViewDidLoad() ran...");
