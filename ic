@@ -7,7 +7,7 @@
 # @brief						#
 #   This is a very simple script to make executing the  #
 #   commonly used commands for ionic easier and faster. #
-#    							#	
+#    							#
 #   Note: this script assumes you have installed        #
 #   the android platform and your target is set	        #
 #   appropriately to the working device or AVD. 	#
@@ -19,11 +19,11 @@
 # 1. requirements - "ionic cordova requirements"        #
 # 2. info         - "ionic info"			#
 # 3. update	  - "ionic doctor check"		#
-# 4. build        - "ionic cordova build android"       # 
+# 4. build        - "ionic cordova build android"       #
 # 5. emulate      - "ionic cordova emulate android"     #
 # 6. lab          - "ionic lab"                         #
-# 7. serve        - "ionic serve"                       #   
-# 8. run 	  - "ionic cordova run"			#               
+# 7. serve        - "ionic serve"                       #
+# 8. run 	  - "ionic cordova run"			#
 # 9. g 		  - "ionic g"
 							#
 # Note: run "ic -u" for basic user interface		#
@@ -45,8 +45,8 @@ UI_ON=0      # Are we done with UI
 EXIT_LOOP=0 # Check for valid commands
 
 ### Known commands ###
-declare -a commands=("build" "emulate" "serve" "lab" "requirements" 
-		      "update" "info" "run" "-i" "?" "g"
+declare -a commands=("build" "emulate" "serve" "lab" "requirements"
+		      "update" "info" "run" "-i" "?" "g" "emulation"
 		    )
 
 # Check for arguments (" $# " - gets number of command line args)
@@ -76,8 +76,8 @@ fi
 # ITERATE THRU ARRAY. IF NOT IN ARRAY THEN OUTPUT ERROR AND TERMINATE
 for i in "${commands[@]}"
 do
-  if [ "$i" != "$COMMAND" ] 
-  then  
+  if [ "$i" != "$COMMAND" ]
+  then
         #echo "not found"
         EXIT_LOOP=1
         #echo "$EXIT_LOOP"
@@ -111,54 +111,54 @@ while [ $TERMINATE -eq 0 ]
 do
   # Use case statements to execute commands
   # NOTE: Add to this list as you learn more commands!!!!
-  case "$COMMAND" in 
+  case "$COMMAND" in
 	build)
-                echo " " 
+                echo " "
                 echo -e $YELLOW"Executing 'ionic cordova build android'..."$END
-		echo " "  
-		TERMINATE=1  
+		echo " "
+		TERMINATE=1
        		ionic cordova build android;;
 	emulate)
-                echo " " 
+                echo " "
                 echo -e $YELLOW"Executing 'ionic cordova emulate android'..."$END
 		echo " "
-  		TERMINATE=1  
+  		TERMINATE=1
 		ionic cordova emulate android;;
-	lab)	
-                echo " " 
+	lab)
+                echo " "
                 echo -e $YELLOW"Executing 'ionic lab'..."$END
 		echo " "
-  		TERMINATE=1  
+  		TERMINATE=1
 		ionic lab;;
-	serve)	
-                echo " " 
+	serve)
+                echo " "
                 echo -e $YELLOW"Executing 'ionic serve'..."$END
 		echo " "
-  		TERMINATE=1  
+  		TERMINATE=1
 		ionic serve;;
-	run)	
-                echo " " 
+	run)
+                echo " "
                 echo -e $YELLOW"Executing 'ionic cordova run android'..."$END
 		echo " "
-  		TERMINATE=1  
+  		TERMINATE=1
 		ionic cordova run android;;
-	info)	
-                echo " " 
+	info)
+                echo " "
                 echo -e $YELLOW"Executing 'ionic info'..."$END
 		echo " "
-  		TERMINATE=1  
+  		TERMINATE=1
 		ionic info;;
-	requirements)	
-                echo " " 
+	requirements)
+                echo " "
                 echo -e $YELLOW"Executing 'ionic cordova requirements'..."$END
 		echo " "
-  		TERMINATE=1  
+  		TERMINATE=1
 		ionic cordova requirements;;
-	update)	
-                echo " " 
+	update)
+                echo " "
                 echo -e $YELLOW"Executing 'ionic doctor check'..."$END
 		echo " "
-  		TERMINATE=1  
+  		TERMINATE=1
 		ionic doctor check;;
 	g)
 		echo " "
@@ -166,6 +166,12 @@ do
 		echo " "
 		TERMINATE=1
 		ionic g;;
+	emulation)
+			echo " "
+	   		echo -e $YELLOW"Executing 'ionic cordova emulate android --livereload $2 $3 '..."$END
+			echo " "
+			TERMINATE=1
+			ionic cordova emulate android --livereload;;
 	?)
 		echo -e $YELLOW"The following commands are available:"$END
         	echo " "
@@ -191,7 +197,10 @@ do
 		echo "  8. g"
 		echo "              executes \"ionic g\" - Generatates:"
 		echo "              component, directive, page, pipe, provider, tabs"
-		echo "  9. run"
+		echo "  9. emulation"
+		echo "              executes \"ionic cordova emulate android --livereload\""
+		echo "              component, directive, page, pipe, provider, tabs"
+		echo "  10. run"
 		echo "              executes \"ionic cordova run\" - runs on a real device"
 		echo " "
 	        echo "              - Instructions: "
@@ -238,10 +247,10 @@ do
 		  echo "	 	  4. Scroll down to find USB Debugging and tick the box."
 		  echo "	 	  5. Rerun \"ionic corodova run android\"."
         	  echo " "
-        
-                  COUNT=$(($COUNT+1))      
+
+                  COUNT=$(($COUNT+1))
 	        fi
-                
+
                 # Reprompt
 		if [ $COUNT -eq 1 ] && [ $TERMINATE -ne 1 ]
 		then
@@ -252,17 +261,17 @@ do
 
                 # If count is > 1, ask if start over
                 if [ $COUNT -gt 1 ]
-		then 
+		then
 			read -p "Run more commands (Enter: y/n)? " INPUT_2
                         if echo "$INPUT_2" | grep -iq "^y"
-                        then 
-			    TERMINATE=0	
+                        then
+			    TERMINATE=0
 			    COUNT=0
 			    COMMAND="-i"
 			    echo " "
 			    continue
  			elif echo "$INPUT_2" | grep -iq "^n"
-			then 
+			then
 			    exit 0
 			else
                             # No valid input error to screen and prompt for input again
@@ -270,17 +279,17 @@ do
 			    echo -e $RED"Error: <$INPUT_2> is not a valid input..."$END
 			    continue
 		        fi
-                fi	
+                fi
 
-                # If q, then quit else run command 
+                # If q, then quit else run command
                 if echo "$INPUT_2" | grep -iq "^n"
                 then
 			exit 0
-                elif echo "$INPUT" | grep -iq "^q" 
+                elif echo "$INPUT" | grep -iq "^q"
 		then
 			exit 0
 		else
-                  case "$INPUT" in 
+                  case "$INPUT" in
 			1)
 				COMMAND="requirements"
 		                COUNT=$(($COUNT+1))
@@ -289,35 +298,35 @@ do
 				COMMAND="info"
 		                COUNT=$(($COUNT+1))
  				continue;;
-			3) 	
+			3)
 				COMMAND="update"
 		                COUNT=$(($COUNT+1))
 				continue;;
-			4)	
+			4)
 				COMMAND="build"
 		                COUNT=$(($COUNT+1))
 				continue;;
-			5)	
+			5)
 				COMMAND="emulate"
 		                COUNT=$(($COUNT+1))
 				continue;;
-			6)	
+			6)
 				COMMAND="lab"
 		                COUNT=$(($COUNT+1))
 				continue;;
-			7)	
+			7)
 				COMMAND="serve"
 		                COUNT=$(($COUNT+1))
 				continue;;
-			8)	
+			8)
 				COMMAND="g"
 		                COUNT=$(($COUNT+1))
 				continue;;
-			9)	
+			9)
 				COMMAND="run"
 		                COUNT=$(($COUNT+1))
 				continue;;
-		  esac 
+		  esac
 		fi
 
                 # No valid input error to screen and prompt for input again

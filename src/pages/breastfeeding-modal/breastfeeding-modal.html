@@ -1,60 +1,49 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Manually Add Breastfeed</ion-title>
+    <ion-title *ngIf="!edit">Manually Add Breastfeed</ion-title>
+    <ion-title *ngIf="edit">Edit Bottlefeed</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <form novalidate class="list-form" (ngSubmit)="manualAddBreast()" [formGroup]="breastForm">
+  <form class="list-form" (ngSubmit)="manualAddBreast()">
     <ion-list>
 
       <ion-item>
-        <ion-label>Breast</ion-label>
-        <ion-select [(ngModel)]="breast" formControlName="breast" interface="popover">
+        <ion-label>Breast:</ion-label>
+        <ion-select [(ngModel)]="breastFeed.breast" name="breast" interface="popover">
           <ion-option value="left">Left</ion-option>
           <ion-option value="right">Right</ion-option>
         </ion-select>
       </ion-item>
 
       <ion-item>
-        <ion-label>Date</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="today" formControlName="date"></ion-datetime>
-      </ion-item>
-      <!-- checking for errors for date-->
-      <ion-item no-lines *ngIf="breastForm.get('date').hasError('required')
-        && breastForm.get('date').touched">
-        <div class="error">
-          Date is required.
-        </div>
+        <ion-label>Date:</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="breastFeed.date" name="date"></ion-datetime>
       </ion-item>
 
       <ion-item>
-        <ion-label>Time</ion-label>
-        <ion-datetime displayFormat="hh:mm:ss A" [(ngModel)]="timeNow" formControlName="time"></ion-datetime>
-      </ion-item>
-      <!-- checking for errors for time -->
-      <ion-item no-lines *ngIf="breastForm.get('time').hasError('required')
-        && breastForm.get('time').touched">
-        <div class="error">
-          Time is required.
-        </div>
+        <ion-label>Time:</ion-label>
+        <ion-datetime displayFormat="hh:mm:ss A" [(ngModel)]="breastFeed.time" name="time"></ion-datetime>
       </ion-item>
 
       <ion-item>
-        <ion-label>Duration (mins : secs)</ion-label>
-        <ion-datetime displayFormat="mm:ss" placeholder="DUDE" [(ngModel)]="zeros" formControlName="duration"></ion-datetime>
+        <ion-label>Duration:</ion-label>
+        <ion-datetime displayFormat="mm:ss" [(ngModel)]="breastFeed.duration" name="duration"></ion-datetime>
       </ion-item>
-      <!-- checking for errors for duration -->
-      <ion-item no-lines *ngIf="breastForm.get('duration').hasError('required')
-        && breastForm.get('duration').touched">
-        <div class="error">
-          Duration is required.
-        </div>
+
+      <ion-item>
+        <ion-label color="gray!important">Notes</ion-label>
+          <p item-right (click)="noteAlert()">
+            <ion-icon name="clipboard"></ion-icon>
+            <ion-icon *ngIf="breastFeedNote" color="green" name="checkmark"></ion-icon>
+          </p>
       </ion-item>
 
     </ion-list>
-    <button ion-button class="baby-button" [disabled]="!breastForm.valid">Add</button>
+    <button *ngIf="!edit" ion-button class="baby-button" type="submit">Add</button>
+    <button *ngIf="edit" ion-button class="baby-button" type="submit">Save</button>
   </form>
   <button ion-button class="baby-button" (click)="cancelModal()">Cancel</button>
 

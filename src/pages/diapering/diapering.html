@@ -9,25 +9,8 @@
 </ion-header>
 
 
-<ion-content padding>
-  <div class="box">
-    <ion-row>
-      <ion-col width-25>
-        <ion-item>
-          <ion-label>Date</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="diaper.date" name="date"></ion-datetime>
-        </ion-item>
-      </ion-col>
-      <ion-col width-25>
-        <ion-item>
-          <ion-label color="gray!important">Note:</ion-label>
-          <p item-right (click)="noteAlert()">
-            <ion-icon name="clipboard"></ion-icon>
-            <ion-icon *ngIf="diaperNote" color="green" name="checkmark"></ion-icon>
-          </p>
-        </ion-item>
-      </ion-col>
-    </ion-row>
+<ion-content no-boerder-bottom>
+  <div class="diaper-box">
     <ion-row>
       <ion-col width-25>
         <ion-item>
@@ -37,6 +20,21 @@
             <ion-option value="poo">Poo</ion-option>
             <ion-option value="mixed">Mixed</ion-option>
           </ion-select>
+        </ion-item>
+      </ion-col>
+      <ion-col width-25>
+        <ion-item>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col width-25>
+        <ion-item>
+          <ion-label color="gray!important">Note:</ion-label>
+          <p item-right (click)="noteAlert()">
+            <ion-icon name="clipboard"></ion-icon>
+            <ion-icon *ngIf="diaperNote" color="green" name="checkmark"></ion-icon>
+          </p>
         </ion-item>
       </ion-col>
       <ion-col width-25>
@@ -69,7 +67,9 @@
       <ul class="timeline">
         <li *ngFor="let x of todayHistoryArray">
           <div >
-            <p class="timeline-item"> {{x}}</p>
+            <p class="timeline-item"> {{x.output}}
+              <b *ngIf="x.note"> , Note: {{x.note}} </b>
+            </p>
           </div>
         </li>
       </ul>
@@ -80,7 +80,9 @@
       <ul class="timeline">
         <li *ngFor="let x of yesterdayHistoryArray">
           <div>
-            <p class="timeline-item"> {{x}}</p>
+            <p class="timeline-item"> {{x.output}}
+              <b *ngIf="x.note"> , Note: {{x.note}} </b>
+            </p>
           </div>
         </li>
       </ul>
@@ -94,7 +96,9 @@
       <ul class="timeline">
         <li *ngFor="let event of x.list">
           <div>
-            <p class="timeline-item"> {{event.output}} </p>
+            <p class="timeline-item"> {{event.output}}
+              <b *ngIf="event.note"> , Note: {{event.note}} </b>
+            </p>
           </div>
         </li>
       </ul>

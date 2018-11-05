@@ -88,7 +88,7 @@ export class BfHistoryModalPage {
     };
 
     for(let x of this.lifoHistoryArray){
-      let entryDate = this.ft.getDateFromDateTime(x.date);
+      let entryDate = this.ft.getDateFromDateTime(x.dateTime);
       let entryDateMoment = moment(entryDate);
 
       // Check for am pm and convert if necessary

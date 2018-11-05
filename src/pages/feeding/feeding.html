@@ -85,7 +85,7 @@
 
     <!-- Bottle feeding starts here -->
     <ion-list *ngSwitchCase="'Bottle'">
-      <div class="box">
+      <div class="bottle-box">
         <!-- <form name="bottleFeeding" (ngSubmit)="saveBottleFeeding()"> -->
           <ion-row>
             <ion-col width-25>
@@ -169,7 +169,9 @@
           <ul class="timeline">
             <li *ngFor="let x of todayHistoryArray">
               <div >
-                <p class="timeline-item"> {{x}}</p>
+                <p class="timeline-item"> {{x.output}}
+                  <b *ngIf="x.note"> , Note: {{x.note}} </b>
+                </p>
               </div>
             </li>
           </ul>
@@ -180,7 +182,9 @@
           <ul class="timeline">
             <li *ngFor="let x of yesterdayHistoryArray">
               <div>
-                <p class="timeline-item"> {{x}}</p>
+                <p class="timeline-item"> {{x.output}}
+                  <b *ngIf="x.note"> , Note: {{x.note}} </b>
+                </p>
               </div>
             </li>
           </ul>
@@ -194,7 +198,9 @@
           <ul class="timeline">
             <li *ngFor="let event of x.list">
               <div>
-                <p class="timeline-item"> {{event.output}} </p>
+                <p class="timeline-item"> {{event.output}}
+                  <b *ngIf="event.note"> , Note: {{event.note}} </b>
+                </p>
               </div>
             </li>
           </ul>
@@ -229,7 +235,7 @@
         <br>
         <i> {{lastMeal}} </i>
         <br>
-        <i *ngIf="this.lastMealDetail"> Detail: {{lastMealDetail}}</i>
+        <i *ngIf="lastMealDetail"> Detail: {{lastMealDetail}}</i>
       </p>
       <ng-template #none>
         <p class="center">
@@ -245,7 +251,9 @@
           <ul class="timeline">
             <li *ngFor="let x of mealTodayHistoryArray">
               <div >
-                <p class="timeline-item"> {{x}}</p>
+                <p class="timeline-item"> {{x.output}}
+                  <b *ngIf="x.note">, Note: {{x.note}} </b>
+                </p>
               </div>
             </li>
           </ul>
@@ -256,7 +264,9 @@
           <ul class="timeline">
             <li *ngFor="let x of mealYesterdayHistoryArray">
               <div>
-                <p class="timeline-item"> {{x}}</p>
+                <p class="timeline-item"> {{x.output}}
+                  <b *ngIf="x.note">, Note: {{x.note}} </b>
+                </p>
               </div>
             </li>
           </ul>
@@ -270,7 +280,9 @@
           <ul class="timeline">
             <li *ngFor="let event of x.list">
               <div>
-                <p class="timeline-item"> {{event.output}} </p>
+                <p class="timeline-item"> {{x.output}}
+                  <b *ngIf="x.note">, Note: {{x.note}} </b>
+                </p>
               </div>
             </li>
           </ul>

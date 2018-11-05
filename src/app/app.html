@@ -3,7 +3,7 @@
     <ion-toolbar>
       <br>
       <div id="imgwrap">
-        <img src="assets/icon/baby-with-diaper.png" style="width:80px;height:80px;">
+        <img src="assets/icon/baby-with-diaper.png" style="width:80px;height:80px;" (click)="editBabyProfile()">
           <!-- For ages less than 1 -->
           <h2 *ngIf="bdayYear < 1 && bdayMonth <= 1; else months">
             {{babyName}} <br> {{bdayMonth}} month old

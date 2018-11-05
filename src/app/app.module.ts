@@ -32,6 +32,7 @@ import { PlayingPage } from '../pages/playing/playing';
 import { CameraPage } from '../pages/camera/camera';
 import { CreditsPage } from '../pages/credits/credits';
 import { BabyModalPage } from '../pages/baby-modal/baby-modal';
+import { EditBabyModalPage } from '../pages/edit-baby-modal/edit-baby-modal';
 import { BreastfeedingModalPage } from '../pages/breastfeeding-modal/breastfeeding-modal';
 import { BfHistoryModalPage } from '../pages/bf-history-modal/bf-history-modal';
 import { BottlefeedingModalPage } from '../pages/bottlefeeding-modal/bottlefeeding-modal';
@@ -48,6 +49,7 @@ import { GroupbyPipe } from '../pipes/groupby/groupby';
 import { MomentPipe } from '../pipes/moment/moment';
 import { NoteAlertProvider } from '../providers/note-alert/note-alert';
 import { LifoHistoryProvider } from '../providers/lifo-history/lifo-history';
+import { EventSettingProvider } from '../providers/event-setting/event-setting';
 
 @NgModule({
   declarations: [
@@ -75,6 +77,7 @@ import { LifoHistoryProvider } from '../providers/lifo-history/lifo-history';
     DiaperingModalPage,
     MealModalPage,
     SleepingModalPage,
+    EditBabyModalPage
   ],
   imports: [
     BrowserModule,
@@ -107,7 +110,8 @@ import { LifoHistoryProvider } from '../providers/lifo-history/lifo-history';
     BottlefeedingModalPage,
     DiaperingModalPage,
     MealModalPage,
-    SleepingModalPage
+    SleepingModalPage,
+    EditBabyModalPage
   ],
   providers: [
     StatusBar,
@@ -127,7 +131,8 @@ import { LifoHistoryProvider } from '../providers/lifo-history/lifo-history';
     GroupbyPipe,
     MomentPipe,
     NoteAlertProvider,
-    LifoHistoryProvider
+    LifoHistoryProvider,
+    EventSettingProvider
   ]
 })
 export class AppModule {}

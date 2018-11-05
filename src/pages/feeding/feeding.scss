@@ -128,10 +128,10 @@ page-feeding {
     // overflow-x: hidden;
   }
 
-  .box {
+  .bottle-box {
     width: 100%;
     //border: 1px solid gray;
-    border-top: 2px solid gray !important;
+    border-top: 0px !important;
     border-bottom: 1px solid gray !important;
     border-left: 0px solid gray !important;
     border-right: 0px !important;
@@ -144,7 +144,7 @@ page-feeding {
   .box-right {
     width: 100%;
     //border: 1px solid gray;
-    border-top: 2px solid gray !important;
+    border-top: 0px solid gray !important;
     border-bottom: 1px solid gray !important;
     border-right: 2px solid gray !important;
     padding: none;

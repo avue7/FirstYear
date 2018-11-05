@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, MenuController, NavParams} from 'ionic-angular';
+import { NavController, MenuController, NavParams, Platform} from 'ionic-angular';
 import { LifoHistoryProvider } from '../../providers/lifo-history/lifo-history';
 import { UserProvider } from '../../providers/user/user';
 import { DatabaseProvider } from '../../providers/database/database';
@@ -101,16 +101,38 @@ export class HomePage {
   // Flag to set if no history yet
   noHistoryYet: boolean = false;
 
+  activities: Array<{type_: string, icon: string}>;
+
   constructor(public navCtrl: NavController,
     private menu: MenuController,
     private lifoHistory: LifoHistoryProvider,
     private user: UserProvider,
     private db: DatabaseProvider,
-    private navParams: NavParams) {
-    this.enableMenu();
-    this.init();
+    private navParams: NavParams,
+    private platform: Platform) {
+    this.waitForPlatFormReady().then(() => {
+      this.enableMenu();
+    }).then(() => {
+      this.init();
+    });
+
+    // this.activities = [
+    //   { type_: 'bottlefeeding', icon: 'custom-bottle' },
+    //   { type_: 'meal', icon: 'custom-cubes' },
+    //   { type_: 'diapering', icon: 'custom-diaper' },
+    //   { type_: 'sleeping', icon: 'custom-sleeping-baby' },
+    //   // {type: 'bottlefeeding', icon: 'custom-bottle'},
+    // ];
   }
 
+  async waitForPlatFormReady(){
+    return new Promise(async resolve => {
+      await this.platform.ready().then(() => {
+
+      });
+      resolve(true);
+    });
+  }
   // ionViewDidLoad(){
   //   console.log("Home:: ionViewDidLoad() ran...");
   //   this.updateBottleSummary();
@@ -123,12 +145,36 @@ export class HomePage {
       await this.updateDiaperingSummary();
       await this.updateBreastSummary();
       await this.updateSleepSummary();
+    }).then(() => {
+      this.hasToday = false;
+      this.hasYesterday = false;
+      this.hasMore = false;
     }).then(async() => {
-      await this.sortTodayArray();
+      await this.groupTodayArray();
+      // Then sort:
+      if(this.hasToday){
+        this.todayHistoryArray = await this.todayHistoryArray.sort((a,b) => {
+          return (a.time > b.time ? -1 : a.time < b.time ? 1 : 0);
+        });
+        // console.log("This todayHistoryArray: ", this.todayHistoryArray);
+      };
+      // console.log("SORTY TODAY ARRAY IS", this.todayHistoryArray);
     }).then(async() => {
-      await this.sortYesterdayArray();
+      await this.groupYesterdayArray();
+      if(this.hasYesterday){
+        this.yesterdayHistoryArray = await this.yesterdayHistoryArray.sort((a,b) => {
+          return (a.time > b.time ? -1 : a.time < b.time ? 1 : 0);
+        });
+      };
     }).then(async() => {
-      await this.sortMoreArray();
+      await this.groupMoreArray();
+      console.log("MORE HISTORY:", this.moreHistoryArray)
+      if(this.hasMore){
+        this.moreHistoryArray = await this.moreHistoryArray.sort((a,b) => {
+          return (a.dateTime > b.dateTime ? -1 : a.dateTime < b.dateTime ? 1 : 0);
+        });
+        // console.log("This moreHistoryArray: ", this.moreHistoryArray);
+      };
     }).then(async() => {
       await this.checkForNoHistory();
     });
@@ -270,74 +316,62 @@ export class HomePage {
     });
   }
 
-  sortTodayArray(){
+  async groupTodayArray(){
     if(this.todayHistoryArray != undefined){
-      this.todayHistoryArray.splice(0, this.todayHistoryArray.length);
+      await this.todayHistoryArray.splice(0, this.todayHistoryArray.length);
     }
 
     if(this.breastHasToday){
       this.hasToday = true;
       if(this.todayHistoryArray != undefined){
-        this.todayHistoryArray = this.todayHistoryArray.concat(this.breastTodayHistoryArray).sort();
-        this.todayHistoryArray = this.todayHistoryArray.reverse();
+        this.todayHistoryArray = this.todayHistoryArray.concat(this.breastTodayHistoryArray);
       } else {
         this.todayHistoryArray = this.breastTodayHistoryArray;
       };
-      // console.log("1");
     }
     if(this.bottleHasToday){
       this.hasToday = true;
       if(this.todayHistoryArray != undefined){
-        this.todayHistoryArray = this.todayHistoryArray.concat(this.bottleTodayHistoryArray).sort();
-        this.todayHistoryArray = this.todayHistoryArray.reverse();
+        this.todayHistoryArray = this.todayHistoryArray.concat(this.bottleTodayHistoryArray);
       } else {
         this.todayHistoryArray = this.bottleTodayHistoryArray;
       };
-      // console.log("2");
     }
     if(this.mealHasToday){
       this.hasToday = true;
       if(this.todayHistoryArray != undefined){
-        this.todayHistoryArray = this.todayHistoryArray.concat(this.mealTodayHistoryArray).sort();
-        this.todayHistoryArray = this.todayHistoryArray.reverse();
+        this.todayHistoryArray = this.todayHistoryArray.concat(this.mealTodayHistoryArray);
       } else {
         this.todayHistoryArray = this.mealTodayHistoryArray;
       };
-      // console.log("3");
     }
     if(this.diaperingHasToday){
       this.hasToday = true;
       if(this.todayHistoryArray != undefined){
-        this.todayHistoryArray = this.todayHistoryArray.concat(this.diaperingTodayHistoryArray).sort();
-        this.todayHistoryArray = this.todayHistoryArray.reverse();
+        this.todayHistoryArray = this.todayHistoryArray.concat(this.diaperingTodayHistoryArray);
       } else {
         this.todayHistoryArray = this.diaperingTodayHistoryArray;
       };
-      // console.log("4");
     }
     if(this.sleepingHasToday){
       this.hasToday = true;
       if(this.todayHistoryArray != undefined){
-        this.todayHistoryArray = this.todayHistoryArray.concat(this.sleepingTodayHistoryArray).sort();
-        this.todayHistoryArray = this.todayHistoryArray.reverse();
+        this.todayHistoryArray =  this.todayHistoryArray.concat(this.sleepingTodayHistoryArray);
       } else {
         this.todayHistoryArray = this.sleepingTodayHistoryArray;
       };
-      // console.log("5");
     }
-    // console.log("hasToday", this.hasToday);
   }
 
-  sortYesterdayArray(){
+  async groupYesterdayArray(){
     if(this.yesterdayHistoryArray != undefined){
-      this.yesterdayHistoryArray.splice(0, this.yesterdayHistoryArray.length);
+      await this.yesterdayHistoryArray.splice(0, this.yesterdayHistoryArray.length);
     }
 
     if(this.breastHasYesterday){
       this.hasYesterday = true;
       if(this.yesterdayHistoryArray != undefined){
-        this.yesterdayHistoryArray = this.yesterdayHistoryArray.concat(this.breastYesterdayHistoryArray).sort();
-        this.yesterdayHistoryArray = this.yesterdayHistoryArray.reverse();
+        this.yesterdayHistoryArray = this.yesterdayHistoryArray.concat(this.breastYesterdayHistoryArray);
       } else {
         this.yesterdayHistoryArray = this.breastYesterdayHistoryArray;
       };
@@ -345,8 +379,7 @@ export class HomePage {
     if(this.bottleHasYesterday){
       this.hasYesterday = true;
       if(this.yesterdayHistoryArray != undefined){
-        this.yesterdayHistoryArray = this.yesterdayHistoryArray.concat(this.bottleYesterdayHistoryArray).sort();
-        this.yesterdayHistoryArray = this.yesterdayHistoryArray.reverse();
+        this.yesterdayHistoryArray =  this.yesterdayHistoryArray.concat(this.bottleYesterdayHistoryArray);
       } else {
         this.yesterdayHistoryArray = this.bottleYesterdayHistoryArray;
       };
@@ -354,8 +387,7 @@ export class HomePage {
     if(this.mealHasYesterday){
       this.hasYesterday = true;
       if(this.yesterdayHistoryArray != undefined){
-        this.yesterdayHistoryArray = this.yesterdayHistoryArray.concat(this.mealYesterdayHistoryArray).sort();
-        this.yesterdayHistoryArray = this.yesterdayHistoryArray.reverse();
+        this.yesterdayHistoryArray = this.yesterdayHistoryArray.concat(this.mealYesterdayHistoryArray);
       } else {
         this.yesterdayHistoryArray = this.mealYesterdayHistoryArray;
       };
@@ -363,8 +395,7 @@ export class HomePage {
     if(this.diaperingHasYesterday){
       this.hasYesterday = true;
       if(this.yesterdayHistoryArray != undefined){
-        this.yesterdayHistoryArray = this.yesterdayHistoryArray.concat(this.diaperingYesterdayHistoryArray).sort();
-        this.yesterdayHistoryArray = this.yesterdayHistoryArray.reverse();
+        this.yesterdayHistoryArray = this.yesterdayHistoryArray.concat(this.diaperingYesterdayHistoryArray);
       } else {
         this.yesterdayHistoryArray = this.diaperingYesterdayHistoryArray;
       };
@@ -372,8 +403,7 @@ export class HomePage {
     if(this.sleepingHasYesterday){
       this.hasYesterday = true;
       if(this.yesterdayHistoryArray != undefined){
-        this.yesterdayHistoryArray = this.yesterdayHistoryArray.concat(this.sleepingYesterdayHistoryArray).sort();
-        this.yesterdayHistoryArray = this.yesterdayHistoryArray.reverse();
+        this.yesterdayHistoryArray = this.yesterdayHistoryArray.concat(this.sleepingYesterdayHistoryArray);
       } else {
         this.yesterdayHistoryArray = this.sleepingYesterdayHistoryArray;
       };
@@ -381,16 +411,15 @@ export class HomePage {
     // console.log("hasYesterday", this.hasYesterday);
   }
 
-  sortMoreArray(){
+  async groupMoreArray(){
     if(this.moreHistoryArray != undefined){
-      this.moreHistoryArray.splice(0, this.moreHistoryArray.length);
+      await this.moreHistoryArray.splice(0, this.moreHistoryArray.length);
     }
 
     if(this.breastHasMore){
       this.hasMore = true;
       if(this.moreHistoryArray != undefined){
-        this.moreHistoryArray = this.moreHistoryArray.concat(this.breastMoreHistoryArray).sort();
-        this.moreHistoryArray = this.moreHistoryArray.reverse();
+        this.moreHistoryArray = this.moreHistoryArray.concat(this.breastMoreHistoryArray);
       } else {
         this.moreHistoryArray = this.breastMoreHistoryArray;
       };
@@ -398,26 +427,23 @@ export class HomePage {
     if(this.bottleHasMore){
       this.hasMore = true;
       if(this.moreHistoryArray != undefined){
-        this.moreHistoryArray = this.moreHistoryArray.concat(this.bottleMoreHistoryArray).sort();
-        this.moreHistoryArray = this.moreHistoryArray.reverse();
+        this.moreHistoryArray = this.moreHistoryArray.concat(this.bottleMoreHistoryArray);
       } else {
-        this.moreHistoryArray = this.bottleYesterdayHistoryArray;
+        this.moreHistoryArray = this.bottleMoreHistoryArray;
       };
     }
     if(this.mealHasMore){
       this.hasMore = true;
       if(this.moreHistoryArray != undefined){
-        this.moreHistoryArray = this.moreHistoryArray.concat(this.mealMoreHistoryArray).sort();
-        this.moreHistoryArray = this.moreHistoryArray.reverse();
+        this.moreHistoryArray = this.moreHistoryArray.concat(this.mealMoreHistoryArray);
       } else {
-        this.moreHistoryArray = this.mealYesterdayHistoryArray;
+        this.moreHistoryArray = this.mealMoreHistoryArray;
       };
     }
     if(this.diaperingHasMore){
       this.hasMore = true;
       if(this.moreHistoryArray != undefined){
-        this.moreHistoryArray = this.moreHistoryArray.concat(this.diaperingMoreHistoryArray).sort();
-        this.moreHistoryArray = this.moreHistoryArray.reverse();
+        this.moreHistoryArray = this.moreHistoryArray.concat(this.diaperingMoreHistoryArray);
       } else {
         this.moreHistoryArray = this.diaperingMoreHistoryArray;
       };
@@ -425,8 +451,7 @@ export class HomePage {
     if(this.sleepingHasMore){
       this.hasMore = true;
       if(this.moreHistoryArray != undefined){
-        this.moreHistoryArray = this.moreHistoryArray.concat(this.sleepingMoreHistoryArray).sort();
-        this.moreHistoryArray = this.moreHistoryArray.reverse();
+        this.moreHistoryArray = this.moreHistoryArray.concat(this.sleepingMoreHistoryArray);
       } else {
         this.moreHistoryArray = this.sleepingMoreHistoryArray;
       };
@@ -438,10 +463,27 @@ export class HomePage {
     if((this.hasToday === true) || (this.hasYesterday === true) || (this.hasMore === true)){
       console.log("Home:: has history!", this.hasToday, this.hasYesterday, this.hasMore);
       this.noHistoryYet = false;
+      // console.log("today history length", this.todayHistoryArray.length)
     } else {
       console.log("Home:: no history yet!");
       this.noHistoryYet = true;
     }
+  }
+
+  async editEvent(slidingItem: any, event: any){
+    await this.db.editEvent(event).then(async() => {
+      this.init();
+    });
+    console.log("CLICKED ON EVENT");
+    slidingItem.close();
+  }
+
+  async deleteEvent(slidingItem: any, event: any){
+    console.log("CLICKED ON DELETE EVENT", event);
+    slidingItem.close();
+    await this.db.deleteEvent(event).then(() => {
+      this.init();
+    });
   }
 
   openPage(page: any) {
@@ -455,4 +497,13 @@ export class HomePage {
   enableMenu(){
     this.menu.enable(true);
   }
+
+  async refresh(refresher){
+    console.log('Begin async operation', refresher);
+    await this.init();
+    refresher.complete();
+  }
 }
+
+
+//NOTE: you need to work on deleting the other ones now.

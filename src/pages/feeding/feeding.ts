@@ -175,23 +175,24 @@ export class FeedingPage {
   }
 
   saveBreastFeeding(){
-    let today = this.ft.getTodayMonthFirstWithTime();
+    let todayWithTime = this.ft.getTodayMonthFirstWithTime();
 
     let breast_: any;
 
     if(this.leftBreast){
-      breast_ = "left breast";
+      breast_ = "left";
     } else{
-      breast_ = "right breast";
+      breast_ = "right";
     }
 
     // Split today with time to get time
-    let splitTimeArray = today.split(' ');
+    let splitTimeArray = todayWithTime.split(' ');
     let splitTimeOnly = splitTimeArray[1];
 
     let object = {
+      activity: 'breastfeeding',
       breast: breast_,
-      date: today,
+      dateTime: todayWithTime,
       time: splitTimeOnly,
       duration: this.timer.tick
     }
@@ -227,10 +228,10 @@ export class FeedingPage {
           };
 
           // NOTE: MOMENTS AGO HACK...
-          this.momentsAgoTime = moment(doc.data().date, 'YYYY-MM-DD HH:mm:ss');
+          this.momentsAgoTime = moment(doc.data().dateTime, 'YYYY-MM-DD HH:mm:ss');
           this.createMomentObservable(this.momentsAgoTime, 'breastfeeding');
 
-          this.lastBreastFeed = this.ft.formatDateTimeStandard(doc.data().date);
+          this.lastBreastFeed = this.ft.formatDateTimeStandard(doc.data().dateTime);
           this.lastBreastSide = doc.data().breast;
           this.lastDuration = doc.data().duration;
         };
@@ -308,8 +309,9 @@ export class FeedingPage {
         /////////////////////////////////////////////////////////////////
 
         let bfManualObject = {
+          activity: 'breastfeeding',
           breast: breastFeeding.breast + ' breast',
-          date: dateTime,
+          dateTime: dateTime,
           time: time,
           duration: totalDuration
         };
@@ -377,13 +379,13 @@ export class FeedingPage {
 
   /////////////////////////// NOTE: BOTTLE FEEDING BEGINS HERE /////////////////////////////
   saveBottleFeeding(){
-    let today = this.ft.getTodayMonthFirstWithTime();
+    let todayWithTime = this.ft.getTodayMonthFirstWithTime();
 
     // Split today with time to get time
-    let splitTimeArray = today.split(' ');
+    let splitTimeArray = todayWithTime.split(' ');
     let splitTimeOnly = splitTimeArray[1];
 
-    this.checkIfBottleNoteExist(today, splitTimeOnly).then(object => {
+    this.checkIfBottleNoteExist(todayWithTime, splitTimeOnly).then(object => {
       this.db.saveBabyActivity("bottlefeeding", object).then(() => {
         // this.getLastBreastFeed();
 
@@ -398,6 +400,67 @@ export class FeedingPage {
           this.timer.refreshTimer();
         };
       });
+    });
+  }
+
+  checkIfBottleNoteExist(todayWithTime: any, splitTimeOnly: any){
+    return new Promise(resolve => {
+      let object = {};
+
+      if(this.bottle.volume == undefined){
+        this.bottle.volume = 6;
+      };
+
+      if(this.bottleNote){
+        if(this.timer.tick != 0){
+          object = {
+            activity: 'bottlefeeding',
+            type: this.bottle.type,
+            dateTime: todayWithTime,
+            volume: this.bottle.volume,
+            time: splitTimeOnly,
+            duration: this.timer.tick,
+            unit: this.bottle.unit,
+            note: this.bottleNote
+          }
+        } else {
+          let duration = this.convertDurationToseconds();
+          object = {
+            activity: 'bottlefeeding',
+            type: this.bottle.type,
+            dateTime: todayWithTime,
+            volume: this.bottle.volume,
+            time: splitTimeOnly,
+            duration: duration,
+            unit: this.bottle.unit,
+            note: this.bottleNote
+          }
+        };
+      }else {
+        if(this.timer.tick != 0){
+          object = {
+            activity: 'bottlefeeding',
+            type: this.bottle.type,
+            dateTime: todayWithTime,
+            volume: this.bottle.volume,
+            time: splitTimeOnly,
+            duration: this.timer.tick,
+            unit: this.bottle.unit,
+          }
+        } else {
+          let duration = this.convertDurationToseconds();
+          object = {
+            activity: 'bottlefeeding',
+            type: this.bottle.type,
+            dateTime: todayWithTime,
+            volume: this.bottle.volume,
+            time: splitTimeOnly,
+            unit: this.bottle.unit,
+            duration: duration
+          }
+        };
+      };
+      resolve(object);
     });
   }
 
@@ -460,8 +523,9 @@ export class FeedingPage {
 
         if(bottleFeeding.note){
           manualObject = {
+            activity: 'bottlefeeding',
             type: bottleFeeding.type,
-            date: dateTime,
+            dateTime: dateTime,
             volume: bottleFeeding.volume,
             time: time,
             duration: totalDuration,
@@ -470,8 +534,9 @@ export class FeedingPage {
           }
         } else {
           manualObject = {
+            activity: 'bottlefeeding',
             type: bottleFeeding.type,
-            date: dateTime,
+            dateTime: dateTime,
             volume: bottleFeeding.volume,
             time: time,
             duration: totalDuration,
@@ -515,10 +580,10 @@ export class FeedingPage {
           };
 
           // NOTE: MOMENTS AGO HACK...
-          this.BottleMomentsAgoTime = moment(doc.data().date, 'YYYY-MM-DD HH:mm:ss');
+          this.BottleMomentsAgoTime = moment(doc.data().dateTime, 'YYYY-MM-DD HH:mm:ss');
           this.createMomentObservable(this.BottleMomentsAgoTime, "bottlefeeding");
 
-          this.lastBottleFeed = this.ft.formatDateTimeStandard(doc.data().date);
+          this.lastBottleFeed = this.ft.formatDateTimeStandard(doc.data().dateTime);
           this.lastBottleDuration = doc.data().duration;
           this.bottleLastAmount = doc.data().volume + " " + doc.data().unit;
         };
@@ -542,63 +607,6 @@ export class FeedingPage {
         this.moreHistoryArray = this.lifoHistory.moreHistoryArray;
       });
     })
-  }
-
-  checkIfBottleNoteExist(today: any, splitTimeOnly: any){
-    return new Promise(resolve => {
-      let object = {};
-
-      if(this.bottle.volume == undefined){
-        this.bottle.volume = 6;
-      };
-
-      if(this.bottleNote){
-        if(this.timer.tick != 0){
-          object = {
-            type: this.bottle.type,
-            date: today,
-            volume: this.bottle.volume,
-            time: splitTimeOnly,
-            duration: this.timer.tick,
-            unit: this.bottle.unit,
-            note: this.bottleNote
-          }
-        } else {
-          let duration = this.convertDurationToseconds();
-          object = {
-            type: this.bottle.type,
-            date: today,
-            volume: this.bottle.volume,
-            time: splitTimeOnly,
-            duration: duration,
-            unit: this.bottle.unit,
-            note: this.bottleNote
-          }
-        };
-      }else {
-        if(this.timer.tick != 0){
-          object = {
-            type: this.bottle.type,
-            date: today,
-            volume: this.bottle.volume,
-            time: splitTimeOnly,
-            duration: this.timer.tick,
-            unit: this.bottle.unit,
-          }
-        } else {
-          let duration = this.convertDurationToseconds();
-          object = {
-            type: this.bottle.type,
-            date: today,
-            volume: this.bottle.volume,
-            time: splitTimeOnly,
-            unit: this.bottle.unit,
-            duration: duration
-          }
-        };
-      };
-      resolve(object);
-    });
   }
 
   openBottleModal() : any {
@@ -661,22 +669,24 @@ export class FeedingPage {
 
   ///// MEALS BEGIN HERE //////////////////
   saveMeal(){
-    let today = this.ft.getTodayMonthFirstWithTime();
+    let todayWithTime = this.ft.getTodayMonthFirstWithTime();
 
     // Split today with time to get time
-    let splitTimeArray = today.split(' ');
+    let splitTimeArray = todayWithTime.split(' ');
     let splitTimeOnly = splitTimeArray[1];
     let object = {};
 
     if(this.mealDetail != undefined){
       object = {
-        date: today,
+        activity: 'meal',
+        dateTime: todayWithTime,
         time: splitTimeOnly,
-        detail: this.mealDetail
+        note: {note: this.mealDetail}
       }
     } else {
       object = {
-        date: today,
+        activity: 'meal',
+        dateTime: todayWithTime,
         time: splitTimeOnly
       }
     };
@@ -712,12 +722,12 @@ export class FeedingPage {
           };
 
           // NOTE: MOMENTS AGO HACK...
-          this.MealMomentsAgoTime = moment(doc.data().date, 'YYYY-MM-DD HH:mm:ss');
+          this.MealMomentsAgoTime = moment(doc.data().dateTime, 'YYYY-MM-DD HH:mm:ss');
           this.createMomentObservable(this.MealMomentsAgoTime, "meal");
 
-          this.lastMeal = this.ft.formatDateTimeStandard(doc.data().date);
-          if(doc.data().detail){
-            this.lastMealDetail = doc.data().detail;
+          this.lastMeal = this.ft.formatDateTimeStandard(doc.data().dateTime);
+          if(doc.data().note){
+            this.lastMealDetail = doc.data().note.note;
           };
         };
       });
@@ -787,13 +797,15 @@ export class FeedingPage {
 
         if(meal.detail){
           manualObject = {
-            date: dateTime,
+            activity: 'meal',
+            dateTime: dateTime,
             time: time,
-            detail: meal.detail
+            note: meal.detail
           }
         } else {
           manualObject = {
-            date: dateTime,
+            activity: 'meal',
+            dateTime: dateTime,
             time: time
           }
         };
