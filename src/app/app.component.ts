@@ -94,13 +94,7 @@ export class MyApp {
       //   this.summaryArray.splice(0, this.summaryArray.length);
       // };
     }).then(async () => {
-      await this.createAuthObservable().then((retVal) => {
-        if(retVal == true){
-          this.nav.setRoot(HomePage);
-        } else {
-          this.nav.setRoot(WelcomePage);
-        }
-      });
+      await this.createAuthObservable();
     });
 
   }
@@ -121,29 +115,27 @@ export class MyApp {
                   this.bdayYear = 0;
                   this.bdayMonth = 0;
                   this.babyName = "No baby added yet!";
-                  resolve(true);
+                  resolve(this.nav.setRoot(HomePage));
                 }
                 // No baby file found but user added baby
                 else {
                   // Create a baby observable as soon as the user adds him or her
                   console.log("App:: Creating baby observable...");
-                  await this.db.createBabyObservable(user.uid).then((retVal) => {
+                  this.db.createBabyObservable(user.uid).then((retVal) => {
                     this.bdayYear = this.db.bdayYear;
                     this.bdayMonth = this.db.bdayMonth;
                     this.babyName = this.db.babyName;
                     this.babyObservableDone = true;
                     console.log("APP:: done creating baby observable!");
-                    //this.nav.setRoot(HomePage);
-                    resolve(true);
+                    resolve(this.nav.setRoot(HomePage));
                   });
                 }
               });
             });
-          } else {
-            console.log("App::initializeApp(): No user exists...going to WelcomePage.");
-            //this.nav.setRoot(WelcomePage);
-            resolve(false);
-          };
+          }
+        } else {
+          console.log("App::initializeApp(): No user exists...going to WelcomePage.");
+          resolve(this.nav.setRoot(WelcomePage));
         };
       });
     });
@@ -211,6 +203,8 @@ export class MyApp {
 	  this.nav.setRoot(WelcomePage);
     this.activePage = this.pages[0];
     this.summaryArray.splice(0, this.summaryArray.length);
+    //this.userSubscription.unsubscribe();
+    //this.db.removeSubs();
     console.log("App::logOut(): User logged out");
   }
 

@@ -50,8 +50,8 @@ export class AuthServiceProvider {
 			'webClientId': '396313115996-fsp0t0q7co5gqmrg1o1ek8udjqn82rl0.apps.googleusercontent.com',
 		}).then((res) => {
 			let googleCredential = firebase.auth.GoogleAuthProvider.credential(res.idToken);
-			this.afAuth.auth.signInWithCredential(googleCredential).then((response) => {
-				console.log("Successfully signed in with google plus");
+			this.afAuth.auth.signInAndRetrieveDataWithCredential(googleCredential).then((response) => {
+				console.log("Successfully signed in with google plus", response);
 			});
 		}, error => {
 			console.log("Auth-Service::signInWithGoogle(): cannot sign in:", error);

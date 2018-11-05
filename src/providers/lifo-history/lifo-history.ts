@@ -121,7 +121,7 @@ export class LifoHistoryProvider {
       // IF activity is bottlefeeding
       let outputString: any;
       let durationString = this.convertDuration(x.duration);
-      console.log("x duration is", x.duration);
+      // console.log("x duration is", x.duration);
 
       if(activity == 'bottlefeeding'){
         if(x.duration) {

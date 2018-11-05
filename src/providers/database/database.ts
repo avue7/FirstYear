@@ -51,6 +51,14 @@ export class DatabaseProvider {
   mealModal: any;
   sleepModal: any;
 
+  // Subscriptions
+  babySub: any;
+  bfSub: any;
+  bottleSub: any;
+  mealSub: any;
+  diaperingSub: any;
+  sleepingSub: any;
+
 
   constructor(/*private alertCtrl: AlertController,*/
     private modal: ModalController,
@@ -145,7 +153,7 @@ export class DatabaseProvider {
         resolve(false);
       } else {
         this.getUserReference().then((currentUserRef) => {
-          currentUserRef.onSnapshot((snapShot) => {
+          this.babySub = currentUserRef.onSnapshot((snapShot) => {
             snapShot.forEach((doc) => {
               let baby = doc.data();
               this.babyName = baby.firstName;
@@ -176,7 +184,7 @@ export class DatabaseProvider {
 
   createBreastFeedingHistoryObservable(userId: any, breastFeedRef: any){
     return new Promise(resolve => {
-      breastFeedRef.onSnapshot((snapShot) => {
+      this.bfSub = breastFeedRef.onSnapshot((snapShot) => {
         if(snapShot.empty){
           resolve(false);
         }
@@ -192,7 +200,7 @@ export class DatabaseProvider {
 
   createBottleFeedingHistoryObservable(userId: any, bottleFeedRef: any){
     return new Promise(resolve => {
-      bottleFeedRef.onSnapshot((snapShot) => {
+      this.bottleSub = bottleFeedRef.onSnapshot((snapShot) => {
         // console.log("4. snapshot is:", snapShot)
         if(snapShot.empty){
           resolve(false);
@@ -211,7 +219,7 @@ export class DatabaseProvider {
   // THis method is called in apps.ts
   async createMealHistoryObservable(userId: any, mealRef: any){
     return new Promise(resolve => {
-      mealRef.onSnapshot((snapShot) => {
+      this.mealSub = mealRef.onSnapshot((snapShot) => {
         // console.log("4. meal snapshot is:", snapShot)
         if(snapShot.empty){
           // console.log("4.b snapshot is empty");
@@ -223,13 +231,16 @@ export class DatabaseProvider {
           this.mealHistoryArray.push(data);
           resolve(true);
         });
+      }, error => {
+        console.log(error);
+        resolve(false);
       });
     });
   }
 
   createDiaperingHistoryObservable(userId: any, diaperingRef: any){
     return new Promise(resolve => {
-      diaperingRef.onSnapshot((snapShot) => {
+      this.diaperingSub = diaperingRef.onSnapshot((snapShot) => {
         if(snapShot.empty){
           resolve(false);
         }
@@ -247,7 +258,7 @@ export class DatabaseProvider {
 
   createSleepHistoryObservable(userId: any, sleepingRef){
     return new Promise(resolve => {
-      sleepingRef.onSnapshot((snapShot) => {
+      this.sleepingSub = sleepingRef.onSnapshot((snapShot) => {
         if(snapShot.empty){
           resolve(false);
         }
@@ -717,5 +728,15 @@ export class DatabaseProvider {
     });
 
     toast.present();
+  }
+
+  removeSubs(){
+    this.babySub.unsubscribe();
+    this.bfSub.unsubscribe();
+    this.bottleSub.unsubscribe();
+    this.mealSub.unsubscribe();
+    this.sleepingSub.unsubscribe();
+    this.diaperingSub.unsubscribe();
+    console.log("Successfully removed all subs");
   }
 }
