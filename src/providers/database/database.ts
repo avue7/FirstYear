@@ -73,57 +73,139 @@ export class DatabaseProvider {
     this.sleepingHistoryArray = [];
   }
 
-  setNewUserNewBaby(userId : any, babyObject?: any){
-    return new Promise (resolve => {
-      let db = firebase.firestore();
-
-      db.settings({
-        timestampsInSnapshots: true
-      });
-
-      let currentUserRef = db.collection('users').doc(userId).collection('babies');
-
-      // First check if user exists
-      this.checkIfBabyExists(currentUserRef).then((retVal) => {
-        if(retVal == "true"){
-          // console.log("Database:: user already exists in the users collection.");
-          this.noBabyYet = false;
-          resolve("true");
-        } else if(retVal == "later"){
-          // console.log("Database:: user decides to do baby info later");
-          resolve("later");
-        } else {
-          // console.log("Database:: Successfully created new user in users collection.");
-          resolve("false");
-        }
-      });
+  getCurrentUserRef(){
+    let db = firebase.firestore();
+    db.settings({
+      timestampsInSnapshots: true
     });
+    let userId = this.user.getUserId();
+    let currentUserRef = db.collection('users').doc(userId);
+    return currentUserRef;
   }
 
-  checkIfBabyExists(currentUserRef : any, babyObject?: any){
-    return new Promise(resolve => {
-      currentUserRef.get().then((docSnapShot) => {
-        if (!docSnapShot.empty){
-          console.log("Database::checkIfBabyExists(): baby doc(s) exists.")
-          this.noBabyYet = false;
-          resolve("true");
+  getCurrentBabyRef(){
+    let db = firebase.firestore();
+    db.settings({
+      timestampsInSnapshots: true
+    });
+    let babyFirstName = this.baby.getBabyFirstName();
+    let userId = this.user.getUserId();
+    let currentBabyRef = db.collection('babies').where("userId", "==", userId);
+    return currentBabyRef;
+  }
+
+  setNewUserNewBaby(user : any){
+    return new Promise (resolve => {
+      let currentUserRef = this.getCurrentUserRef()
+
+      let userObject = {
+        userName: user.displayName,
+        email: user.email,
+        id: user.uid
+      };
+
+      // CHeck if user exists
+      this.checkIfUserExists(currentUserRef).then( async retVal => {
+        if(retVal == true){
+          console.log("1. User doc already exists");
+          this.checkIfBabyExists().then(async retVal => {
+            if(retVal == true){
+              this.noBabyYet = false;
+              console.log("2. Baby already exists for user");
+              resolve(true);
+            } else {
+              // Baby does not exist create new baby
+              console.log("2. Baby does not exists for user");
+              await this.createNewBaby().then((retVal) => {
+                if(retVal == "later"){
+                  console.log("3. User decided to add baby later");
+                  resolve("later");
+                } else {
+                  console.log("3. Done creating baby.");
+                  resolve("true");
+                };
+              });
+            };
+          });
         } else {
-          console.log("Database::checkIfBabyExists: no baby doc(s) exists.")
-          this.openModal().then((baby) => {
-            let babyObject = baby;
-            if (babyObject == undefined){
-              this.noBabyYet = true;
+          // Create the user
+          console.log("1. User not exist, creating user doc...");
+          currentUserRef.set(userObject);
+          // Create new baby
+          await this.createNewBaby().then((retVal) => {
+            if(retVal == "later"){
+              console.log("2. User decided to add baby later");
               resolve("later");
             } else {
-              currentUserRef.doc(babyObject.firstName).set(babyObject);
-              this.noBabyYet = false;
-              resolve("false");
+              console.log("2. Done creating baby.");
+              resolve("true");
             };
           });
         };
       });
     });
   }
+
+  createNewBaby(){
+    return new Promise(resolve => {
+      this.openModal().then((baby) => {
+        let babyObject = baby;
+        if (babyObject == undefined){
+          this.noBabyYet = true;
+          resolve("later");
+        } else {
+          let db = firebase.firestore();
+
+          db.settings({
+            timestampsInSnapshots: true
+          });
+
+          // Get current user id
+          let currentUserId = this.user.getUserId();
+
+          let entry = {
+            firstName: babyObject.firstName,
+            lastName: babyObject.lastName,
+            birthday: babyObject.birthday,
+            gender: babyObject.gender,
+            userId: currentUserId
+          }
+
+          db.collection('babies').doc().set(entry);
+          this.baby.setBabyObject(babyObject);
+          this.noBabyYet = false;
+          resolve("true");
+        };
+      });
+    });
+  }
+
+  checkIfUserExists(currentUserRef: any){
+    return new Promise(resolve => {
+      currentUserRef.get().then((docSnapShot) => {
+        if(docSnapShot.exists){
+          resolve(true);
+        } else {
+          resolve(false);
+        };
+      });
+    });
+  }
+
+  checkIfBabyExists(){
+    return new Promise(resolve => {
+      let db = firebase.firestore();
+      let userId = this.user.getUserId();
+      db.collection('babies').where("userId", "==", userId).get().then((docSnapShot) => {
+        if(!docSnapShot.empty){
+          resolve(true);
+        } else {
+          resolve(false);
+        };
+      });
+    });
+  }
+
 
   openModal() : any{
     return new Promise(resolve => {
@@ -145,40 +227,27 @@ export class DatabaseProvider {
     });
   }
 
-  // NOTE: Add the current baby id from local storage here.
   createBabyObservable(userId: any){
-    return new Promise(resolve => {
+    return new Promise(async resolve => {
       if(this.noBabyYet == true){
         console.log("Database::createBabyObservable(): noBabyYet is set to:", this.noBabyYet);
         resolve(false);
       } else {
-        this.getUserReference().then((currentUserRef) => {
-          this.babySub = currentUserRef.onSnapshot((snapShot) => {
-            snapShot.forEach((doc) => {
-              let baby = doc.data();
-              this.babyName = baby.firstName;
-              this.babyBirthday = baby.birthday;
-              this.babyLastName = baby.lastName;
-              this.babyGender = baby.gender;
-              resolve(this.calculateAge());
-              // console.log("Database::createBabyObservable: babyFirstname:", this.babyName);
-              // console.log("Database::createBabyObservable: babyBirthday:", this.babyBirthday);
-            });
+        let currentBabyRef = await this.getCurrentBabyRef();
+        this.babySub = currentBabyRef.onSnapshot((snapShot) => {
+          snapShot.forEach((doc) => {
+            let baby = doc.data();
+            this.baby.setBabyObject(baby);
+            // this.babyName = baby.firstName;
+            // this.babyBirthday = baby.birthday;
+            // this.babyLastName = baby.lastName;
+            // this.babyGender = baby.gender;
+            resolve(this.calculateAge());
+            // console.log("Database::createBabyObservable: babyFirstname:", this.babyName);
+            console.log("Database::createBabyObservable: baby obervable is:", baby);
           });
         });
       };
-    });
-  }
-
-  getBabyObject(){
-    return new Promise(resolve => {
-      let babyObject = {
-        firstName: this.babyName,
-        lastName: this.babyLastName,
-        birthday: this.babyBirthday,
-        gender: this.babyGender
-      };
-      resolve(babyObject);
     });
   }
 
@@ -280,8 +349,10 @@ export class DatabaseProvider {
       let today = this.datePipe.transform(todayUnformatted, 'yyyy-MM-dd');
       // console.log("today ", today);
       let splitToday = today.split('-');
-      // console.log("split today", splitToday);
-      let splitBirthday = this.babyBirthday.split('-');
+
+      let babyBirthday = this.baby.getBabyBirthday();
+
+      let splitBirthday = babyBirthday.split('-');
       // console.log("split birthday", splitBirthday);
 
       // Calculate the year, month, day by taking the difference
@@ -322,7 +393,7 @@ export class DatabaseProvider {
     return babyRef;
   }
 
-  getActivityReference(activity : any) : any {
+  getActivityReference(activity : any){
     return new Promise (resolve => {
       let db = firebase.firestore();
 
@@ -339,8 +410,7 @@ export class DatabaseProvider {
       if(userId == null || this.babyName == undefined){
         console.log("Database:: Cannot get activity ref yet");
       } else {
-        resolve(activityRef = db.collection('users').doc(userId).collection('babies').doc(this.babyName)
-        .collection(activity));
+        resolve(activityRef = db.collection('activities').doc(activity));
       };
     });
   }

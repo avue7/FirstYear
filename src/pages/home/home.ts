@@ -153,7 +153,7 @@ export class HomePage {
   // }
 
   init(){
-    this.createHistoryObservables(this.user).then(async() => {
+    this.createHistoryObservables().then(async() => {
       await this.updateBottleSummary();
       await this.updateMealSummary();
       await this.updateDiaperingSummary();
@@ -193,7 +193,7 @@ export class HomePage {
     });
   }
 
-  async createHistoryObservables(user: any){
+  async createHistoryObservables(){
     for (let activity of this.activitiesArray){
       let activityRef: any;
       await this.db.getActivityReference(activity).then( async(_activityRef) => {
@@ -203,24 +203,25 @@ export class HomePage {
         // console.log("2. Creating observable for <", activity, "> ....");
         if(activity == "bottlefeeding"){
           // console.log("3b) activity is bottlefeeding");
-          await this.db.createBottleFeedingHistoryObservable(user.uid, activityRef).then(async() => {
+          // await this.db.createBottleFeedingHistoryObservable(activityRef).then(async() => {
             //await this.updateSummaryArray("bottlefeeding");
           });
-        } else if(activity == "breastfeeding"){
-          // console.log("3b) activity is meal");
-          await this.db.createBreastFeedingHistoryObservable(user.uid, activityRef).then((retVal) => {
-          });
-        } else if(activity == "meal"){
-          // console.log("3b) activity is meal");
-          await this.db.createMealHistoryObservable(user.uid, activityRef).then((retVal) => {
-          });
-        } else if(activity == "diapering"){
-          await this.db.createDiaperingHistoryObservable(user.uid, activityRef).then((retVal) => {
-          });
-        } else if(activity == "sleeping"){
-          await this.db.createSleepHistoryObservable(user.uid, activityRef).then((retVal) => {
-          });
         };
+      //   } else if(activity == "breastfeeding"){
+      //     // console.log("3b) activity is meal");
+      //     await this.db.createBreastFeedingHistoryObservable(user.uid, activityRef).then((retVal) => {
+      //     });
+      //   } else if(activity == "meal"){
+      //     // console.log("3b) activity is meal");
+      //     await this.db.createMealHistoryObservable(user.uid, activityRef).then((retVal) => {
+      //     });
+      //   } else if(activity == "diapering"){
+      //     await this.db.createDiaperingHistoryObservable(user.uid, activityRef).then((retVal) => {
+      //     });
+      //   } else if(activity == "sleeping"){
+      //     await this.db.createSleepHistoryObservable(user.uid, activityRef).then((retVal) => {
+      //     });
+      //   };
       });
       // console.log("-----Done creating history observable-----");
     };

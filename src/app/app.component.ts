@@ -8,6 +8,7 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { DatabaseProvider } from '../providers/database/database';
 import { FcmProvider } from '../providers/fcm/fcm';
+import { BabyProvider } from '../providers/baby/baby';
 
 // Pages:
 import { HomePage } from '../pages/home/home';
@@ -66,7 +67,8 @@ export class MyApp {
     private googlePlus: GooglePlus,
     private db: DatabaseProvider,
     private modal: ModalController,
-    private fcm: FcmProvider
+    private fcm: FcmProvider,
+    private baby: BabyProvider
     ) {
     this.initializeApp();
 
@@ -109,7 +111,7 @@ export class MyApp {
           };
           if(user.uid){
             this.user.setUserId(user.uid).then(async () =>{
-              await this.db.setNewUserNewBaby(user.uid).then( async retVal => {
+              await this.db.setNewUserNewBaby(user).then( async retVal => {
                 // User decided to add baby later
                 if(retVal == "later"){
                   this.bdayYear = 0;
@@ -124,7 +126,7 @@ export class MyApp {
                   this.db.createBabyObservable(user.uid).then((retVal) => {
                     this.bdayYear = this.db.bdayYear;
                     this.bdayMonth = this.db.bdayMonth;
-                    this.babyName = this.db.babyName;
+                    this.babyName = this.baby.getBabyFirstName();
                     this.babyObservableDone = true;
                     console.log("APP:: done creating baby observable!");
                     resolve(this.nav.setRoot(HomePage));
@@ -146,20 +148,20 @@ export class MyApp {
   // NOTE: working on this...settings are lagging away by one set
   async editBabyProfile(){
     console.log("Editing baby profile");
-    this.db.getUserReference().then((currentUserRef) => {
-      // console.log("1");
-      this.db.getBabyObject().then((babyObject) => {
-        // console.log("2");
-        this.openModal(babyObject).then(async (baby) => {
-          // console.log("3. baby birthday", baby.birthday);
-          await currentUserRef.doc(baby.firstName).set(baby);
-          this.bdayYear = this.db.bdayYear;
-          // console.log("4. baby birthday", this.bdayYear);
-          this.bdayMonth = this.db.bdayMonth;
-          this.babyName = this.db.babyName;
-        });
-      });
-    });
+    // this.db.getUserReference().then((currentUserRef) => {
+    //   // console.log("1");
+    //   this.db.getBabyObject().then((babyObject) => {
+    //     // console.log("2");
+    //     this.openModal(babyObject).then(async (baby) => {
+    //       // console.log("3. baby birthday", baby.birthday);
+    //       await currentUserRef.doc(baby.firstName).set(baby);
+    //       this.bdayYear = this.db.bdayYear;
+    //       // console.log("4. baby birthday", this.bdayYear);
+    //       this.bdayMonth = this.db.bdayMonth;
+    //       this.babyName = this.db.babyName;
+    //     });
+    //   });
+    // });
   }
 
   openModal(babyObject: any) : any{
