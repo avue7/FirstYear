@@ -267,21 +267,24 @@ export class DatabaseProvider {
     });
   }
 
-  createBottleFeedingHistoryObservable(userId: any, bottleFeedRef: any){
+  createBottleFeedingHistoryObservable(bottleFeedRef: any){
     return new Promise(resolve => {
       this.bottleSub = bottleFeedRef.onSnapshot((snapShot) => {
-        // console.log("4. snapshot is:", snapShot)
-        if(snapShot.empty){
+        console.log("4. snapshot is:", snapShot)
+        if(snapShot.exists == false){
+          console.log("Snapshot not exists truth is", snapShot.exists);
           resolve(false);
-        }
+        } else {
+          console.log("snapshot does not exist");
         //snapShot.docChanges().forEach((change) => {
-        this.bottleHistoryArray.splice(0, this.bottleHistoryArray.length);
-        snapShot.forEach((doc, index, array) => {
-          let data = doc.data();
-          this.bottleHistoryArray.push(data);
+          this.bottleHistoryArray.splice(0, this.bottleHistoryArray.length);
+          snapShot.forEach((doc, index, array) => {
+            let data = doc.data();
+            this.bottleHistoryArray.push(data);
             resolve(true);
           });
-        });
+        };
+      });
     });
   }
 
@@ -406,9 +409,10 @@ export class DatabaseProvider {
 
       let activityRef: any;
       let userId = this.user.getUserId();
+      let babyName = this.baby.getBabyFirstName();
       // console.log("userId", userId, "babyname", this.babyName, activity);
-      if(userId == null || this.babyName == undefined){
-        console.log("Database:: Cannot get activity ref yet");
+      if(userId == null || babyName == undefined){
+        console.log("Database:: Cannot get activity ref yet", userId, babyName);
       } else {
         resolve(activityRef = db.collection('activities').doc(activity));
       };
@@ -744,21 +748,34 @@ export class DatabaseProvider {
       let newDate = dateArray[2] + '-' + dateArray[0] + '-' + dateArray[1];
       object.dateTime = newDate + ' ' + splitDateTime[1];
 
-      let babyReference = this.getBabyReference();
-      babyReference.collection(activity).doc(object.dateTime).set(object);
+      let db = firebase.firestore();
+      db.settings({
+        timestampsInSnapshots: true
+      });
+
+      // Data model should be:
+      // activities/{babyFirstName}/{babyObject (with userId)}
+      let babyFirstName = this.baby.getBabyFirstName();
+      let userId = this.user.getUserId();
+
+      // Add new userId to activity object
+      object.userId = userId;
+
+      db.collection('activities').doc(babyFirstName).set(object);
+      //let userId = this.user.getUserId();
 
       // Check if saved was Successful
-      babyReference.collection(activity).doc(object.dateTime).get().then((doc) => {
-        if (doc.exists){
-          this.successToast(activity);
-          console.log("Database::saveBabyActivity(): doc was successfully saved to database");
-          resolve(true);
-        } else {
-          this.failureToast();
-          console.log("Database::saveBabyActivity(): doc was not successfully saved.");
-          resolve(false);
-        };
-      });
+      // db.collection('activities').where("userId", "==", userId).get().then((doc) => {
+      //   if (doc.exists){
+      //     this.successToast(activity);
+      //     console.log("Database::saveBabyActivity(): doc was successfully saved to database");
+      //     resolve(true);
+      //   } else {
+      //     this.failureToast();
+      //     console.log("Database::saveBabyActivity(): doc was not successfully saved.");
+      //     resolve(false);
+      //   };
+      // });
     });
   }
 

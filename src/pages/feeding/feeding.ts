@@ -117,12 +117,12 @@ export class FeedingPage {
     this.MealMomentsAgo = '';
     this.mealDetail = null;
     this.lastMealDetail = null;
-    this.setLeftBreast();
-    this.getLastBreastFeed();
+    // this.setLeftBreast();
+    // this.getLastBreastFeed();
     this.bottleNote = null;
     this.bottle.volume = undefined;
     this.getLastBottleFeed();
-    this.getLastMeal();
+    // this.getLastMeal();
   }
 
   // NOTE: Need to add this to other pages so that it wont break the init()
@@ -560,17 +560,15 @@ export class FeedingPage {
   getLastBottleFeed(){
     this.BottleMomentsAgo = '';
     let count = 0;
-    let babyRef = this.db.getBabyReference();
-    babyRef.collection('bottlefeeding')
-      // .where('date', '==', 'date')
-      .get().then((latestSnapshot) => {
+    let babyRef = this.db.getCurrentBabyRef();
+    babyRef.get().then((latestSnapshot) => {
         latestSnapshot.forEach(doc => {
           count = count + 1;
           // console.log("Feeding::getLastBreastFeed(): lastest breastfeed:", doc.data());
         });
     });
 
-    babyRef.collection('bottlefeeding').get().then((latestSnapshot) => {
+    babyRef.get().then((latestSnapshot) => {
       latestSnapshot.forEach(doc => {
         count = count - 1;
         if(count == 0){
