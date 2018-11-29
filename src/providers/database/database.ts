@@ -107,21 +107,21 @@ export class DatabaseProvider {
       // CHeck if user exists
       this.checkIfUserExists(currentUserRef).then( async retVal => {
         if(retVal == true){
-          console.log("1. User doc already exists");
+          // console.log("1. User doc already exists");
           this.checkIfBabyExists().then(async retVal => {
             if(retVal == true){
               this.noBabyYet = false;
-              console.log("2. Baby already exists for user");
+              // console.log("2. Baby already exists for user");
               resolve(true);
             } else {
               // Baby does not exist create new baby
-              console.log("2. Baby does not exists for user");
+              // console.log("2. Baby does not exists for user");
               await this.createNewBaby().then((retVal) => {
                 if(retVal == "later"){
-                  console.log("3. User decided to add baby later");
+                  // console.log("3. User decided to add baby later");
                   resolve("later");
                 } else {
-                  console.log("3. Done creating baby.");
+                  // console.log("3. Done creating baby.");
                   resolve("true");
                 };
               });
@@ -129,15 +129,15 @@ export class DatabaseProvider {
           });
         } else {
           // Create the user
-          console.log("1. User not exist, creating user doc...");
+          // console.log("1. User not exist, creating user doc...");
           currentUserRef.set(userObject);
           // Create new baby
           await this.createNewBaby().then((retVal) => {
             if(retVal == "later"){
-              console.log("2. User decided to add baby later");
+              // console.log("2. User decided to add baby later");
               resolve("later");
             } else {
-              console.log("2. Done creating baby.");
+              // console.log("2. Done creating baby.");
               resolve("true");
             };
           });
@@ -251,9 +251,9 @@ export class DatabaseProvider {
     });
   }
 
-  createBreastFeedingHistoryObservable(userId: any, breastFeedRef: any){
+  createBreastFeedingHistoryObservable(breastFeedRef: any){
     return new Promise(resolve => {
-      this.bfSub = breastFeedRef.onSnapshot((snapShot) => {
+      this.bfSub = breastFeedRef.orderBy("dateTime", "asc").onSnapshot((snapShot) => {
         if(snapShot.empty){
           resolve(false);
         }
@@ -269,29 +269,29 @@ export class DatabaseProvider {
 
   createBottleFeedingHistoryObservable(bottleFeedRef: any){
     return new Promise(resolve => {
-      this.bottleSub = bottleFeedRef.onSnapshot((snapShot) => {
-        console.log("4. snapshot is:", snapShot)
+      this.bottleSub = bottleFeedRef.orderBy("dateTime", "asc").onSnapshot((snapShot) => {
+        // console.log("4. snapshot is:", snapShot)
         if(snapShot.exists == false){
-          console.log("Snapshot not exists truth is", snapShot.exists);
+          // console.log("Snapshot not exists truth is", snapShot.exists);
           resolve(false);
-        } else {
-          console.log("snapshot does not exist");
+        }
+        // } else {
         //snapShot.docChanges().forEach((change) => {
           this.bottleHistoryArray.splice(0, this.bottleHistoryArray.length);
-          snapShot.forEach((doc, index, array) => {
+          snapShot.forEach((doc/*, index, array*/) => {
             let data = doc.data();
             this.bottleHistoryArray.push(data);
             resolve(true);
           });
-        };
+        // };
       });
     });
   }
 
   // THis method is called in apps.ts
-  async createMealHistoryObservable(userId: any, mealRef: any){
+  async createMealHistoryObservable(mealRef: any){
     return new Promise(resolve => {
-      this.mealSub = mealRef.onSnapshot((snapShot) => {
+      this.mealSub = mealRef.orderBy("dateTime", "asc").onSnapshot((snapShot) => {
         // console.log("4. meal snapshot is:", snapShot)
         if(snapShot.empty){
           // console.log("4.b snapshot is empty");
@@ -310,9 +310,9 @@ export class DatabaseProvider {
     });
   }
 
-  createDiaperingHistoryObservable(userId: any, diaperingRef: any){
+  createDiaperingHistoryObservable(diaperingRef: any){
     return new Promise(resolve => {
-      this.diaperingSub = diaperingRef.onSnapshot((snapShot) => {
+      this.diaperingSub = diaperingRef.orderBy("dateTime", "asc").onSnapshot((snapShot) => {
         if(snapShot.empty){
           resolve(false);
         }
@@ -328,9 +328,9 @@ export class DatabaseProvider {
     });
   }
 
-  createSleepHistoryObservable(userId: any, sleepingRef){
+  createSleepHistoryObservable(sleepingRef){
     return new Promise(resolve => {
-      this.sleepingSub = sleepingRef.onSnapshot((snapShot) => {
+      this.sleepingSub = sleepingRef.orderBy("dateTime", "asc").onSnapshot((snapShot) => {
         if(snapShot.empty){
           resolve(false);
         }
@@ -414,7 +414,7 @@ export class DatabaseProvider {
       if(userId == null || babyName == undefined){
         console.log("Database:: Cannot get activity ref yet", userId, babyName);
       } else {
-        resolve(activityRef = db.collection('activities').doc(activity));
+        resolve(activityRef = db.collection('activities').where("activity", "==", activity).where("userId", "==", userId).where("babyFirstName", "==", babyName));
       };
     });
   }
@@ -723,17 +723,18 @@ export class DatabaseProvider {
     let activityRef: any;
     await this.getActivityReference(event.activity).then( async(_activityRef) => {
       activityRef = _activityRef;
-    }).then( () => {
-      if(activityRef.doc(event.dateTime)){
-        console.log("Yes it exists..deleting");
-        activityRef.doc(event.dateTime).delete().then(() => {
+    })
+
+    // Must query first, then get doc ref to delete.
+    await activityRef.where("dateTime", "==", event.dateTime).get().then(querySnapshot => {
+      querySnapshot.forEach((doc) => {
+        doc.ref.delete().then(() => {
           this.deleteToast(event.activity);
         }).catch((error) => {
           console.log("Database:: deleteEvent(): Error removing document", error);
         });
-      }
+      })
     });
-
 
   }
 
@@ -753,35 +754,34 @@ export class DatabaseProvider {
         timestampsInSnapshots: true
       });
 
-      // Data model should be:
-      // activities/{babyFirstName}/{babyObject (with userId)}
       let babyFirstName = this.baby.getBabyFirstName();
       let userId = this.user.getUserId();
 
       // Add new userId to activity object
       object.userId = userId;
 
-      db.collection('activities').doc(babyFirstName).set(object);
-      //let userId = this.user.getUserId();
+      // Add baby FirstName to activity object
+      object.babyFirstName = babyFirstName;
 
-      // Check if saved was Successful
-      // db.collection('activities').where("userId", "==", userId).get().then((doc) => {
-      //   if (doc.exists){
-      //     this.successToast(activity);
-      //     console.log("Database::saveBabyActivity(): doc was successfully saved to database");
-      //     resolve(true);
-      //   } else {
-      //     this.failureToast();
-      //     console.log("Database::saveBabyActivity(): doc was not successfully saved.");
-      //     resolve(false);
-      //   };
-      // });
+      db.collection('activities').doc().set(object).then((error) => {
+        if(error){
+          // console.log("Could not be saved");
+          this.failureToast();
+          resolve(false);
+        } else {
+          // console.log("Successfully saved");
+          this.successToast(activity);
+          resolve(true);
+        }
+      });
     });
   }
 
   successToast(activity? : any){
+    let babyFirstName = this.baby.getBabyFirstName();
+
     let toast = this.toastCtrl.create({
-      message: this.babyName + '\'s ' + activity + ' activity was successfully saved.',
+      message: babyFirstName + '\'s ' + activity + ' activity was successfully saved.',
       duration: 4000,
       position: 'bottom'
     });
@@ -794,8 +794,10 @@ export class DatabaseProvider {
   }
 
   deleteToast(activity: any){
+    let babyFirstName = this.baby.getBabyFirstName();
+
     let toast = this.toastCtrl.create({
-      message: this.babyName + '\'s ' + activity + " activity was deleted successfully.",
+      message: babyFirstName + '\'s ' + activity + " activity was deleted successfully.",
       duration: 3000,
       position: 'bottom'
     });

@@ -117,12 +117,12 @@ export class FeedingPage {
     this.MealMomentsAgo = '';
     this.mealDetail = null;
     this.lastMealDetail = null;
-    // this.setLeftBreast();
-    // this.getLastBreastFeed();
     this.bottleNote = null;
     this.bottle.volume = undefined;
     this.getLastBottleFeed();
-    // this.getLastMeal();
+    this.getLastMeal();
+    this.setLeftBreast();
+    this.getLastBreastFeed();
   }
 
   // NOTE: Need to add this to other pages so that it wont break the init()
@@ -203,20 +203,21 @@ export class FeedingPage {
     });
   }
 
-  getLastBreastFeed(){
+  async getLastBreastFeed(){
     this.momentsAgo = '';
     let count = 0;
-    let babyRef = this.db.getBabyReference();
-    babyRef.collection('breastfeeding')
-      // .where('date', '==', 'date')
-      .get().then((latestSnapshot) => {
+    let activityRef: any;
+    await this.db.getActivityReference("breastfeeding").then(_activityRef => {
+      activityRef = _activityRef;
+    })
+    await activityRef.get().then((latestSnapshot) => {
         latestSnapshot.forEach(doc => {
           count = count + 1;
           // console.log("Feeding::getLastBreastFeed(): lastest breastfeed:", doc.data());
         });
     });
 
-    babyRef.collection('breastfeeding').get().then((latestSnapshot) => {
+    await activityRef.orderBy("dateTime", "asc").get().then((latestSnapshot) => {
       latestSnapshot.forEach(doc => {
         count = count - 1;
         if(count == 0){
@@ -394,6 +395,7 @@ export class FeedingPage {
         this.bottleNote = null;
 
         // Set the app to remember the new
+        console.log("CALLLING GET LAST I SHOULD APPEAR")
         this.getLastBottleFeed();
 
         if(this.timer.tick != 0){
@@ -557,18 +559,25 @@ export class FeedingPage {
     });
   }
 
-  getLastBottleFeed(){
+  async getLastBottleFeed(){
     this.BottleMomentsAgo = '';
     let count = 0;
-    let babyRef = this.db.getCurrentBabyRef();
-    babyRef.get().then((latestSnapshot) => {
+    let activityRef;
+    await this.db.getActivityReference("bottlefeeding").then(_activityRef => {
+        activityRef = _activityRef;
+    });
+
+    // Use orderBy in firebase and create the Indexes within the firebase console
+    // to enable query by ascending or descending order. The error log will help you
+    // create this following the link.
+    await activityRef.get().then((latestSnapshot) => {
         latestSnapshot.forEach(doc => {
           count = count + 1;
           // console.log("Feeding::getLastBreastFeed(): lastest breastfeed:", doc.data());
         });
     });
 
-    babyRef.get().then((latestSnapshot) => {
+    await activityRef.orderBy("dateTime", "asc").get().then((latestSnapshot) => {
       latestSnapshot.forEach(doc => {
         count = count - 1;
         if(count == 0){
@@ -584,8 +593,10 @@ export class FeedingPage {
           this.lastBottleFeed = this.ft.formatDateTimeStandard(doc.data().dateTime);
           this.lastBottleDuration = doc.data().duration;
           this.bottleLastAmount = doc.data().volume + " " + doc.data().unit;
+          // console.log("last bottlefeed", this.lastBottleFeed);
         };
       });
+    }).then(() => {
       this.updateBottleSummary();
     });
   }
@@ -695,20 +706,21 @@ export class FeedingPage {
     });
   }
 
-  getLastMeal(){
+  async getLastMeal(){
     this.MealMomentsAgo = '';
     let count = 0;
-    let babyRef = this.db.getBabyReference();
-    babyRef.collection('meal')
-      // .where('date', '==', 'date')
-      .get().then((latestSnapshot) => {
-        latestSnapshot.forEach(doc => {
-          count = count + 1;
-          // console.log("Feeding::getLastBreastFeed(): lastest breastfeed:", doc.data());
-        });
+    let activityRef;
+    await this.db.getActivityReference("meal").then(_activityRef => {
+      activityRef = _activityRef;
+    });
+    await activityRef.get().then((latestSnapshot) => {
+      latestSnapshot.forEach(doc => {
+        count = count + 1;
+        // console.log("Feeding::getLastBreastFeed(): lastest breastfeed:", doc.data());
+      });
     });
 
-    babyRef.collection('meal').get().then((latestSnapshot) => {
+    await activityRef.orderBy("dateTime", "asc").get().then((latestSnapshot) => {
       latestSnapshot.forEach(doc => {
         count = count - 1;
         if(count == 0){
@@ -728,6 +740,7 @@ export class FeedingPage {
           };
         };
       });
+    }).then(() => {
       this.updateMealSummary();
     });
   }

@@ -155,75 +155,75 @@ export class HomePage {
   init(){
     this.createHistoryObservables().then(async() => {
       await this.updateBottleSummary();
-      // await this.updateMealSummary();
-      // await this.updateDiaperingSummary();
-      // await this.updateBreastSummary();
-      // await this.updateSleepSummary();
+      await this.updateMealSummary();
+      await this.updateDiaperingSummary();
+      await this.updateBreastSummary();
+      await this.updateSleepSummary();
+    //});
+    }).then(() => {
+      this.hasToday = false;
+      this.hasYesterday = false;
+      this.hasMore = false;
+    }).then(async() => {
+      await this.groupTodayArray();
+      // Then sort:
+      if(this.hasToday){
+        this.todayHistoryArray = await this.todayHistoryArray.sort((a,b) => {
+          return (a.time > b.time ? -1 : a.time < b.time ? 1 : 0);
+        });
+        // console.log("This todayHistoryArray: ", this.todayHistoryArray);
+      };
+      // console.log("SORTY TODAY ARRAY IS", this.todayHistoryArray);
+    }).then(async() => {
+      await this.groupYesterdayArray();
+      if(this.hasYesterday){
+        this.yesterdayHistoryArray = await this.yesterdayHistoryArray.sort((a,b) => {
+          return (a.time > b.time ? -1 : a.time < b.time ? 1 : 0);
+        });
+      };
+    }).then(async() => {
+      await this.groupMoreArray();
+      if(this.hasMore){
+        this.moreHistoryArray = await this.moreHistoryArray.sort((a,b) => {
+          return (a.dateTime > b.dateTime ? -1 : a.dateTime < b.dateTime ? 1 : 0);
+        });
+        // console.log("This moreHistoryArray: ", this.moreHistoryArray);
+      };
+    }).then(async() => {
+      await this.checkForNoHistory();
     });
-    // }).then(() => {
-    //   this.hasToday = false;
-    //   this.hasYesterday = false;
-    //   this.hasMore = false;
-    // }).then(async() => {
-    //   await this.groupTodayArray();
-    //   // Then sort:
-    //   if(this.hasToday){
-    //     this.todayHistoryArray = await this.todayHistoryArray.sort((a,b) => {
-    //       return (a.time > b.time ? -1 : a.time < b.time ? 1 : 0);
-    //     });
-    //     // console.log("This todayHistoryArray: ", this.todayHistoryArray);
-    //   };
-    //   // console.log("SORTY TODAY ARRAY IS", this.todayHistoryArray);
-    // }).then(async() => {
-    //   await this.groupYesterdayArray();
-    //   if(this.hasYesterday){
-    //     this.yesterdayHistoryArray = await this.yesterdayHistoryArray.sort((a,b) => {
-    //       return (a.time > b.time ? -1 : a.time < b.time ? 1 : 0);
-    //     });
-    //   };
-    // }).then(async() => {
-    //   await this.groupMoreArray();
-    //   if(this.hasMore){
-    //     this.moreHistoryArray = await this.moreHistoryArray.sort((a,b) => {
-    //       return (a.dateTime > b.dateTime ? -1 : a.dateTime < b.dateTime ? 1 : 0);
-    //     });
-    //     // console.log("This moreHistoryArray: ", this.moreHistoryArray);
-    //   };
-    // }).then(async() => {
-    //   await this.checkForNoHistory();
-    // });
   }
 
   async createHistoryObservables(){
     for (let activity of this.activitiesArray){
       let activityRef: any;
       await this.db.getActivityReference(activity).then( async(_activityRef) => {
-         console.log("1....database:: getActivityReference returned", _activityRef);
+         // console.log("1....database:: getActivityReference returned", _activityRef);
         activityRef = _activityRef;
       }).then(async() => {
-        console.log("2. Creating observable for <", activity, "> ....");
+        // console.log("2. Creating observable for <", activity, "> ....");
         if(activity == "bottlefeeding"){
-          console.log("3b) activity is bottlefeeding");
+          // console.log("3b) activity is bottlefeeding");
           await this.db.createBottleFeedingHistoryObservable(activityRef).then(async() => {
           });
+        } else if(activity == "breastfeeding"){
+          // console.log("3b) activity is meal");
+          await this.db.createBreastFeedingHistoryObservable(activityRef).then((retVal) => {
+          });
+        } else if(activity == "meal"){
+          // console.log("3b) activity is meal");
+          await this.db.createMealHistoryObservable(activityRef).then((retVal) => {
+          });
+        }
+        else if(activity == "diapering"){
+          await this.db.createDiaperingHistoryObservable(activityRef).then((retVal) => {
+          });
+        } else if(activity == "sleeping"){
+          await this.db.createSleepHistoryObservable(activityRef).then((retVal) => {
+          });
         };
-      //   } else if(activity == "breastfeeding"){
-      //     // console.log("3b) activity is meal");
-      //     await this.db.createBreastFeedingHistoryObservable(user.uid, activityRef).then((retVal) => {
-      //     });
-      //   } else if(activity == "meal"){
-      //     // console.log("3b) activity is meal");
-      //     await this.db.createMealHistoryObservable(user.uid, activityRef).then((retVal) => {
-      //     });
-      //   } else if(activity == "diapering"){
-      //     await this.db.createDiaperingHistoryObservable(user.uid, activityRef).then((retVal) => {
-      //     });
-      //   } else if(activity == "sleeping"){
-      //     await this.db.createSleepHistoryObservable(user.uid, activityRef).then((retVal) => {
-      //     });
-      //   };
       });
-     console.log("-----Done creating history observable-----");
+     console.log("-----Done creating history observables-----");
     };
   }
 
