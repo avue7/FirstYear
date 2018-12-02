@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ViewController } from 'ionic-angular';
+import { ViewController, NavParams} from 'ionic-angular';
 import { NoteAlertProvider } from '../../providers/note-alert/note-alert';
 
 import * as moment from 'moment';
@@ -17,10 +17,28 @@ export class DiaperingModalPage {
     date: '',
     time: ''
   };
+
+  edit: boolean;
+
   constructor(private view: ViewController,
-    private noteAlertProvider: NoteAlertProvider) {
-      this.diaper.date = moment().format();
-      this.diaper.time = moment().format();
+    private noteAlertProvider: NoteAlertProvider,
+    private params: NavParams) {
+      let object = this.params.get('object');
+      console.log("Passed in object", object.object);
+      if(object){
+        this.edit = true;
+        this.diaper.type = object.type;
+        let splitDateTime = object.dateTime.split(' ');
+        this.diaper.date = splitDateTime[0];
+        this.diaper.time = splitDateTime[1];
+        if(object.note){
+          this.diaperNote = object.note;
+        };
+      } else {
+        this.edit = false;
+        this.diaper.date = moment().format();
+        this.diaper.time = moment().format();
+      };
   }
 
   manualAddDiaper(){
