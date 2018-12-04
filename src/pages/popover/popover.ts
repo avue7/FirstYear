@@ -15,18 +15,27 @@ export class PopoverPage {
 
   editBabyProfile(){
     console.log("Editing baby profile");
+    this.db.editBabyProfile();
+    this.viewCtrl.dismiss();
   }
 
   switchBaby(){
     console.log("Switching baby");
+    this.db.switchBaby();
+    this.viewCtrl.dismiss();
+
   }
 
   addNewBaby(){
     console.log("Adding new baby");
     this.db.addNewBaby();
+    this.viewCtrl.dismiss();
+
   }
 
   openAlarmModal(){
     console.log("Opening alarm modal");
+    this.viewCtrl.dismiss();
+
   }
 }

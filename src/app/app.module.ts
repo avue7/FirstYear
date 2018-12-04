@@ -146,7 +146,8 @@ import { CalculateSleepDurationProvider } from '../providers/calculate-sleep-dur
     // NativeStorage,
     FcmProvider,
     Firebase,
-    CalculateSleepDurationProvider
+    CalculateSleepDurationProvider,
+    // MyApp
   ]
 })
 export class AppModule {}

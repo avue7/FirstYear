@@ -8,6 +8,7 @@ import { ToastController } from 'ionic-angular';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { CalculateSleepDurationProvider } from '../calculate-sleep-duration/calculate-sleep-duration';
+import { MyApp } from '../../app/app.component';
 
 // Modals
 import { BottlefeedingModalPage } from '../../pages/bottlefeeding-modal/bottlefeeding-modal';
@@ -15,6 +16,8 @@ import { BreastfeedingModalPage } from '../../pages/breastfeeding-modal/breastfe
 import { MealModalPage } from '../../pages/meal-modal/meal-modal';
 import { SleepingModalPage } from '../../pages/sleeping-modal/sleeping-modal';
 import { DiaperingModalPage } from '../../pages/diapering-modal/diapering-modal';
+import { EditBabyModalPage } from '../../pages/edit-baby-modal/edit-baby-modal';
+
 
 
 // Testing firestore
@@ -24,6 +27,7 @@ import 'firebase/firestore';
 @Injectable()
 export class DatabaseProvider {
   babyAlert: any;
+  babiesArray: any;
 
   myModal: any;
   babyName: any;
@@ -72,12 +76,16 @@ export class DatabaseProvider {
     private datePipe: DatePipe,
     private toastCtrl: ToastController,
     private calculateSleepDuration: CalculateSleepDurationProvider,
-    private alertCtrl: AlertController) {
+    private alertCtrl: AlertController,
+    // private myApp: MyApp
+  ){
     this.bfHistoryArray = [];
     this.bottleHistoryArray = [];
     this.diaperingHistoryArray = [];
     this.mealHistoryArray = [];
     this.sleepingHistoryArray = [];
+
+    console.log()
   }
 
   getCurrentUserRef(){
@@ -171,7 +179,8 @@ export class DatabaseProvider {
             lastName: babyObject.lastName,
             birthday: babyObject.birthday,
             gender: babyObject.gender,
-            userId: currentUserId
+            userId: currentUserId,
+            current: false
           }
 
           db.collection('babies').doc().set(entry);
@@ -611,6 +620,112 @@ export class DatabaseProvider {
     });
   }
 
+  editBabyProfile(){
+    return new Promise(async resolve => {
+      console.log("Editing baby profile");
+      let babyFirstName = this.baby.getBabyFirstName();
+
+      let currentBabyRef = await this.getCurrentBabyRef();
+      let babyObject = await this.baby.getBabyObject();
+
+      this.openEditBabyModal(babyObject).then(async editedBabyObject => {
+        console.log("editedBabyObject", editedBabyObject)
+        if(editedBabyObject == undefined){
+          return;
+        } else {
+          await currentBabyRef.where('firstName', '==', babyFirstName).get().then(async querySnapshot => {
+            querySnapshot.forEach(async doc => {
+              doc.ref.update(editedBabyObject);
+
+              // If first name is changed then we need to change it for
+              // all activities.
+              if(babyFirstName != editedBabyObject.firstName){
+                await this.updateFirstNameInActivities(babyFirstName, editedBabyObject.firstName);
+              };
+
+              await this.baby.setBabyObject(editedBabyObject);
+              resolve(this.calculateAge());
+            });
+          });
+        };
+      });
+    });
+  }
+
+  // NOTE: YOU ARE ON THIS RIGHT NOW
+  async switchBaby(){
+    console.log("Switching baby");
+    // let babiesArray = this.myApp.getBabyArray();
+    await this.moreThanOneBabyAlert(this.babiesArray).then(async (babyFirstName) => {
+      console.log(babyFirstName)
+      if(babyFirstName == null){
+        console.log("cancel is pressed")
+        return;
+      } else {
+        for(let baby of this.babiesArray){
+          if(baby.firstName == babyFirstName){
+            let babyObject = baby;
+            await this.setCurrentBabyFlag(babyFirstName);
+            await this.resetNotCurrentBabyFlag(babyFirstName);
+            await this.baby.resetBabyObject();
+            await this.baby.setBabyObject(babyObject);
+            await this.calculateAge();
+            // await this.myApp.setYearMonth(this.bdayYear, this.bdayMonth);
+          }
+        };
+      };
+    });
+  }
+
+  async setCurrentBabyFlag(babyFirstName: any){
+    let currentBabyRef = await this.getCurrentBabyRef();
+    currentBabyRef.where("firstName", "==", babyFirstName).get().then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        doc.ref.update({
+          current: true
+        });
+      });
+    });
+  }
+
+  async resetNotCurrentBabyFlag(babyFirstName: any){
+    let currentBabyRef = await this.getCurrentBabyRef();
+    currentBabyRef.get().then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        if(doc.data().firstName != babyFirstName){
+          doc.ref.update({
+            current: false
+          });
+        };
+      });
+    });
+  }
+
+  setBabiesArray(babies: any){
+    this.babiesArray = [];
+    this.babiesArray = babies;
+  }
+
+  openEditBabyModal(babyObject: any) : any{
+    return new Promise(resolve => {
+      this.myModal = this.modal.create(EditBabyModalPage, {babyObject: babyObject});
+      this.myModal.present();
+      resolve(this.waitForReturn());
+    });
+  }
+
+  // This method serves as a condition while loop and waits for the
+  // modal to dismiss before it goes to the next line of the caller.
+  waitForReturn() : any{
+    return new Promise(resolve => {
+      this.myModal.onDidDismiss( data => {
+        let babyObject = data;
+        // console.log("This babyObject_", babyObject);
+        resolve(babyObject);
+      });
+    });
+  }
+
   updateFirstNameInActivities(originalFirstName: any, newFirstName: any){
     let db = firebase.firestore();
 
@@ -816,7 +931,8 @@ export class DatabaseProvider {
           lastName: babyObject.lastName,
           birthday: babyObject.birthday,
           gender: babyObject.gender,
-          userId: currentUserId
+          userId: currentUserId,
+          current: false
         }
 
         await db.collection('babies').doc().set(entry);
@@ -831,7 +947,7 @@ export class DatabaseProvider {
       console.log("babies are", babiesArray);
 
       let options: any = {
-        title: 'More than one baby in database, please choose baby:',
+        title: 'Which baby to track?:',
         buttons: [
           {
             text: 'Cancel',
