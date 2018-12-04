@@ -1,13 +1,14 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Baby Information</ion-title>
+    <ion-title *ngIf="addBabyFlag">Add New Baby Information</ion-title>
+    <ion-title *ngIf="!addBabyFlag">Baby Information</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
 
-  <div style="text-align:center">
+  <div style="text-align:center" *ngIf="!addBabyFlag">
     <p> Thank you for using this app! <br>
       Tell us about your baby to get started.
   </div>
@@ -59,8 +60,10 @@
       </ion-item>
 
     </ion-list>
-    <button ion-button class="baby-button" [disabled]="!babyInfoForm.valid">Create Baby Profile</button>
+    <button ion-button *ngIf="!addBabyFlag" class="baby-button" [disabled]="!babyInfoForm.valid">Create Baby Profile</button>
+    <button ion-button *ngIf="addBabyFlag" class="baby-button" [disabled]="!babyInfoForm.valid">Create New Baby Profile</button>
   </form>
-  <button ion-button class="baby-button" (click)="cancelModal()">Do Later</button>
+  <!-- <button ion-button *ngIf="!addBabyFlag" class="baby-button" (click)="cancelModal()">Do Later</button> -->
+  <button ion-button *ngIf="addBabyFlag" class="baby-button" (click)="cancelModal()">Cancel</button>
 
 </ion-content>

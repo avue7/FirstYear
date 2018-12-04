@@ -52,4 +52,11 @@ export class BabyProvider {
   removeBabyRef(){
     // this.nativeStorage.clear();
   }
+
+  resetBabyObject(){
+    this.firstName = null;
+    this.lastName = null;
+    this.birthday = null;
+    this.gender = null;
+  }
 }

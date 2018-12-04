@@ -8,6 +8,7 @@ import { NoteAlertProvider } from '../../providers/note-alert/note-alert';
 import { LifoHistoryProvider } from '../../providers/lifo-history/lifo-history';
 import { DiaperingModalPage } from '../diapering-modal/diapering-modal';
 import { SleepingModalPage } from '../sleeping-modal/sleeping-modal';
+import { CalculateSleepDurationProvider } from '../../providers/calculate-sleep-duration/calculate-sleep-duration';
 
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Rx';
@@ -60,7 +61,8 @@ export class SleepingPage {
     private modal: ModalController,
     private noteAlertProvider: NoteAlertProvider,
     private lifoHistory: LifoHistoryProvider,
-    private navParams: NavParams) {
+    private navParams: NavParams,
+    private calculateSleepDuration: CalculateSleepDurationProvider) {
     this.sleeping.date = moment().format();
     this.sleeping.time = moment().format();
     this.SleepingMomentsAgo = '';
@@ -223,7 +225,7 @@ export class SleepingPage {
   }
 
   manuallyAddSleeping(){
-    this.openSleepingModal().then((sleeping) => {
+    this.openSleepingModal().then(async (sleeping) => {
       if (sleeping == undefined){
         console.log("Sleeping::manualAdd(): user canceled modal");
       } else {
@@ -242,49 +244,12 @@ export class SleepingPage {
         /////////////////////////////////////////////////////////////////
         // String up date and time and call the method to standardize the time
         let dateTime = date + " " + timeStart;
-        let dateTimeEnd = dateEnd + " " + timeEnd;
 
-        // Need to get the distance of the day start and day end
-        let sleepDurationMoment = moment(dateTime, "MM-DD-YYYY HH:mm:ss").diff(moment(dateTimeEnd, "MM-DD-YYYY HH:mm:ss"));
-        let sleepDuration = moment.duration(sleepDurationMoment);
-        // console.log("Days:", sleepDuration.days(), ", Hours:", sleepDuration.hours(), ", Minutes:", sleepDuration.minutes(), ", Seconds:", sleepDuration.seconds());
+        let sleepDurationString: any;
 
-        let sleepDurationString: any
-        if(sleepDuration.months()){
-          if(Math.abs(sleepDuration.months()) == 1){
-            sleepDurationString = Math.abs(sleepDuration.months()) + " month";
-          } else {
-            sleepDurationString = Math.abs(sleepDuration.months()) + " months";
-          };
-        }
-        if(sleepDuration.days()){
-          if(Math.abs(sleepDuration.days()) == 1){
-            sleepDurationString = Math.abs(sleepDuration.days()) + " day";
-          } else {
-            sleepDurationString = " " + Math.abs(sleepDuration.days()) + " days";
-          };
-        }
-        if(sleepDuration.hours()){
-          if(Math.abs(sleepDuration.hours()) == 1){
-            sleepDurationString = Math.abs(sleepDuration.hours()) + " hr";
-          } else {
-            sleepDurationString = " " + Math.abs(sleepDuration.hours()) + " hrs";
-          };
-        }
-        if(sleepDuration.minutes()){
-          if(Math.abs(sleepDuration.minutes()) == 1){
-            sleepDurationString = Math.abs(sleepDuration.minutes()) + " min";
-          } else {
-            sleepDurationString = " " + Math.abs(sleepDuration.minutes()) + " mins";
-          };
-        }
-        if(sleepDuration.seconds()){
-          if(Math.abs(sleepDuration.seconds()) == 1){
-            sleepDurationString = Math.abs(sleepDuration.seconds()) + " sec";
-          } else {
-            sleepDurationString = " " + Math.abs(sleepDuration.seconds()) + " secs";
-          };
-        }
+        await this.calculateSleepDuration.calculateDuration(sleeping).then((duration) => {
+          sleepDurationString = duration;
+        });
 
         let manualObject = {}
 
@@ -294,7 +259,7 @@ export class SleepingPage {
             dateTime: dateTime,
             note: sleeping.note,
             time: timeStart,
-            dateEnd: dateTimeEnd,
+            dateEnd: dateEnd,
             timeEnd:  timeEnd,
             duration: sleepDurationString
           }
@@ -303,7 +268,7 @@ export class SleepingPage {
             activity: 'sleeping',
             dateTime: dateTime,
             time: timeStart,
-            dateEnd: dateTimeEnd,
+            dateEnd: dateEnd,
             timeEnd:  timeEnd,
             duration: sleepDurationString
           }

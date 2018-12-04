@@ -95,13 +95,14 @@ export class MyApp {
       // if(this.summaryArray.length != 0){
       //   this.summaryArray.splice(0, this.summaryArray.length);
       // };
-    }).then(async () => {
-      await this.createAuthObservable();
+    }).then(() => {
+      this.createUserAuthObservable()
+      // this.createBabyObservable();
     });
 
   }
 
-  async createAuthObservable(){
+  async createUserAuthObservable(){
     return new Promise(async resolve => {
       // Logic to check if users are logged in or not.
       this.userSubscription = this.auth.afAuth.authState.subscribe( user => {
@@ -111,27 +112,9 @@ export class MyApp {
           };
           if(user.uid){
             this.user.setUserId(user.uid).then(async () =>{
-              await this.db.setNewUserNewBaby(user).then( async retVal => {
-                // User decided to add baby later
-                if(retVal == "later"){
-                  this.bdayYear = 0;
-                  this.bdayMonth = 0;
-                  this.babyName = "No baby added yet!";
-                  resolve(this.nav.setRoot(HomePage));
-                }
-                // No baby file found but user added baby
-                else {
-                  // Create a baby observable as soon as the user adds him or her
-                  console.log("App:: Creating baby observable...");
-                  this.db.createBabyObservable(user.uid).then((retVal) => {
-                    this.bdayYear = this.db.bdayYear;
-                    this.bdayMonth = this.db.bdayMonth;
-                    this.babyName = this.baby.getBabyFirstName();
-                    this.babyObservableDone = true;
-                    console.log("APP:: done creating baby observable!");
-                    resolve(this.nav.setRoot(HomePage));
-                  });
-                }
+              await this.db.setNewUser(user).then( async retVal => {
+                console.log("Set new user finished")
+                resolve(this.createBabyObservable());
               });
             });
           }
@@ -145,9 +128,87 @@ export class MyApp {
     });
   }
 
+  createBabyObservable(){
+    return new Promise(resolve => {
+      let userId = this.user.getUserId();
+      this.db.checkIfBabyExists().then(async retVal => {
+        if(retVal == true){
+          console.log("Baby file exists");
+          let babyObject = this.baby.getBabyObject();
+          if(babyObject.firstName == undefined){
+            console.log("Need to get baby fresh login");
+          } else {
+            console.log("Baby object is", babyObject);
+          }
+          resolve(this.nav.setRoot(HomePage));
+        } else {
+          console.log("Baby file does not exists");
+          let currentBabyRef = await this.db.getCurrentBabyRef();
+          await currentBabyRef.onSnapshot(async (snapShot) => {
+            let count: number = 0;
+            let babyArray = [];
+            await snapShot.forEach(async (doc) => {
+              count = count + 1;
+              babyArray.push(doc.data());
+              console.log("count inside baby snapshit", count);
+            });
+
+            // If we have only one baby use that baby, else ask user which
+            // baby to use.
+            if (count == 0){
+              console.log("Creating first baby file");
+              this.db.createNewBaby().then(async () => {
+                await this.db.calculateAge();
+                this.bdayYear = this.db.bdayYear
+                this.bdayMonth = this.db.bdayMonth;
+                this.babyName = this.baby.getBabyFirstName();
+                resolve(this.nav.setRoot(HomePage));
+              })
+            } else if (count == 1){
+              let baby = babyArray[0];
+              this.baby.setBabyObject(baby);
+              await this.db.calculateAge();
+              this.bdayYear = this.db.bdayYear
+              this.bdayMonth = this.db.bdayMonth;
+              this.babyName = this.baby.getBabyFirstName();
+              resolve(this.nav.setRoot(HomePage));
+              console.log("Database::createBabyObservable: baby obervable is:", baby);
+            } else {
+              console.log("More than one baby ask user to choose baby");
+              console.log("Baby array is:", babyArray);
+              await this.db.moreThanOneBabyAlert(babyArray).then(async (babyFirstName) => {
+                console.log(babyFirstName)
+                if(babyFirstName == null){
+                  console.log("cancel is pressed")
+                  resolve(this.nav.setRoot(HomePage));
+                } else {
+                  for(let baby of babyArray){
+                    if(baby.firstName == babyFirstName){
+                      let babyObject = baby;
+                      await this.baby.resetBabyObject();
+                      await this.baby.setBabyObject(babyObject);
+                      await this.db.calculateAge();
+                      this.bdayYear = this.db.bdayYear
+                      this.bdayMonth = this.db.bdayMonth;
+                      this.babyName = this.baby.getBabyFirstName();
+                      resolve(this.nav.setRoot(HomePage));
+                    }
+                  };
+                };
+              });
+            };
+          });
+        }
+      });
+    });
+  }
+
   // NOTE: working on this...settings are lagging away by one set
   async editBabyProfile(){
     console.log("Editing baby profile");
+    let babyRef = await this.db.getCurrentBabyRef;
+    let babyFirstName = this.baby.getBabyFirstName();
+
     // this.db.getUserReference().then((currentUserRef) => {
     //   // console.log("1");
     //   this.db.getBabyObject().then((babyObject) => {

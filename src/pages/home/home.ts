@@ -3,6 +3,8 @@ import { NavController, MenuController, NavParams, Platform} from 'ionic-angular
 import { LifoHistoryProvider } from '../../providers/lifo-history/lifo-history';
 import { UserProvider } from '../../providers/user/user';
 import { DatabaseProvider } from '../../providers/database/database';
+import { PopoverController } from 'ionic-angular';
+import { PopoverPage } from '../popover/popover';
 
 // Push implementation (testing)
 import { FcmProvider } from '../../providers/fcm/fcm';
@@ -117,7 +119,8 @@ export class HomePage {
     private navParams: NavParams,
     private platform: Platform,
     private fcm: FcmProvider,
-    private toastCtrl: ToastController) {
+    private toastCtrl: ToastController,
+    private popCtrl: PopoverController) {
     // this.waitForPlatFormReady().then(() => {
       this.enableMenu();
       //this.startFCMService();
@@ -516,6 +519,15 @@ export class HomePage {
     console.log('Begin async operation', refresher);
     await this.init();
     refresher.complete();
+  }
+
+  // Settings: alarm, switch baby, etc.
+  popOverSettings(event: any){
+    console.log("Open settings clicked");
+    let popover = this.popCtrl.create(PopoverPage)
+    popover.present({
+      ev: event
+    });
   }
 }
 

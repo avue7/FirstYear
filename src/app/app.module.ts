@@ -40,6 +40,7 @@ import { BottlefeedingModalPage } from '../pages/bottlefeeding-modal/bottlefeedi
 import { DiaperingModalPage } from '../pages/diapering-modal/diapering-modal';
 import { MealModalPage } from '../pages/meal-modal/meal-modal';
 import { SleepingModalPage } from '../pages/sleeping-modal/sleeping-modal';
+import { PopoverPage } from '../pages/popover/popover';
 
 import { TimerProvider } from '../providers/timer/timer';
 import { HoursMinutesSecondsPipe } from '../pipes/hours-minutes-seconds/hours-minutes-seconds';
@@ -53,6 +54,7 @@ import { LifoHistoryProvider } from '../providers/lifo-history/lifo-history';
 import { EventSettingProvider } from '../providers/event-setting/event-setting';
 // import { NativeStorage } from '@ionic-native/native-storage';
 import { FcmProvider } from '../providers/fcm/fcm';
+import { CalculateSleepDurationProvider } from '../providers/calculate-sleep-duration/calculate-sleep-duration';
 // import { Firebase } from '@ionic-native/firebase';
 
 
@@ -83,7 +85,8 @@ import { FcmProvider } from '../providers/fcm/fcm';
     DiaperingModalPage,
     MealModalPage,
     SleepingModalPage,
-    EditBabyModalPage
+    EditBabyModalPage,
+    PopoverPage
   ],
   imports: [
     BrowserModule,
@@ -117,7 +120,8 @@ import { FcmProvider } from '../providers/fcm/fcm';
     DiaperingModalPage,
     MealModalPage,
     SleepingModalPage,
-    EditBabyModalPage
+    EditBabyModalPage,
+    PopoverPage
   ],
   providers: [
     StatusBar,
@@ -141,7 +145,8 @@ import { FcmProvider } from '../providers/fcm/fcm';
     EventSettingProvider,
     // NativeStorage,
     FcmProvider,
-    Firebase
+    Firebase,
+    CalculateSleepDurationProvider
   ]
 })
 export class AppModule {}
