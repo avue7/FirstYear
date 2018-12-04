@@ -17,7 +17,6 @@ import { tap } from 'rxjs/operators';
 import { FeedingPage } from '../feeding/feeding';
 import { DiaperingPage } from '../diapering/diapering';
 import { SleepingPage } from '../sleeping/sleeping';
-import { PlayingPage } from '../playing/playing';
 import { GrowthPage } from '../growth/growth';
 import { CameraPage } from '../camera/camera';
 
@@ -33,7 +32,6 @@ export class HomePage {
       { component: FeedingPage, icon: 'custom-bottle' },
       { component: DiaperingPage, icon: 'custom-diaper' },
       { component: SleepingPage, icon: 'custom-sleeping-baby' },
-      { component: PlayingPage, icon: 'custom-cubes' },
       { component: GrowthPage, icon: 'custom-growth' },
       { component: CameraPage, icon: 'custom-camera' }
     ],

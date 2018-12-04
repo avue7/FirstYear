@@ -17,7 +17,6 @@ import { FeedingPage } from '../pages/feeding/feeding';
 import { DiaperingPage } from '../pages/diapering/diapering';
 import { SleepingPage } from '../pages/sleeping/sleeping';
 import { GrowthPage } from '../pages/growth/growth';
-import { PlayingPage } from '../pages/playing/playing';
 import { CreditsPage } from '../pages/credits/credits';
 import { CameraPage } from '../pages/camera/camera';
 import { EditBabyModalPage } from '../pages/edit-baby-modal/edit-baby-modal';
@@ -78,7 +77,6 @@ export class MyApp {
       { title: 'Feeding', component: FeedingPage, icon: 'custom-bottle' },
       { title: 'Diapering', component: DiaperingPage, icon: 'custom-diaper' },
       { title: 'Sleeping', component: SleepingPage, icon: 'custom-sleeping-baby' },
-      { title: 'Playing', component: PlayingPage, icon: 'custom-cubes' },
       { title: 'Growth', component: GrowthPage, icon: 'custom-growth' },
       { title: 'PhotoShoot', component: CameraPage, icon: 'custom-camera' },
       { title: 'Credits', component: CreditsPage, icon: 'custom-cited'},

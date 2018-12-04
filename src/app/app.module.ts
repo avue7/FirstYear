@@ -29,7 +29,6 @@ import { FeedingPage } from '../pages/feeding/feeding';
 import { DiaperingPage } from '../pages/diapering/diapering';
 import { SleepingPage } from '../pages/sleeping/sleeping';
 import { GrowthPage } from '../pages/growth/growth';
-import { PlayingPage } from '../pages/playing/playing';
 import { CameraPage } from '../pages/camera/camera';
 import { CreditsPage } from '../pages/credits/credits';
 import { BabyModalPage } from '../pages/baby-modal/baby-modal';
@@ -71,7 +70,6 @@ import { CalculateSleepDurationProvider } from '../providers/calculate-sleep-dur
     DiaperingPage,
     SleepingPage,
     GrowthPage,
-    PlayingPage,
     CameraPage,
     CreditsPage,
     BabyModalPage,
@@ -110,7 +108,6 @@ import { CalculateSleepDurationProvider } from '../providers/calculate-sleep-dur
     DiaperingPage,
     SleepingPage,
     GrowthPage,
-    PlayingPage,
     CameraPage,
     CreditsPage,
     BabyModalPage,

@@ -652,11 +652,10 @@ export class DatabaseProvider {
     });
   }
 
-  // NOTE: YOU ARE ON THIS RIGHT NOW
   async switchBaby(){
     console.log("Switching baby");
-    // let babiesArray = this.myApp.getBabyArray();
-    await this.moreThanOneBabyAlert(this.babiesArray).then(async (babyFirstName) => {
+    let firstName = this.baby.getBabyFirstName();
+    await this.moreThanOneBabyAlert(this.babiesArray, firstName).then(async (babyFirstName) => {
       console.log(babyFirstName)
       if(babyFirstName == null){
         console.log("cancel is pressed")
@@ -942,12 +941,12 @@ export class DatabaseProvider {
     });
   }
 
-  async moreThanOneBabyAlert(babiesArray: any){
+  async moreThanOneBabyAlert(babiesArray: any, currentBabyFirstName){
     return new Promise(resolve => {
       console.log("babies are", babiesArray);
 
       let options: any = {
-        title: 'Which baby to track?:',
+        title: 'Which baby to track?',
         buttons: [
           {
             text: 'Cancel',
@@ -965,10 +964,15 @@ export class DatabaseProvider {
       options.inputs = [];
 
       for(let baby of babiesArray){
+        let select: boolean = false;
+        if(baby.firstName == currentBabyFirstName){
+          select = true;
+        }
         options.inputs.push({
           type: 'radio',
           label: baby.firstName,
-          value: baby.firstName
+          value: baby.firstName,
+          checked: select
         })
       };
 
