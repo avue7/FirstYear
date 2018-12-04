@@ -129,20 +129,20 @@ export class MyApp {
   }
 
   createBabyObservable(){
-    return new Promise(resolve => {
-      let userId = this.user.getUserId();
-      this.db.checkIfBabyExists().then(async retVal => {
-        if(retVal == true){
-          console.log("Baby file exists");
-          let babyObject = this.baby.getBabyObject();
-          if(babyObject.firstName == undefined){
-            console.log("Need to get baby fresh login");
-          } else {
-            console.log("Baby object is", babyObject);
-          }
-          resolve(this.nav.setRoot(HomePage));
-        } else {
-          console.log("Baby file does not exists");
+    return new Promise(async resolve => {
+      // let userId = this.user.getUserId();
+      // this.db.checkIfBabyExists().then(async retVal => {
+      //   if(retVal == true){
+      //     console.log("Baby file exists");
+      //     let babyObject = this.baby.getBabyObject();
+      //     if(babyObject.firstName == undefined){
+      //       console.log("Need to get baby fresh login");
+      //     } else {
+      //       console.log("Baby object is", babyObject);
+      //     }
+      //     resolve(this.nav.setRoot(HomePage));
+      //   } else {
+      //     console.log("Baby file does not exists");
           let currentBabyRef = await this.db.getCurrentBabyRef();
           await currentBabyRef.onSnapshot(async (snapShot) => {
             let count: number = 0;
@@ -173,7 +173,8 @@ export class MyApp {
               this.babyName = this.baby.getBabyFirstName();
               resolve(this.nav.setRoot(HomePage));
               console.log("Database::createBabyObservable: baby obervable is:", baby);
-            } else {
+            }
+            else {
               console.log("More than one baby ask user to choose baby");
               console.log("Baby array is:", babyArray);
               await this.db.moreThanOneBabyAlert(babyArray).then(async (babyFirstName) => {
@@ -198,31 +199,44 @@ export class MyApp {
               });
             };
           });
-        }
+    //     }
       });
-    });
+    // });
   }
 
   // NOTE: working on this...settings are lagging away by one set
   async editBabyProfile(){
     console.log("Editing baby profile");
-    let babyRef = await this.db.getCurrentBabyRef;
+    // let babyRef = await this.db.getCurrentBabyRef;
     let babyFirstName = this.baby.getBabyFirstName();
 
-    // this.db.getUserReference().then((currentUserRef) => {
-    //   // console.log("1");
-    //   this.db.getBabyObject().then((babyObject) => {
-    //     // console.log("2");
-    //     this.openModal(babyObject).then(async (baby) => {
-    //       // console.log("3. baby birthday", baby.birthday);
-    //       await currentUserRef.doc(baby.firstName).set(baby);
-    //       this.bdayYear = this.db.bdayYear;
-    //       // console.log("4. baby birthday", this.bdayYear);
-    //       this.bdayMonth = this.db.bdayMonth;
-    //       this.babyName = this.db.babyName;
-    //     });
-    //   });
-    // });
+    let currentBabyRef = await this.db.getCurrentBabyRef();
+    let babyObject = await this.baby.getBabyObject();
+
+    this.openModal(babyObject).then(async editedBabyObject => {
+      console.log("editedBabyObject", editedBabyObject)
+      if(editedBabyObject == undefined){
+        return;
+      } else {
+        await currentBabyRef.where('firstName', '==', babyFirstName).get().then(async querySnapshot => {
+          querySnapshot.forEach(async doc => {
+            doc.ref.update(editedBabyObject);
+
+            // If first name is changed then we need to change it for
+            // all activities.
+            if(babyFirstName != editedBabyObject.firstName){
+              await this.db.updateFirstNameInActivities(babyFirstName, editedBabyObject.firstName);
+            };
+
+            await this.baby.setBabyObject(editedBabyObject);
+            await this.db.calculateAge();
+            this.bdayYear - this.db.bdayYear;
+            this.bdayMonth = this.db.bdayMonth;
+            this.babyName = this.db.babyName;
+          });
+        });
+      };
+    });
   }
 
   openModal(babyObject: any) : any{

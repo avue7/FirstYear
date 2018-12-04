@@ -90,6 +90,32 @@ export class DatabaseProvider {
     return currentUserRef;
   }
 
+  getActivityReference(activity : any){
+    return new Promise (resolve => {
+      let db = firebase.firestore();
+
+      db.settings({
+        timestampsInSnapshots: true
+      });
+
+      // let firstName = this.baby.getBabyFirstName();
+      // console.log("firstName is ", this.babyName);
+
+      let activityRef: any;
+      let userId = this.user.getUserId();
+      let babyName = this.baby.getBabyFirstName();
+      // console.log("userId", userId, "babyname", this.babyName, activity);
+      if(userId == null || babyName == undefined){
+        console.log("Database:: Cannot get activity ref yet (userId, babyName)", userId, babyName);
+        if(babyName == undefined){
+
+        }
+      } else {
+        resolve(activityRef = db.collection('activities').where("activity", "==", activity).where("userId", "==", userId).where("babyFirstName", "==", babyName));
+      };
+    });
+  }
+
   getCurrentBabyRef(){
     let db = firebase.firestore();
     db.settings({
@@ -102,8 +128,8 @@ export class DatabaseProvider {
   }
 
   setNewUser(user : any){
-    return new Promise (resolve => {
-      let currentUserRef = this.getCurrentUserRef()
+    return new Promise (async resolve => {
+      let currentUserRef = await this.getCurrentUserRef();
 
       let userObject = {
         userName: user.displayName,
@@ -116,7 +142,7 @@ export class DatabaseProvider {
         if(retVal == true){
           resolve();
         } else {
-          currentUserRef.set(userObject);
+          await currentUserRef.set(userObject);
           resolve();
         };
       });
@@ -310,63 +336,6 @@ export class DatabaseProvider {
       // let day = Number(splitToday[2]) - Number(splitBirthday[2]);
       // console.log("Year difference:", day);
       resolve(true);
-    });
-  }
-
-  getUserReference() : any {
-    return new Promise (resolve => {
-      let db = firebase.firestore();
-
-      db.settings({
-        timestampsInSnapshots: true
-      });
-
-      let currentUserRef = db.collection('users').doc(this.user.id).collection('babies');
-      resolve(currentUserRef);
-    });
-  }
-
-  getBabyReference() : any{
-    let db = firebase.firestore();
-
-    db.settings({
-      timestampsInSnapshots: true
-    });
-
-    // let firstName = this.baby.getBabyFirstName();
-    // console.log("firstName is ", this.babyName);
-
-    let babyRef = db.collection('users').doc(this.user.id).collection('babies').doc(this.babyName);
-
-    // Check if babyRef exists
-    console.log("babyRef", babyRef)
-
-    return babyRef;
-  }
-
-  getActivityReference(activity : any){
-    return new Promise (resolve => {
-      let db = firebase.firestore();
-
-      db.settings({
-        timestampsInSnapshots: true
-      });
-
-      // let firstName = this.baby.getBabyFirstName();
-      // console.log("firstName is ", this.babyName);
-
-      let activityRef: any;
-      let userId = this.user.getUserId();
-      let babyName = this.baby.getBabyFirstName();
-      // console.log("userId", userId, "babyname", this.babyName, activity);
-      if(userId == null || babyName == undefined){
-        console.log("Database:: Cannot get activity ref yet (userId, babyName)", userId, babyName);
-        if(babyName == undefined){
-
-        }
-      } else {
-        resolve(activityRef = db.collection('activities').where("activity", "==", activity).where("userId", "==", userId).where("babyFirstName", "==", babyName));
-      };
     });
   }
 
@@ -640,6 +609,26 @@ export class DatabaseProvider {
         });
       })
     });
+  }
+
+  updateFirstNameInActivities(originalFirstName: any, newFirstName: any){
+    let db = firebase.firestore();
+
+    db.settings({
+      timestampsInSnapshots: true
+    });
+
+    let userId = this.user.getUserId();
+
+    let activityRef = db.collection('activities').where('userId', '==', userId).where('babyFirstName', '==', originalFirstName);
+
+    activityRef.get().then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        doc.ref.update({
+          babyFirstName: newFirstName
+        });
+      });
+    })
   }
 
   saveBabyActivity(activity : any, object : any){
