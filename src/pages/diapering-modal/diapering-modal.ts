@@ -24,7 +24,6 @@ export class DiaperingModalPage {
     private noteAlertProvider: NoteAlertProvider,
     private params: NavParams) {
       let object = this.params.get('object');
-      console.log("Passed in object", object.object);
       if(object){
         this.edit = true;
         this.diaper.type = object.type;

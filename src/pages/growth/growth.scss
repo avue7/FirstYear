@@ -1,3 +1,439 @@
 page-growth {
+  ion-toolbar {
+    ion-segment {
+      text-color: white !important;
+    }
+  }
+  ion-title {
+    color: #42c7ff !important;
+  }
 
+
+  ion-row {
+    //height: 20px;
+  }
+
+  ion-footer{
+    text-align: center;
+    //border: 3px solid #42c7ff !important;
+    position: fixed !important;
+    background-color: white;
+
+    ion-scroll[scrollX] {
+      white-space: nowrap;
+      height: 60px;
+      overflow: hidden;
+      width: 100vw;
+
+      .scroll-item {
+        display: inline-block;
+      }
+
+      .selectable-icon{
+        margin: 10px 20px 10px 20px;
+        color: red;
+      }
+    }
+  }
+
+  .float-left {
+    float: left !important;
+    border: 1px solid #73AD21 !important;
+    padding: 9px !important;
+    height: 0px !important;
+  }
+
+  .avatar {
+    padding: 20px !important;
+    width: 20% !important;
+    background-color: #42c7ff;
+  }
+
+  .right-left-button {
+    // border-radius: 20px;
+    //font-size: 0.9em;
+    border: 1px solid #fff;
+    background-color: #42c7ff;
+    // #39acdc;111
+  }
+
+  // custom icons
+  // ion-icon {
+  //   &[class*="custom-"] {
+  //     mask-size: contain;
+  //     mask-position: 50% 50%;
+  //     mask-repeat: no-repeat;
+  //     background: currentColor;
+  //   }
+  //
+  //   &[class*="custom-bottle"] {
+  //     mask-image: url(../assets/icon/baby-bottle.png);
+  //   }
+  //   &[class*="custom-diaper"] {
+  //     mask-image: url(../assets/icon/diaper.png);
+  //   }
+  //   &[class*="custom-baby-with-diaper"] {
+  //     mask-image: url(../assets/icon/baby-with-diaper.png);
+  //   }
+  //   &[class*="custom-cited"] {
+  //     mask-image: url(../assets/icon/cited.png);
+  //   }
+  //   &[class*="custom-sleeping-baby"] {
+  //     mask-image: url(../assets/icon/sleeping-baby.png);
+  //   }
+  //   &[class*="custom-cubes"] {
+  //     mask-image: url(../assets/icon/cubes.png);
+  //   }
+  //   &[class*="custom-growth"] {
+  //     mask-image: url(../assets/icon/growth.png);
+  //   }
+  //   &[class*="custom-camera"] {
+  //     mask-image: url(../assets/icon/camera.png);
+  //   }
+  // }
+
+  // ion-title {
+  //   text-align: center;
+  // }
+
+  .absolute-right{
+    text-align: right;
+  }
+
+  .vertical-center{
+    vertical-align: middle !important;
+  }
+
+  .item {
+    min-height: 1rem;
+  }
+
+  ion-label {
+    color: gray !important;
+  }
+
+  h2 {
+    font-size: 35pt;
+    text-align: center;
+  }
+  .center {
+    text-align: center;
+    color: gray;
+  }
+
+  .button-right-align {
+    text-align: right;
+  }
+
+  .timer {
+    // position: fixed;
+    // bottom: 0;
+    text-align: center;
+    background-color: #42c7ff;
+  }
+
+  .checkmark-green {
+    color: green !important;
+  }
+
+  .border {
+    border-bottom: 1px solid grey !important;
+  }
+
+  .other-data {
+    .column {
+      &:first-child {
+        border-right: 1px solid rgba(36, 50, 157, .25);
+      }
+    }
+    font-size: 15pt;
+  }
+
+  .activeHighlight{
+    background-color: map-get($colors, dark) !important;
+    color: white;
+  }
+
+  .momentsAgo{
+    // color: #42c7ff;
+    color: black;
+  }
+
+  .ion_input{
+      input {
+        border-bottom: none !important;
+        box-shadow: none !important;
+      }
+  }
+  ion-input{
+    input {
+      text-align: right;
+      ::-webkit-input-placeholder {
+        text-align: right;
+      }
+    }
+  }
+  // .item-left-align {
+  //   input {
+  //     text-align: left !important;
+  //     ::-webkit-input-placeholder {
+  //       text-align: left !important;
+  //     }
+  //   }
+  // }
+
+
+  // ion-select{
+  //   select {
+  //     text-align: right;
+  //     ::-webkit-input-placeholder {
+  //       text-align: right;
+  //     }
+  //   }
+  // }
+
+  .item-inner {
+    border-bottom-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .center-black {
+    color: black;
+    text-align: center;
+  }
+
+  #right-align {
+    text-align: right !important;
+  }
+
+  #left-align {
+    text-align: left !important;
+  }
+
+  #no_bottom {
+    border-bottom-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  #block_container
+  {
+    width:100%;
+    height: auto;
+    display: flex;
+    text-align: center;
+    // position: fixed;
+    // overflow-y: scroll;
+    // overflow-x: hidden;
+  }
+
+  .box {
+    width: 100%;
+    //border: 1px solid gray;
+    border-top: 2px solid gray !important;
+    border-bottom: 1px solid gray !important;
+    border-left: 0px solid gray !important;
+    border-right: 0px !important;
+    padding: none;
+    margin: 0px;
+    // align-items: center;
+    //display: inline;
+  }
+
+  .box-right {
+    width: 100%;
+    //border: 1px solid gray;
+    border-top: 2px solid gray !important;
+    border-bottom: 1px solid gray !important;
+    border-right: 2px solid gray !important;
+    padding: none;
+    margin: 0px;
+    // align-items: center;
+    // float: right;
+    //display: inline;
+  }
+
+  .meal-box {
+    width: 100%;
+    //border: 1px solid gray;
+    border-top: 0px !important;
+    border-bottom: 1px solid gray !important;
+    border-left: 0px !important;
+    border-right: 0px !important;
+    padding: none;
+    margin: 0px;
+  }
+
+  .bottle-summary{
+    width: 100%;
+    padding: none;
+    margin: 0px;
+    //text-align: center !important;
+    // align-items: center;
+    // float: right;
+    //display: inline;
+  }
+
+  ion-select{
+    max-width: 70% !important;
+  }
+
+  .GrowthMomentsAgo{
+    // color: #42c7ff;
+    color: black;
+  }
+
+  /*Timeline*/
+
+  .pos-absolute-right {
+      position: center;
+      right: 8px;
+      border-bottom: 1px solid #ccc;
+  }
+
+  .timeline {
+      position: relative;
+      //margin: 15px 0 0 0;
+      // max-height: 2rem;
+  }
+
+  .summary {
+    //float: left !important;
+    border: 1px solid #73AD21 !important;
+    padding-left: 10px !important;
+    width: 90% !important;
+  }
+
+  .timeline:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      background: #afdcf8;
+      left: 40px;
+      margin-left: -10px;
+      z-index: 1;
+  }
+
+  .timeline .timeline-thumb {
+      border-radius: 500px;
+      width: 50px;
+      z-index: 2;
+      position: absolute;
+      left: 10px
+  }
+
+  .timeline .timeline-thumb.timeline-icon {
+      height: 50px;
+      text-align: center;
+      color: white;
+      border: 5px solid #CBD0D3;
+  }
+
+  .timeline .timeline-thumb.timeline-icon i {
+      font-size: 28px;
+      margin: 6px 0;
+      display: block;
+  }
+
+  .timeline .timeline-item {
+      // margin-right: 80px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 8px;
+  }
+
+  .timeline .timeline-stats {
+      position: relative;
+      font-size: 12px;
+      color: #7F8C8D;
+  }
+
+
+  .divider-title {
+      background: #e4e4e4;
+      padding: 5px 15px;
+      text-align: center;
+      width: 100%;
+  }
+
+  /* === Color Themes === */
+  .text-muted {
+      color: #6d6d72 !important;
+  }
+
+  .color-gray {
+      color: #8e8e93 !important;
+  }
+
+  .color-red {
+      color: #ff3b30 !important;
+  }
+
+  .bg-color-red {
+      background-color: #ff3b30 !important;
+  }
+
+  .color-white {
+      color: #ffffff !important;
+  }
+
+  .color-yellow {
+      color: #ffcc00 !important;
+  }
+
+  .bg-color-yellow {
+      background-color: #ffcc00 !important;
+  }
+
+  .color-green {
+      color: #4cd964 !important;
+  }
+
+  .color-orange {
+      color: #ff9500 !important;
+  }
+
+  .bg-color-orange {
+      background-color: #ff9500 !important;
+  }
+
+  .color-blue {
+      color: #007aff !important;
+  }
+
+  .bg-color-blue {
+      background-color: #007aff !important;
+  }
+
+  .color-lightblue {
+      color: #5ac8fa !important;
+  }
+
+  .bg-color-lightblue {
+      background-color: #5ac8fa !important;
+  }
+
+  .color-bluegray {
+      color: #607d8b !important;
+  }
+
+  .bg-color-bluegray {
+      background-color: #607d8b !important;
+  }
+
+  .color-night {
+      color: #2B1B17 !important;
+  }
+
+  .color-black {
+      color: black !important;
+  }
+
+  .bg-color-white {
+      background-color: #ffffff;
+  }
+
+  .bg-color-green {
+      background-color: #4cd964 !important;
+  }
 }

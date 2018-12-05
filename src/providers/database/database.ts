@@ -17,7 +17,7 @@ import { MealModalPage } from '../../pages/meal-modal/meal-modal';
 import { SleepingModalPage } from '../../pages/sleeping-modal/sleeping-modal';
 import { DiaperingModalPage } from '../../pages/diapering-modal/diapering-modal';
 import { EditBabyModalPage } from '../../pages/edit-baby-modal/edit-baby-modal';
-
+import { GrowthModalPage } from '../../pages/growth-modal/growth-modal';
 
 
 // Testing firestore
@@ -49,6 +49,7 @@ export class DatabaseProvider {
   diaperingHistoryArray: any;
   mealHistoryArray: any;
   sleepingHistoryArray: any;
+  growthHistoryArray: any;
 
   // Toast flags
   silent: boolean;
@@ -59,6 +60,7 @@ export class DatabaseProvider {
   mealModal: any;
   sleepModal: any;
   diaperingModal: any;
+  growthModal: any;
 
   // Subscriptions
   babySub: any;
@@ -67,6 +69,7 @@ export class DatabaseProvider {
   mealSub: any;
   diaperingSub: any;
   sleepingSub: any;
+  growthSub: any;
 
 
   constructor(/*private alertCtrl: AlertController,*/
@@ -84,6 +87,7 @@ export class DatabaseProvider {
     this.diaperingHistoryArray = [];
     this.mealHistoryArray = [];
     this.sleepingHistoryArray = [];
+    this.growthHistoryArray = [];
 
     console.log()
   }
@@ -325,6 +329,25 @@ export class DatabaseProvider {
     });
   }
 
+  createGrowthObservable(growthRef){
+    return new Promise(resolve => {
+      this.growthSub = growthRef.orderBy("dateTime", "asc").onSnapshot((snapShot) => {
+        if(snapShot.empty){
+          resolve(false);
+        };
+
+        console.log("Growth history exists")
+        this.growthHistoryArray.splice(0, this.growthHistoryArray.length);
+        snapShot.forEach(doc => {
+          let data = doc.data();
+          this.growthHistoryArray.push(data);
+          console.log("Growth array", this.growthHistoryArray);
+          resolve(true);
+        });
+      });
+    });
+  }
+
   calculateAge(){
     return new Promise (async resolve => {
       let todayUnformatted = new Date();
@@ -359,6 +382,7 @@ export class DatabaseProvider {
       await activityRef.where("dateTime", "==", event.dateTime).get().then(querySnapshot => {
         querySnapshot.forEach(async (doc) => {
           let object = doc.data();
+          console.log("event activity is", event.activity)
           if(event.activity == "bottlefeeding"){
             await this.editBottle(object, event).then(() => {
               resolve();
@@ -379,10 +403,48 @@ export class DatabaseProvider {
             await this.editDiapering(object, event).then(() => {
               resolve();
             });
+          } else if(event.activity == "growth"){
+            await this.editGrowth(object, event).then(() => {
+              resolve();
+            });
           };
         });
       });
     });
+  }
+
+  editGrowth(object: any, event: any){
+    return new Promise(resolve => {
+      this.openActivityModal(object, "growth").then(async (growth) => {
+        if(growth == undefined){
+          resolve();
+        } else {
+          let dateTempSplit = growth.date.split('-');
+          let date = dateTempSplit[1] + '-' + dateTempSplit[2] + '-' + dateTempSplit[0];
+          let time: any;
+          time = growth.time;
+          let dateTime = date + " " + time;
+
+          await delete growth.date;
+          await delete growth.time;
+          growth.activity = "growth";
+          growth.dateTime = dateTime;
+          growth.time = time;
+
+          let editFlag: boolean = true;
+          await this.deleteEvent(event, editFlag);
+
+          this.saveBabyActivity("growth", growth).then((retVal) => {
+            if(retVal = true){
+              console.log("Edited diapering saved successfully");
+            } else {
+              console.log("Edited diapering was not saved succesfully. Something happend");
+            };
+            resolve();
+          });
+        }
+      })
+    })
   }
 
   editBreast(object: any, event: any){
@@ -807,6 +869,10 @@ export class DatabaseProvider {
         this.sleepModal = this.modal.create(SleepingModalPage, {object: object_});
         this.sleepModal.present();
         resolve(this.waitForModalReturn("sleeping"));
+      } else if(activity == "growth"){
+        this.growthModal = this.modal.create(GrowthModalPage, {object: object_});
+        this.growthModal.present();
+        resolve(this.waitForModalReturn("growth"));
       }
     });
   }
@@ -841,6 +907,11 @@ export class DatabaseProvider {
         });
       } else if(activity == "sleeping"){
         this.sleepModal.onDidDismiss( data => {
+          activityObject = data;
+          resolve(activityObject);
+        });
+      } else if(activity == "growth"){
+        this.growthModal.onDidDismiss(data => {
           activityObject = data;
           resolve(activityObject);
         });

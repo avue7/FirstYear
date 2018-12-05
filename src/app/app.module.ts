@@ -40,6 +40,7 @@ import { DiaperingModalPage } from '../pages/diapering-modal/diapering-modal';
 import { MealModalPage } from '../pages/meal-modal/meal-modal';
 import { SleepingModalPage } from '../pages/sleeping-modal/sleeping-modal';
 import { PopoverPage } from '../pages/popover/popover';
+import { GrowthModalPage } from '../pages/growth-modal/growth-modal';
 
 import { TimerProvider } from '../providers/timer/timer';
 import { HoursMinutesSecondsPipe } from '../pipes/hours-minutes-seconds/hours-minutes-seconds';
@@ -84,7 +85,8 @@ import { CalculateSleepDurationProvider } from '../providers/calculate-sleep-dur
     MealModalPage,
     SleepingModalPage,
     EditBabyModalPage,
-    PopoverPage
+    PopoverPage,
+    GrowthModalPage
   ],
   imports: [
     BrowserModule,
@@ -118,7 +120,8 @@ import { CalculateSleepDurationProvider } from '../providers/calculate-sleep-dur
     MealModalPage,
     SleepingModalPage,
     EditBabyModalPage,
-    PopoverPage
+    PopoverPage,
+    GrowthModalPage
   ],
   providers: [
     StatusBar,
