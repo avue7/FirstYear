@@ -452,6 +452,7 @@ export class DatabaseProvider {
       this.openActivityModal(object, "breastfeeding").then( async(breastFeeding) => {
         if(breastFeeding == undefined){
           console.log("Database::editBreast(): user canceled modal");
+          resolve();
         } else {
           let totalDuration: any;
           // Take care of duration if it is a number or moment
@@ -502,6 +503,7 @@ export class DatabaseProvider {
       this.openActivityModal(object, "bottlefeeding").then( async(bottleFeeding) => {
         if (bottleFeeding == undefined){
           console.log("Database:: editBottle(): user canceled modal");
+          resolve();
         } else {
           let totalDuration: any;
           // Take care of duration if it is a number or moment
@@ -549,6 +551,7 @@ export class DatabaseProvider {
       this.openActivityModal(object, "meal").then( async(meal) => {
         if(meal == undefined){
           console.log("Database:: editMeal(): user canceled modal");
+          resolve();
         } else {
           // // Extract only the date
           let dateTempSplit = meal.date.split('-');

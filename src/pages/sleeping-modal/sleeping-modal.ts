@@ -18,11 +18,14 @@ export class SleepingModalPage {
     dateEnd: '',
     timeEnd: '',
   };
+
+  edit: boolean;
   constructor(private view: ViewController,
     private noteAlertProvider: NoteAlertProvider,
     private params: NavParams) {
       let object = this.params.get('object');
       if(object){
+        this.edit = true;
         console.log("Sleeping object is", object);
         let splitDateTime = object.dateTime.split(' ');
         let tempDate = splitDateTime[0].split('-');
@@ -36,6 +39,7 @@ export class SleepingModalPage {
           this.sleepingNote = object.note;
         };
       } else {
+        this.edit = false;
         this.sleeping.date = moment().format();
         this.sleeping.timeStart = moment().format();
         this.sleeping.dateEnd = moment().format();
