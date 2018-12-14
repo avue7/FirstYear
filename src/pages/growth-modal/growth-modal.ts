@@ -39,6 +39,9 @@ export class GrowthModalPage {
       this.growth.weightUnit = object.weightUnit;
       this.growth.heightUnit = object.heightUnit;
       this.growth.headUnit = object.headUnit;
+      if(object.note){
+        this.growthNote = object.note;
+      }
     } else {
       this.edit = false;
       this.growth.date = moment().format();
@@ -89,8 +92,13 @@ export class GrowthModalPage {
   }
 
   noteAlert(){
-    this.nAlert = this.noteAlertProvider.alert();
-    this.nAlert.present();
+    if(this.growthNote){
+      this.nAlert = this.noteAlertProvider.alert(this.growthNote);
+      this.nAlert.present();
+    } else {
+      this.nAlert = this.noteAlertProvider.alert();
+      this.nAlert.present();
+    }
 
     this.waitForAlertReturn().then((val) => {
       if(val == true){

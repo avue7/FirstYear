@@ -193,7 +193,9 @@ export class SleepingPage {
           this.createMomentObservable(this.SleepingMomentsAgoTime);
 
           this.lastSleeping = this.ft.formatDateTimeStandard(doc.data().dateTime);
-          this.lastSleepDuration = this.lifoHistory.convertDuration(doc.data().duration);
+          this.lastSleepDuration = doc.data().duration;
+          console.log("Last sleepduration", this.lastSleepDuration);
+          console.log("doc duration", doc.data().duration)
         };
       });
       this.updateSleepingSummary();

@@ -253,9 +253,9 @@ export class DatabaseProvider {
   createBottleFeedingHistoryObservable(bottleFeedRef: any){
     return new Promise(resolve => {
       this.bottleSub = bottleFeedRef.orderBy("dateTime", "asc").onSnapshot((snapShot) => {
-        // console.log("4. snapshot is:", snapShot)
-        if(snapShot.exists == false){
-          // console.log("Snapshot not exists truth is", snapShot.exists);
+        console.log("4. snapshot is:", snapShot)
+        if(snapShot.empty){
+          console.log("Snapshot not exists truth is", snapShot.exists);
           resolve(false);
         }
         // } else {
@@ -663,7 +663,8 @@ export class DatabaseProvider {
     });
   }
 
-  async deleteEvent(event: any, editFlag?: boolean){
+  deleteEvent(event: any, editFlag?: boolean){
+    return new Promise(async resolve => {
     let activityRef: any;
     await this.getActivityReference(event.activity).then( async(_activityRef) => {
       activityRef = _activityRef;
@@ -674,15 +675,18 @@ export class DatabaseProvider {
       querySnapshot.forEach((doc) => {
         doc.ref.delete().then(() => {
           if(editFlag){
-            return;
+            resolve();
           } else {
-            this.deleteToast(event.activity);
+            console.log("Deleted", event.activity);
+            resolve(this.deleteToast(event.activity));
           };
         }).catch((error) => {
           console.log("Database:: deleteEvent(): Error removing document", error);
+          resolve(error)
         });
       })
     });
+  });
   }
 
   editBabyProfile(){
@@ -941,19 +945,21 @@ export class DatabaseProvider {
   }
 
   deleteToast(activity: any){
-    let babyFirstName = this.baby.getBabyFirstName();
+    return new Promise(resolve => {
+      let babyFirstName = this.baby.getBabyFirstName();
 
-    let toast = this.toastCtrl.create({
-      message: babyFirstName + '\'s ' + activity + " activity was deleted successfully.",
-      duration: 3000,
-      position: 'bottom'
+      let toast = this.toastCtrl.create({
+        message: babyFirstName + '\'s ' + activity + " activity was deleted successfully.",
+        duration: 3000,
+        position: 'bottom'
+      });
+
+      toast.onDidDismiss(() => {
+        console.log("Database::deleteToast(): toast was dismissed");
+      });
+
+      resolve(toast.present());
     });
-
-    toast.onDidDismiss(() => {
-      console.log("Database::deleteToast(): toast was dismissed");
-    });
-
-    toast.present();
   }
 
   failureToast(){
@@ -1008,32 +1014,179 @@ export class DatabaseProvider {
           current: false
         }
 
-        await db.collection('babies').doc().set(entry);
+        await db.collection('babies').doc().set(entry).then((error) => {
+          if(error){
+            this.failureBabyToast(entry.firstName);
+            console.log("Error, cannot add new baby", error);
+          } else {
+            this.successBabyToast(entry.firstName);
+            console.log("succesfully added new baby");
+          };
+        });
         //await this.baby.setBabyObject(babyObject);
         return;
       };
     });
   }
 
-  async moreThanOneBabyAlert(babiesArray: any, currentBabyFirstName){
+  async deleteBaby(){
+    console.log("Deleting baby");
+    let firstName = this.baby.getBabyFirstName();
+    let deleteFlag: boolean = true;
+    await this.moreThanOneBabyAlert(this.babiesArray, firstName, deleteFlag).then(async babyFirstName => {
+      console.log("Deleting baby:", babyFirstName);
+      if(babyFirstName == null){
+        return;
+      } else if(babyFirstName == firstName){
+        console.log("Show toast, cannot delete current baby");
+        this.cannotDeleteCurrentBabyToast();
+        return;
+      } else {
+        let babyRef = this.getCurrentBabyRef();
+
+        babyRef.where("firstName", "==", babyFirstName).get().then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            doc.ref.delete().then((error) => {
+              if(error){
+                console.log("Error, cannot delete baby");
+              } else {
+                console.log("Successfully deleted baby", babyFirstName);
+                this.successDeleteBabyToast(babyFirstName);
+                this.deleteAllBabyActivities(babyFirstName);
+              };
+            });
+          });
+        });
+      };
+    });
+  }
+
+  async deleteAllBabyActivities(babyFirstName: any){
+    // Then delete all activities that associate with this baby
+    let db = firebase.firestore();
+    let userId = this.user.getUserId();
+
+    let activityRef = await db.collection('activities').where('userId', '==', userId).where('babyFirstName', '==', babyFirstName);
+    activityRef.get().then(querySnapshot => {
+      let deleteFlag: any = false;
+      querySnapshot.forEach(doc => {
+        doc.ref.delete().then((error) => {
+          if(error){
+            console.log("Error, cannot delete activity doc", doc.data());
+          } else {
+            console.log("Successfully delete activity", doc.data());
+            deleteFlag = true;
+          };
+        });
+      });
+      if(deleteFlag == true){
+        console.log("Successfully deleted all activities!");
+        this.successDeleteBabyActivityToast(babyFirstName);
+      };
+    });
+  }
+
+  cannotDeleteCurrentBabyToast(){
+    let toast = this.toastCtrl.create({
+      message: 'Cannot delete current baby. Please switch to a different baby first.',
+      duration: 4000,
+      position: 'bottom'
+    });
+
+    toast.present();
+  }
+
+  successDeleteBabyActivityToast(firstName : any){
+    let toast = this.toastCtrl.create({
+      message: 'Baby ' + firstName + '\'s activities were succesfully deleted.',
+      duration: 4000,
+      position: 'middle'
+    });
+
+    toast.onDidDismiss(() => {
+      console.log("Database::presentToaast(): toast was dismissed");
+    });
+
+    toast.present();
+  }
+
+  successDeleteBabyToast(firstName : any){
+    let toast = this.toastCtrl.create({
+      message: 'Baby ' + firstName + ' was successfully deleted.',
+      duration: 4000,
+      position: 'bottom'
+    });
+
+    toast.onDidDismiss(() => {
+      console.log("Database::presentToaast(): toast was dismissed");
+    });
+
+    toast.present();
+  }
+
+  successBabyToast(firstName : any){
+    let toast = this.toastCtrl.create({
+      message: 'Baby ' + firstName + ' was successfully saved.',
+      duration: 4000,
+      position: 'bottom'
+    });
+
+    toast.onDidDismiss(() => {
+      console.log("Database::presentToaast(): toast was dismissed");
+    });
+
+    toast.present();
+  }
+
+  failureBabyToast(firstName: any){
+    let toast = this.toastCtrl.create({
+      message: 'Error. Somthing happened. Baby ' + firstName + ' was not saved succesfully.',
+      duration: 4000,
+      position: 'bottom'
+    });
+
+    toast.present();
+  }
+
+  async moreThanOneBabyAlert(babiesArray: any, currentBabyFirstName, deleteFlag?: any){
     return new Promise(resolve => {
       console.log("babies are", babiesArray);
 
-      let options: any = {
-        title: 'Which baby to track?',
-        buttons: [
-          {
-            text: 'Cancel',
-            role: 'cancel'
-          },
-          {
-            text: 'Save',
-            handler: data => {
-              console.log(data);
+      let options: any;
+      if(deleteFlag){
+        options = {
+          title: 'Which baby to delete?',
+          message: 'This will also delete all data associated with this baby!',
+          buttons: [
+            {
+              text: 'Cancel',
+              role: 'cancel'
+            },
+            {
+              text: 'Delete',
+              handler: data => {
+                console.log(data);
+              }
             }
-          }
-        ]
-      };
+          ]
+        };
+      } else {
+        options = {
+          title: 'Which baby to track?',
+          buttons: [
+            {
+              text: 'Cancel',
+              role: 'cancel'
+            },
+            {
+              text: 'Save',
+              handler: data => {
+                console.log(data);
+              }
+            }
+          ]
+        };
+      }
 
       options.inputs = [];
 

@@ -137,8 +137,13 @@ export class BreastfeedingModalPage {
   }
 
   noteAlert(){
-    this.nAlert = this.noteAlertProvider.alert();
-    this.nAlert.present();
+    if (this.breastFeedNote){
+      this.nAlert = this.noteAlertProvider.alert(this.breastFeedNote);
+      this.nAlert.present();
+    } else {
+      this.nAlert = this.noteAlertProvider.alert();
+      this.nAlert.present();
+    }
 
     this.waitForAlertReturn().then((val) => {
       if(val == true){

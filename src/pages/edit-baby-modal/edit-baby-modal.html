@@ -34,7 +34,7 @@
 
       <ion-item>
         <ion-label stacked>Birthday</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY" formControlName="birthday"></ion-datetime>
+        <ion-datetime class="item-datetime" displayFormat="MM/DD/YYYY" formControlName="birthday"></ion-datetime>
       </ion-item>
       <!-- checking for errors for lastName -->
       <ion-item no-lines *ngIf="babyInfoForm.get('birthday').hasError('required')

@@ -154,17 +154,20 @@ export class HomePage {
   // }
 
   init(){
+    console.log("Init() begins......")
     this.createHistoryObservables().then(async() => {
       await this.updateBottleSummary();
       await this.updateMealSummary();
       await this.updateDiaperingSummary();
       await this.updateBreastSummary();
       await this.updateSleepSummary();
+      console.log("Done updateing activities");
     //});
     }).then(() => {
       this.hasToday = false;
       this.hasYesterday = false;
       this.hasMore = false;
+      console.log("Done resetting has variables:", this.hasToday, this.hasYesterday, this.hasMore);
     }).then(async() => {
       await this.groupTodayArray();
       // Then sort:
@@ -192,40 +195,51 @@ export class HomePage {
       };
     }).then(async() => {
       await this.checkForNoHistory();
+      console.log("Done checking for no history...");
+      console.log("------------- INIT FINISHED ------------");
     });
   }
 
   async createHistoryObservables(){
+    return new Promise(async resolve => {
+    console.log("Creating history observables, activitiesarray is", this.activitiesArray);
     for (let activity of this.activitiesArray){
       let activityRef: any;
       await this.db.getActivityReference(activity).then( async(_activityRef) => {
-         // console.log("1....database:: getActivityReference returned", _activityRef);
+         console.log("1....database:: getActivityReference returned", _activityRef);
         activityRef = _activityRef;
       }).then(async() => {
-        // console.log("2. Creating observable for <", activity, "> ....");
+        console.log("2. Creating observable for <", activity, "> ....");
         if(activity == "bottlefeeding"){
-          // console.log("3b) activity is bottlefeeding");
+          console.log("3b) activity is bottlefeeding");
           await this.db.createBottleFeedingHistoryObservable(activityRef).then(async() => {
+            console.log("Done creating bottle history observable");
           });
         } else if(activity == "breastfeeding"){
-          // console.log("3b) activity is meal");
+          console.log("3b) activity is breast");
           await this.db.createBreastFeedingHistoryObservable(activityRef).then((retVal) => {
+            console.log("Done creating breastfeeding history observable");
           });
         } else if(activity == "meal"){
-          // console.log("3b) activity is meal");
+          console.log("3b) activity is meal");
           await this.db.createMealHistoryObservable(activityRef).then((retVal) => {
+            console.log("Done creating meal history observable");
           });
         }
         else if(activity == "diapering"){
           await this.db.createDiaperingHistoryObservable(activityRef).then((retVal) => {
+            console.log("Done creating diapering history observable");
           });
         } else if(activity == "sleeping"){
           await this.db.createSleepHistoryObservable(activityRef).then((retVal) => {
+            console.log("Done creating sleeping history observable");
           });
         };
       });
-     console.log("-----Done creating history observables-----");
     };
+    console.log("-----Done creating history observables-----");
+    resolve();
+    });
   }
 
   updateBottleSummary(){
@@ -497,6 +511,9 @@ export class HomePage {
     console.log("CLICKED ON DELETE EVENT", event);
     slidingItem.close();
     await this.db.deleteEvent(event).then(() => {
+      console.log("Done deleting calling init()");
+    }).then(() => {
+      console.log("Calling init()");
       this.init();
     });
   }

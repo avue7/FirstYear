@@ -13,7 +13,7 @@
       Tell us about your baby to get started.
   </div>
 
-  <form novalidate class="list-form" (ngSubmit)="setBabyInfo()" [formGroup]="babyInfoForm">
+  <form novalidate (ngSubmit)="setBabyInfo()" [formGroup]="babyInfoForm">
     <ion-list>
       <ion-item>
         <ion-label stacked>First Name</ion-label>
@@ -41,7 +41,7 @@
 
       <ion-item>
         <ion-label stacked>Birthday</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY" formControlName="birthday"></ion-datetime>
+        <ion-datetime class="item-datetime" displayFormat="MM/DD/YYYY" [(ngModel)]="date" formControlName="birthday"></ion-datetime>
       </ion-item>
       <!-- checking for errors for lastName -->
       <ion-item no-lines *ngIf="babyInfoForm.get('birthday').hasError('required')
@@ -52,7 +52,7 @@
       </ion-item>
 
       <ion-item>
-        <ion-label >Gender</ion-label>
+        <ion-label>Gender</ion-label>
         <ion-select [(ngModel)]="gender" formControlName="gender" interface="popover">
           <ion-option value="male">Male</ion-option>
           <ion-option value="female">Female</ion-option>

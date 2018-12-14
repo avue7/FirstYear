@@ -129,6 +129,7 @@ export class MyApp {
 
   createBabyObservable(){
     return new Promise(async resolve => {
+      console.log("Creating baby observable");
       let currentBabyRef = await this.db.getCurrentBabyRef();
       await currentBabyRef.onSnapshot(async (snapShot) => {
         let count: number = 0;
@@ -141,6 +142,7 @@ export class MyApp {
           babyArray.push(babyObject);
 
           if(babyObject.current == true){
+            console.log("Found baby to use");
             this.baby.setBabyObject(babyObject);
             await this.db.calculateAge();
             this.bdayYear = this.db.bdayYear;
@@ -150,6 +152,7 @@ export class MyApp {
           }
         });
         // Update the babies array in the db
+        console.log("Setting babies in db");
         this.db.setBabiesArray(babyArray);
         // If we have only one baby use that baby, else ask user which
         // baby to use.
@@ -163,45 +166,10 @@ export class MyApp {
             this.db.setCurrentBabyFlag(this.babyName);
             resolve(this.nav.setRoot(HomePage));
           });
-        }
+        };
+        console.log("Done with baby observable going to home page");
         resolve(this.nav.setRoot(HomePage));
       });
-      //   } else if (count == 1){
-      //     let baby = babyArray[0];
-      //     this.baby.setBabyObject(baby);
-      //     await this.db.calculateAge();
-      //     this.bdayYear = this.db.bdayYear
-      //     this.bdayMonth = this.db.bdayMonth;
-      //     this.babyName = this.baby.getBabyFirstName();
-      //     resolve(this.nav.setRoot(HomePage));
-      //     console.log("Database::createBabyObservable: baby obervable is:", baby);
-      //   }
-      //   else {
-      //         console.log("More than one baby ask user to choose baby");
-      //         console.log("Baby array is:", babyArray);
-      //         await this.db.moreThanOneBabyAlert(babyArray).then(async (babyFirstName) => {
-      //           console.log(babyFirstName)
-      //           if(babyFirstName == null){
-      //             console.log("cancel is pressed")
-      //             resolve(this.nav.setRoot(HomePage));
-      //           } else {
-      //             for(let baby of babyArray){
-      //               if(baby.firstName == babyFirstName){
-      //                 let babyObject = baby;
-      //                 await this.baby.resetBabyObject();
-      //                 await this.baby.setBabyObject(babyObject);
-      //                 await this.db.calculateAge();
-      //                 this.bdayYear = this.db.bdayYear
-      //                 this.bdayMonth = this.db.bdayMonth;
-      //                 this.babyName = this.baby.getBabyFirstName();
-      //                 resolve(this.nav.setRoot(HomePage));
-      //               }
-      //             };
-      //           };
-      //         });
-      //       };
-      //     });
-      // });
     });
   }
 

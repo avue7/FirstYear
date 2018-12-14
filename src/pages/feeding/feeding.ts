@@ -112,7 +112,7 @@ export class FeedingPage {
     private noteAlertProvider: NoteAlertProvider,
     private lifoHistory: LifoHistoryProvider,
     private viewCtrl: ViewController) {
-    this.momentsAgoTime = '';
+    // this.momentsAgoTime = '';
     this.BottleMomentsAgo = '';
     this.MealMomentsAgo = '';
     this.mealDetail = null;
@@ -135,11 +135,11 @@ export class FeedingPage {
   }
 
   ionViewWillLeave(){
-    if(this.momentsAgoSubscription){
-      this.momentsAgoSubscription.unsubscribe();
-    } else if(this.BottleMomentsAgoSubscription){
-      this.BottleMomentsAgoSubscription.unsubscribe();
-    }
+    // if(this.momentsAgoSubscription){
+    //   this.momentsAgoSubscription.unsubscribe();
+    // } else if(this.BottleMomentsAgoSubscription){
+    //   this.BottleMomentsAgoSubscription.unsubscribe();
+    // }
 
     // Need to call this to reload the home page when this child page is popped.
     // this.navParams.get("parentPage").hello();//init();
@@ -218,7 +218,7 @@ export class FeedingPage {
     });
 
     await activityRef.orderBy("dateTime", "asc").get().then((latestSnapshot) => {
-      latestSnapshot.forEach(doc => {
+      latestSnapshot.forEach(async doc => {
         count = count - 1;
         if(count == 0){
           // console.log("Feeding::getLastBreastFeed(): last date retrieved is:", doc.data().date);
@@ -229,12 +229,15 @@ export class FeedingPage {
           };
 
           // NOTE: MOMENTS AGO HACK...
-          this.momentsAgoTime = moment(doc.data().dateTIme, 'YYYY-MM-DD HH:mm:ss');
+          let dateTime = doc.data().dateTime;
+          this.momentsAgoTime = moment(dateTime, 'YYYY-MM-DD HH:mm:ss');
+          // console.log("this.momemnts ago time ", this.momentsAgoTime)
           this.createMomentObservable(this.momentsAgoTime, 'breastfeeding');
 
-          this.lastBreastFeed = this.ft.formatDateTimeStandard(doc.data().dateTime);
+          this.lastBreastFeed = await this.ft.formatDateTimeStandard(doc.data().dateTime);
           this.lastBreastSide = doc.data().breast;
           this.lastDuration = doc.data().duration;
+          console.log("last breast feed", this.lastBreastFeed);
         };
       });
     });
@@ -249,9 +252,9 @@ export class FeedingPage {
     } else if(activity == "meal"){
       this.MealMomentsAgoSubscription = Observable.interval(1000).subscribe(x => {
         this.MealMomentsAgo = momentsAgoTime.startOf('seconds').fromNow();
-        // console.log("moments ago is:", this.momentsAgo);
+        // console.log("moments ago is:", this.MealMomentsAgo);
       });
-    } else {
+    } else if(activity == "breastfeeding"){
       this.momentsAgoSubscription = Observable.interval(1000).subscribe(x => {
         this.momentsAgo = momentsAgoTime.startOf('seconds').fromNow();
         // console.log("moments ago is:", this.momentsAgo);
@@ -578,7 +581,7 @@ export class FeedingPage {
     });
 
     await activityRef.orderBy("dateTime", "asc").get().then((latestSnapshot) => {
-      latestSnapshot.forEach(doc => {
+      latestSnapshot.forEach(async doc => {
         count = count - 1;
         if(count == 0){
           // If last breastfeeding exists
@@ -588,12 +591,13 @@ export class FeedingPage {
 
           // NOTE: MOMENTS AGO HACK...
           this.BottleMomentsAgoTime = moment(doc.data().dateTime, 'YYYY-MM-DD HH:mm:ss');
+          // console.log("bootle moments ago time ", this.BottleMomentsAgoTime)
           this.createMomentObservable(this.BottleMomentsAgoTime, "bottlefeeding");
 
-          this.lastBottleFeed = this.ft.formatDateTimeStandard(doc.data().dateTime);
+          this.lastBottleFeed = await this.ft.formatDateTimeStandard(doc.data().dateTime);
           this.lastBottleDuration = doc.data().duration;
           this.bottleLastAmount = doc.data().volume + " " + doc.data().unit;
-          // console.log("last bottlefeed", this.lastBottleFeed);
+          console.log("last bottlefeed", this.lastBottleFeed);
         };
       });
     }).then(() => {
@@ -721,7 +725,7 @@ export class FeedingPage {
     });
 
     await activityRef.orderBy("dateTime", "asc").get().then((latestSnapshot) => {
-      latestSnapshot.forEach(doc => {
+      latestSnapshot.forEach(async doc => {
         count = count - 1;
         if(count == 0){
           // If last breastfeeding exists
@@ -734,7 +738,7 @@ export class FeedingPage {
           this.MealMomentsAgoTime = moment(doc.data().dateTime, 'YYYY-MM-DD HH:mm:ss');
           this.createMomentObservable(this.MealMomentsAgoTime, "meal");
 
-          this.lastMeal = this.ft.formatDateTimeStandard(doc.data().dateTime);
+          this.lastMeal = await this.ft.formatDateTimeStandard(doc.data().dateTime);
           if(doc.data().detail){
             this.lastMealDetail = doc.data().detail;
           };
