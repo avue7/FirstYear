@@ -626,22 +626,26 @@ export class DatabaseProvider {
           let splitDateEnd = sleeping.dateEnd.split('-');
           let newDateEnd = splitDateEnd[1] + "-" + splitDateEnd[2] + "-" + splitDateEnd[0];
           // String up date and time and call the method to standardize the time
-          let dateTime = sleeping.date + " " + sleeping.timeStart;
+          let splitDateStart = sleeping.dateStart.split('-');
+          let newDateStart = splitDateStart[1] + "-" + splitDateStart[2] + "-" + splitDateStart[0];
+          let dateTime = newDateStart + " " + sleeping.timeStart;
 
-          // let sleepDurationString: any;
-          //
-          // await this.calculateSleepDuration.calculateDuration(sleeping).then((duration) => {
-          //   sleepDurationString = duration;
-          // });
+          let sleepDurationString: any;
 
-          await delete sleeping.date;
+          await delete sleeping.dateStart;
           await delete sleeping.dateEnd;
+          sleeping.dateStart = newDateStart;
           sleeping.activity = "sleeping";
           sleeping.dateTime = dateTime;
           sleeping.dateEnd = newDateEnd;
           sleeping.time = sleeping.timeStart;
           await delete sleeping.timeStart;
 
+          await this.calculateSleepDuration.calculateDuration(sleeping).then((duration) => {
+            sleepDurationString = duration;
+          });
+
+          sleeping.duration = sleepDurationString;
 
           // NOTE: WQORKING ON THIS NEED TO GET THE DATE TIME TO BE CORRECT FORMAT
 

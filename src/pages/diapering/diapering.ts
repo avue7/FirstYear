@@ -267,8 +267,13 @@ export class DiaperingPage {
   }
 
   noteAlert(){
-    this.nAlert = this.noteAlertProvider.alert();
-    this.nAlert.present();
+    if(this.diaperNote){
+      this.nAlert = this.noteAlertProvider.alert(this.diaperNote);
+      this.nAlert.present();
+    } else {
+      this.nAlert = this.noteAlertProvider.alert();
+      this.nAlert.present();
+    }
 
     this.waitForAlertReturn().then((val) => {
       if(val == true){

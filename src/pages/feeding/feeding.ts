@@ -651,14 +651,19 @@ export class FeedingPage {
   }
 
   noteAlert(){
-    this.nAlert = this.noteAlertProvider.alert();
-    this.nAlert.present();
+    if(this.bottleNote){
+      this.nAlert = this.noteAlertProvider.alert(this.bottleNote);
+      this.nAlert.present();
+    } else {
+      this.nAlert = this.noteAlertProvider.alert();
+      this.nAlert.present();
+    }
 
     this.waitForAlertReturn().then((val) => {
       if(val == true){
-        // console.log("THIS bottlenote is true: ", val);
+        console.log("THIS bottlenote is true: ", val);
       } else {
-        // console.log("THIS bottlenote is false: ", val);
+        console.log("THIS bottlenote is false: ", val);
       };
     });
   }

@@ -10,65 +10,85 @@ export class CalculateSleepDurationProvider {
   }
 
   calculateDuration(sleepObject: any) : any {
-    return new Promise(resolve => {
-      // Extract only the date
-      let date = this.getDate(sleepObject.date);
-      console.log("sleepObject::date is: ", date);
-      let dateEnd = this.getDate(sleepObject.dateEnd);
-      console.log("sleepObject::dateEnd is: ", dateEnd);
+    return new Promise(async resolve => {
+      console.log("Sleep obeject in calcualet", sleepObject)
 
-      ///////////////////////////////////////////////////////////////
-      // Extract only the time
-      let timeStart = this.getTime(sleepObject.timeStart);
-      console.log("sleepObject::time is: ", timeStart);
-      let timeEnd = this.getTime(sleepObject.timeEnd);
-      console.log("sleepObject::timeEnd is: ", timeEnd);
-      /////////////////////////////////////////////////////////////////
+      let date: any;
+      let dateEnd: any;
+      let timeStart: any;
+      let timeEnd: any;
+
+      if(sleepObject.activity){
+        date = sleepObject.dateStart;
+        dateEnd = sleepObject.dateEnd;
+        timeStart = sleepObject.time;
+        timeEnd = sleepObject.timeEnd;
+      } else {
+        // Extract only the date
+        date = this.getDate(sleepObject.dateStart);
+        console.log("sleepObject::date is: ", date);
+        dateEnd = this.getDate(sleepObject.dateEnd);
+        console.log("sleepObject::dateEnd is: ", dateEnd);
+
+        ///////////////////////////////////////////////////////////////
+        // Extract only the time
+        timeStart = this.getTime(sleepObject.timeStart);
+        console.log("sleepObject::time is: ", timeStart);
+        timeEnd = this.getTime(sleepObject.timeEnd);
+        console.log("sleepObject::timeEnd is: ", timeEnd);
+        /////////////////////////////////////////////////////////////////
+      };
+
       // String up date and time and call the method to standardize the time
       let dateTime = date + " " + timeStart;
       let dateTimeEnd = dateEnd + " " + timeEnd;
 
+      console.log("Date time start", dateTime)
+      console.log("Date time end", dateTimeEnd)
+
       // Need to get the distance of the day start and day end
       let sleepDurationMoment = moment(dateTime, "MM-DD-YYYY HH:mm:ss").diff(moment(dateTimeEnd, "MM-DD-YYYY HH:mm:ss"));
       let sleepDuration = moment.duration(sleepDurationMoment);
-      // console.log("Days:", sleepDuration.days(), ", Hours:", sleepDuration.hours(), ", Minutes:", sleepDuration.minutes(), ", Seconds:", sleepDuration.seconds());
+      console.log("Days:", sleepDuration.days(), ", Hours:", sleepDuration.hours(), ", Minutes:", sleepDuration.minutes(), ", Seconds:", sleepDuration.seconds());
 
-      let sleepDurationString: any
+      let sleepDurationString: any = "";
       if(sleepDuration.months()){
-        if(Math.abs(sleepDuration.months()) == 1){
-          sleepDurationString = Math.abs(sleepDuration.months()) + " month";
+        if(await Math.abs(sleepDuration.months()) == 1){
+          sleepDurationString += await Math.abs(sleepDuration.months()) + " month";
         } else {
-          sleepDurationString = Math.abs(sleepDuration.months()) + " months";
+          sleepDurationString += await Math.abs(sleepDuration.months()) + " months";
         };
       }
       if(sleepDuration.days()){
-        if(Math.abs(sleepDuration.days()) == 1){
-          sleepDurationString = Math.abs(sleepDuration.days()) + " day";
+        if(await Math.abs(sleepDuration.days()) == 1){
+          sleepDurationString += await Math.abs(sleepDuration.days()) + " day";
         } else {
-          sleepDurationString = " " + Math.abs(sleepDuration.days()) + " days";
+          sleepDurationString += " " + await Math.abs(sleepDuration.days()) + " days";
         };
       }
       if(sleepDuration.hours()){
-        if(Math.abs(sleepDuration.hours()) == 1){
-          sleepDurationString = Math.abs(sleepDuration.hours()) + " hr";
+        if(await Math.abs(sleepDuration.hours()) == 1){
+          sleepDurationString += await Math.abs(sleepDuration.hours()) + " hr";
         } else {
-          sleepDurationString = " " + Math.abs(sleepDuration.hours()) + " hrs";
+          sleepDurationString += " " + await Math.abs(sleepDuration.hours()) + " hrs";
         };
       }
-      if(sleepDuration.minutes()){
-        if(Math.abs(sleepDuration.minutes()) == 1){
-          sleepDurationString = Math.abs(sleepDuration.minutes()) + " min";
+      if(await sleepDuration.minutes()){
+        if(await Math.abs(sleepDuration.minutes()) == 1){
+          sleepDurationString += await Math.abs(sleepDuration.minutes()) + " min";
         } else {
-          sleepDurationString = " " + Math.abs(sleepDuration.minutes()) + " mins";
+          sleepDurationString += " " + await Math.abs(sleepDuration.minutes()) + " mins";
         };
       }
-      if(sleepDuration.seconds()){
-        if(Math.abs(sleepDuration.seconds()) == 1){
-          sleepDurationString = Math.abs(sleepDuration.seconds()) + " sec";
+      if(await sleepDuration.seconds()){
+        if(await Math.abs(sleepDuration.seconds()) == 1){
+          sleepDurationString += await Math.abs(sleepDuration.seconds()) + " sec";
         } else {
-          sleepDurationString = " " + Math.abs(sleepDuration.seconds()) + " secs";
+          sleepDurationString += " " + await Math.abs(sleepDuration.seconds()) + " secs";
         };
       }
+
+      console.log("Sleepduration string is", sleepDurationString);
       resolve(sleepDurationString);
     });
   }

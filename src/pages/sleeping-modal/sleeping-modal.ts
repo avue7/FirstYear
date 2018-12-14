@@ -13,7 +13,7 @@ export class SleepingModalPage {
   sleepingNote: any;
   nAlert: any;
   sleeping: any = {
-    date: '',
+    dateStart: '',
     timeStart: '',
     dateEnd: '',
     timeEnd: '',
@@ -29,10 +29,16 @@ export class SleepingModalPage {
         console.log("Sleeping object is", object);
         let splitDateTime = object.dateTime.split(' ');
         let tempDate = splitDateTime[0].split('-');
-        this.sleeping.date = tempDate[1] + "-" + tempDate[2] + "-" + tempDate[0];
+        // let newDateBeg = tempDate[1] + "-" + tempDate[2] + "-" + tempDate[0];
+        // this.sleeping.dateStart = newDateBeg;
+        console.log("Sleeping date is", object.dateStart)
+        let splitDateBeg = object.dateStart.split('-');
+        let newDateBeg = splitDateBeg[2] + "-" + splitDateBeg[0] + "-" + splitDateBeg[1];
+        this.sleeping.dateStart = newDateBeg;
         this.sleeping.timeStart = object.time;
         let splitDateEnd = object.dateEnd.split('-');
         let newDateEnd = splitDateEnd[2] + "-" + splitDateEnd[0] + "-" + splitDateEnd[1];
+        console.log("New date end", newDateEnd)
         this.sleeping.dateEnd = newDateEnd;
         this.sleeping.timeEnd = object.timeEnd;
         if(object.note){
@@ -40,7 +46,7 @@ export class SleepingModalPage {
         };
       } else {
         this.edit = false;
-        this.sleeping.date = moment().format();
+        this.sleeping.dateStart = moment().format();
         this.sleeping.timeStart = moment().format();
         this.sleeping.dateEnd = moment().format();
         this.sleeping.timeEnd = moment().format();
@@ -52,16 +58,16 @@ export class SleepingModalPage {
 
     if(this.sleepingNote){
       manualObject = {
-        date: this.sleeping.date,
-        note: this.sleeping.note,
+        dateStart: this.sleeping.dateStart,
+        note: this.sleepingNote,
         timeStart: this.sleeping.timeStart,
         dateEnd: this.sleeping.dateEnd,
         timeEnd:  this.sleeping.timeEnd,
         //duration: this.sleeping.duration
       }
-    }else {
+    } else {
       manualObject = {
-        date: this.sleeping.date,
+        dateStart: this.sleeping.dateStart,
         timeStart: this.sleeping.timeStart,
         dateEnd: this.sleeping.dateEnd,
         timeEnd:  this.sleeping.timeEnd,
