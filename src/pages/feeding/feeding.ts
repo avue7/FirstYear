@@ -311,13 +311,24 @@ export class FeedingPage {
         // String up date and time and call the method to standardize the time
         let dateTime = date + " " + time;
         /////////////////////////////////////////////////////////////////
-
-        let bfManualObject = {
-          activity: 'breastfeeding',
-          breast: breastFeeding.breast + ' breast',
-          dateTime: dateTime,
-          time: time,
-          duration: totalDuration
+        let bfManualObject: any;
+        if(breastFeeding.note){
+          bfManualObject = {
+            activity: 'breastfeeding',
+            breast: breastFeeding.breast,
+            dateTime: dateTime,
+            time: time,
+            duration: totalDuration,
+            note: breastFeeding.note
+          };
+        }else{
+          bfManualObject = {
+            activity: 'breastfeeding',
+            breast: breastFeeding.breast,
+            dateTime: dateTime,
+            time: time,
+            duration: totalDuration
+          };
         };
 
         // Call method to store into Database

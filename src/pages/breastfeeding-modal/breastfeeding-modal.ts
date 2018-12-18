@@ -159,6 +159,7 @@ export class BreastfeedingModalPage {
       this.nAlert.onDidDismiss(data => {
         if(data != undefined){
           this.breastFeedNote = data;
+          console.log("Alert returned", this.breastFeedNote);
           resolve(true);
         } else {
           this.breastFeedNote = null;
