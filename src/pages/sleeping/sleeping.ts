@@ -367,7 +367,7 @@ export class SleepingPage {
 
   noteAlert(){
     if(this.sleepingNote){
-      this.nAlert = this.noteAlertProvider.alert(this.sleeping);
+      this.nAlert = this.noteAlertProvider.alert(this.sleepingNote);
       this.nAlert.present();
     } else {
       this.nAlert = this.noteAlertProvider.alert();
