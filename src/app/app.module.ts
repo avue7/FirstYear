@@ -15,6 +15,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatabaseProvider } from '../providers/database/database';
 import { DatePipe } from '@angular/common';
 import { Firebase } from '@ionic-native/firebase';
+import { LocalNotifications } from '@ionic-native/local-notifications';
+
 
 // Testing firestore
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -41,6 +43,7 @@ import { MealModalPage } from '../pages/meal-modal/meal-modal';
 import { SleepingModalPage } from '../pages/sleeping-modal/sleeping-modal';
 import { PopoverPage } from '../pages/popover/popover';
 import { GrowthModalPage } from '../pages/growth-modal/growth-modal';
+import { AlarmsModalPage } from '../pages/alarms-modal/alarms-modal';
 
 import { TimerProvider } from '../providers/timer/timer';
 import { HoursMinutesSecondsPipe } from '../pipes/hours-minutes-seconds/hours-minutes-seconds';
@@ -86,7 +89,8 @@ import { CalculateSleepDurationProvider } from '../providers/calculate-sleep-dur
     SleepingModalPage,
     EditBabyModalPage,
     PopoverPage,
-    GrowthModalPage
+    GrowthModalPage,
+    AlarmsModalPage
   ],
   imports: [
     BrowserModule,
@@ -121,7 +125,8 @@ import { CalculateSleepDurationProvider } from '../providers/calculate-sleep-dur
     SleepingModalPage,
     EditBabyModalPage,
     PopoverPage,
-    GrowthModalPage
+    GrowthModalPage,
+    AlarmsModalPage
   ],
   providers: [
     StatusBar,
@@ -147,6 +152,7 @@ import { CalculateSleepDurationProvider } from '../providers/calculate-sleep-dur
     FcmProvider,
     Firebase,
     CalculateSleepDurationProvider,
+    LocalNotifications
     // MyApp
   ]
 })

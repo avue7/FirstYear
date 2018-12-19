@@ -315,6 +315,10 @@ export class LifoHistoryProvider {
       };
     };
 
+    if(!durationString){
+      console.log("Sleep duration string is empty");
+      durationString += "0 sec";
+    }
     return durationString;
   }
 }

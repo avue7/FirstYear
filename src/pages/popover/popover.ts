@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ViewController, NavParams } from 'ionic-angular';
+import { ViewController, NavParams, ModalController} from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
+import { AlarmsModalPage } from '../alarms-modal/alarms-modal';
 
 @Component({
   selector: 'page-popover',
@@ -8,10 +9,12 @@ import { DatabaseProvider } from '../../providers/database/database';
 })
 export class PopoverPage {
   showDelete: boolean;
+  alarmModal: any;
 
   constructor(private navParams: NavParams,
     private viewCtrl: ViewController,
-    private db: DatabaseProvider) {
+    private db: DatabaseProvider,
+    private modal: ModalController) {
     this.showDelete = false;
     this.checkNumberOfBabies();
   }
@@ -58,8 +61,22 @@ export class PopoverPage {
   }
 
   openAlarmModal(){
-    console.log("Opening alarm modal");
-    this.viewCtrl.dismiss();
+    return new Promise(async resolve => {
+      console.log("Opening alarm modal");
+      this.alarmModal = this.modal.create(AlarmsModalPage);
+      this.alarmModal.present();
+      await this.waitForModalReturn();
+      this.viewCtrl.dismiss();
+    });
+  }
 
+  waitForModalReturn() : any{
+    return new Promise(resolve => {
+      this.alarmModal.onDidDismiss( data => {
+        console.log("WAIT FOR RETURN DATA IS:", data);
+        let babyObject = data;
+        resolve(babyObject);
+      });
+    });
   }
 }
