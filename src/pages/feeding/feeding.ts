@@ -13,6 +13,7 @@ import { LifoHistoryProvider } from '../../providers/lifo-history/lifo-history';
 import { HomePage } from '../home/home';
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Rx';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 @Component({
   selector: 'page-feeding',
@@ -111,7 +112,8 @@ export class FeedingPage {
     private modal: ModalController,
     private noteAlertProvider: NoteAlertProvider,
     private lifoHistory: LifoHistoryProvider,
-    private viewCtrl: ViewController) {
+    private viewCtrl: ViewController,
+    private nativeStorage: NativeStorage) {
     // this.momentsAgoTime = '';
     this.BottleMomentsAgo = '';
     this.MealMomentsAgo = '';
@@ -573,7 +575,7 @@ export class FeedingPage {
     });
   }
 
-  async getLastBottleFeed(){
+  public async getLastBottleFeed(){
     this.BottleMomentsAgo = '';
     let count = 0;
     let activityRef;
@@ -609,6 +611,9 @@ export class FeedingPage {
           this.lastBottleDuration = doc.data().duration;
           this.bottleLastAmount = doc.data().volume + " " + doc.data().unit;
           console.log("last bottlefeed", this.lastBottleFeed);
+
+          // Save last bottlefeed to native storage
+          await this.nativeStorage.setItem('lastBottleFeed', doc.data());
         };
       });
     }).then(() => {

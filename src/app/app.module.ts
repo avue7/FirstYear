@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule, ViewController } from 'ionic-angular';
+import { IonicApp, IonicErrorHandler, IonicModule, ViewController} from 'ionic-angular';
 import { NgxErrorsModule } from '@ultimate/ngxerrors';
 import { MyApp } from './app.component';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -16,6 +16,8 @@ import { DatabaseProvider } from '../providers/database/database';
 import { DatePipe } from '@angular/common';
 import { Firebase } from '@ionic-native/firebase';
 import { LocalNotifications } from '@ionic-native/local-notifications';
+import { NativeStorage } from '@ionic-native/native-storage';
+
 
 
 // Testing firestore
@@ -44,6 +46,7 @@ import { SleepingModalPage } from '../pages/sleeping-modal/sleeping-modal';
 import { PopoverPage } from '../pages/popover/popover';
 import { GrowthModalPage } from '../pages/growth-modal/growth-modal';
 import { AlarmsModalPage } from '../pages/alarms-modal/alarms-modal';
+import { AlarmsPage } from '../pages/alarms/alarms';
 
 import { TimerProvider } from '../providers/timer/timer';
 import { HoursMinutesSecondsPipe } from '../pipes/hours-minutes-seconds/hours-minutes-seconds';
@@ -90,7 +93,8 @@ import { CalculateSleepDurationProvider } from '../providers/calculate-sleep-dur
     EditBabyModalPage,
     PopoverPage,
     GrowthModalPage,
-    AlarmsModalPage
+    AlarmsModalPage,
+    AlarmsPage
   ],
   imports: [
     BrowserModule,
@@ -126,7 +130,8 @@ import { CalculateSleepDurationProvider } from '../providers/calculate-sleep-dur
     EditBabyModalPage,
     PopoverPage,
     GrowthModalPage,
-    AlarmsModalPage
+    AlarmsModalPage,
+    AlarmsPage
   ],
   providers: [
     StatusBar,
@@ -152,7 +157,10 @@ import { CalculateSleepDurationProvider } from '../providers/calculate-sleep-dur
     FcmProvider,
     Firebase,
     CalculateSleepDurationProvider,
-    LocalNotifications
+    LocalNotifications,
+    NativeStorage,
+    // FeedingPage,
+    // NavController
     // MyApp
   ]
 })

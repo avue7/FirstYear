@@ -128,6 +128,29 @@ export class DatabaseProvider {
     });
   }
 
+  getAlarmReference(activity: any){
+    return new Promise (resolve =>{
+      let db = firebase.firestore();
+
+      db.settings({
+        timestampsInSnapshots: true
+      });
+
+      let alarmRef: any;
+      let userId = this.user.getUserId();
+      let babyName = this.baby.getBabyFirstName();
+
+      if(userId == null || babyName == undefined){
+        console.log("Database:: Cannot get activity ref yet (userId, babyName)", userId, babyName);
+        if(babyName == undefined){
+
+        }
+      } else {
+        resolve(alarmRef = db.collection('alarms').where("activity", "==", activity).where("userId", "==", userId).where("babyFirstName", "==", babyName));
+      };
+    });
+  }
+
   getCurrentBabyRef(){
     let db = firebase.firestore();
     db.settings({

@@ -20,6 +20,7 @@ import { GrowthPage } from '../pages/growth/growth';
 import { CreditsPage } from '../pages/credits/credits';
 import { CameraPage } from '../pages/camera/camera';
 import { EditBabyModalPage } from '../pages/edit-baby-modal/edit-baby-modal';
+import { AlarmsPage } from '../pages/alarms/alarms';
 
 import firebase from 'firebase';
 import 'firebase/firestore';
@@ -79,6 +80,7 @@ export class MyApp {
       { title: 'Sleeping', component: SleepingPage, icon: 'custom-sleeping-baby' },
       { title: 'Growth', component: GrowthPage, icon: 'custom-growth' },
       { title: 'PhotoShoot', component: CameraPage, icon: 'custom-camera' },
+      { title: 'Alarms', component: AlarmsPage, icon: 'alarm' },
       { title: 'Credits', component: CreditsPage, icon: 'custom-cited'},
     ];
 

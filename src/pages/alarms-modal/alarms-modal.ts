@@ -8,11 +8,17 @@ import * as moment from 'moment';
   templateUrl: 'alarms-modal.html',
 })
 export class AlarmsModalPage {
-  notifyTime: any;
+  notifyTime: any
   notifications: any[] = [];
   days: any[];
   chosenHours: number;
   chosenMinutes: number;
+
+  hourvalues: any[] = [0,13,14,15,16,17,18,19,20,21,22,23,24];
+
+  notify: any = {
+    time: '2:00'
+  }
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -20,20 +26,18 @@ export class AlarmsModalPage {
     private localNotifications: LocalNotifications,
     private platform: Platform,
     private view: ViewController) {
-      this.notifyTime = moment(new Date()).format();
+      // this.notifyTime = moment(new Date()).format();
+      // this.notify.time = moment(new Date()).format();
+      // this.chosenHours = new Date().getHours();
+      // this.chosenMinutes = new Date().getMinutes();
+      let passInObject = this.navParams.get('object');
 
-      this.chosenHours = new Date().getHours();
-      this.chosenMinutes = new Date().getMinutes();
-
-      this.days = [
-          {title: 'Monday', dayCode: 1, checked: false},
-          {title: 'Tuesday', dayCode: 2, checked: false},
-          {title: 'Wednesday', dayCode: 3, checked: false},
-          {title: 'Thursday', dayCode: 4, checked: false},
-          {title: 'Friday', dayCode: 5, checked: false},
-          {title: 'Saturday', dayCode: 6, checked: false},
-          {title: 'Sunday', dayCode: 0, checked: false}
-      ];
+      if(passInObject){
+        console.log("passed in time is", passInObject.time);
+        this.notify.time = passInObject.time;
+      } else {
+        // this.notify.time = moment().format("H:mm");
+      }
   }
 
   ionViewDidLoad() {
@@ -46,7 +50,22 @@ export class AlarmsModalPage {
   }
 
 
+  addAlarm(){
+    let splitTime = this.notify.time.split(':');
 
+    let noZeroHour: any;
+
+    if(splitTime[0].charAt(0) === "0"){
+      noZeroHour = splitTime[0].substr(1);
+    }
+
+    let alarmObject = {
+      _hrs: noZeroHour,
+      _mins: splitTime[1]
+    };
+
+    this.view.dismiss(alarmObject);
+  }
 
   addNotifications(){
     this.localNotifications.schedule({

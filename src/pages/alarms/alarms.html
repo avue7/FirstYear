@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-navbar no-border-bottom color="navbarColor">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title> Alarms </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding class="center">
+  <div class="diaper-box">
+    <ion-title> Recurring Alarms: </ion-title>
+    <ion-row *ngIf="bottleFeedingAlarmIsOn" class="alarmOn">
+      <ion-item (click)="editBottleFeedingAlarm()">
+        <ion-toggle color="secondary" (ionChange)="toggleBottleFeedingAlarm($event)" checked={{bottleFeedingAlarmIsOn}} item-start></ion-toggle>
+        <ion-label>Bottlefeeding
+          <p *ngIf="hrs && mins && secs">every {{hrs}} hr, {{mins}} min, {{secs}} sec</p>
+          <p *ngIf="hrs && mins">every {{hrs}} hr, {{mins}} min</p>
+          <p *ngIf="hrs">every {{hrs}} hr</p>
+          <p *ngIf="mins && secs">every {{mins}} min, {{secs}} sec</p>
+          <p *ngIf="mins">every {{mins}} min</p>
+        </ion-label>
+        <ion-icon name="more" item-right></ion-icon>
+      </ion-item>
+    </ion-row>
+    <ion-row *ngIf="!bottleFeedingAlarmIsOn" class="alarmOff">
+      <ion-item (click)="editBottleFeedingAlarm()">
+        <ion-toggle color="secondary"  (ionChange)="toggleBottleFeedingAlarm($event)" checked={{bottleFeedingAlarmIsOn}} item-start></ion-toggle>
+        <!-- <ion-icon name="custom-bottle" item-left></ion-icon> -->
+        <ion-label>Bottlefeeding
+          <p *ngIf="hrs && mins && secs">every {{hrs}} hr, {{mins}} min, {{secs}} sec</p>
+          <p *ngIf="hrs && mins">every {{hrs}} hr, {{mins}} min</p>
+          <p *ngIf="hrs">every {{hrs}} hr</p>
+          <p *ngIf="mins && secs">every {{mins}} min, {{secs}} sec</p>
+          <p *ngIf="mins">every {{mins}} min</p>
+        </ion-label>
+        <ion-icon name="more" item-right></ion-icon>
+      </ion-item>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        fdafdsafads
+      </ion-col>
+      <ion-col>
+        fdafdsafads
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        fdafdsafads
+      </ion-col>
+      <ion-col>
+        fdafdsafads
+      </ion-col>
+    </ion-row>
+  </div>
+
+</ion-content>
