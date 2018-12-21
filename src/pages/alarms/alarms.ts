@@ -21,19 +21,28 @@ declare var cordova;
 export class AlarmsPage {
   // @ViewChild(Nav) nav: Nav;
   // feedingAlarm: boolean;
-  bottleFeedingAlarmIsOn: boolean;
   // lastBottleFeed: any;
   // lastBottleDuration: any;
   initFlag: boolean;
-  bottleAlarmModal: any;
-  bottleAlarmDisable: boolean;
+
 
   hrs: any;
   mins: any;
 
   bottleAlarm: any = {};
-  bottleAlarmDoc: any;
   bottleAlarmExists: boolean;
+  bottleAlarmModal: any;
+  bottleAlarmDisable: boolean;
+  bottleFeedingAlarmIsOn: boolean;
+
+
+  breastHours: any;
+  breastMinutes: any;
+  breastAlarm: any = {};
+  breastAlarmExists: boolean;
+  breastAlarmModal: any;
+  breastAlarmDisable: boolean;
+  breastAlarmIsOn: boolean;
 
 
   // only for testing purpose
@@ -53,6 +62,16 @@ export class AlarmsPage {
     private toastCtrl: ToastController,
     private localNotifications: LocalNotifications) {
 
+    cordova.plugins.notification.local.on('turnoff', async () => {
+      // cordova.plugins.notification.local.cancel(1);
+      await this.toggleBottleFeedingAlarm();
+    });
+
+    cordova.plugins.notification.local.on('turnoff2', async () => {
+      // cordova.plugins.notification.local.cancel(1);
+      await this.toggleBreastFeedingAlarm();
+    });
+
     this.init();
   }
 
@@ -62,11 +81,18 @@ export class AlarmsPage {
   }
 
   init(){
-    this.bottleAlarm = null;
     this.hrs = null;
     this.mins = null;
+
+    this.bottleAlarm = null;
     this.bottleAlarmExists = false;
     this.bottleFeedingAlarmIsOn = false;
+
+    this.breastHours;
+    this.breastMinutes;
+    this.breastAlarm = null;
+    this.breastAlarmExists = false;
+    this.breastAlarmIsOn = false;
 
     this.checkIfAlarmExist("bottlefeeding").then(retVal => {
       if(retVal === false){
@@ -74,58 +100,145 @@ export class AlarmsPage {
           this.bottleAlarmDisable = true;
         }
       };
-    });
+    }).then(() => {
+      this.checkIfAlarmExist("breastfeeding").then(retVal => {
+        if(retVal === false){
+          if(this.breastHours == undefined && this.breastMinutes == undefined){
+            this.breastAlarmDisable = true;
+          };
+        };
+      })
+    })
   }
 
   async checkIfAlarmExist(activity: any){
     return new Promise(async resolve => {
-      let alarmRef = await this.getAlarmReference("bottlefeeding");
+      if(activity == "bottlefeeding"){
+        let alarmRef = await this.getAlarmReference("bottlefeeding");
 
-      alarmRef.get().then(querySnapshot => {
-        if(!querySnapshot.empty){
-          console.log("Alarm exists");
-          querySnapshot.forEach((doc) => {
-            this.bottleAlarm = doc.data().alarm;
+        alarmRef.get().then(querySnapshot => {
+          if(!querySnapshot.empty){
+            console.log("Alarm exists");
+            querySnapshot.forEach((doc) => {
+              this.bottleAlarm = doc.data().alarm;
 
-            let status = doc.data().status;
-            if(status == 'on'){
-              this.bottleFeedingAlarmIsOn = true;
-            } else {
-              this.bottleFeedingAlarmIsOn = false;
-            }
-            console.log("Bottle alarm is on", this.bottleFeedingAlarmIsOn);
+              let status = doc.data().status;
+              if(status == 'on'){
+                this.bottleFeedingAlarmIsOn = true;
+              } else {
+                this.bottleFeedingAlarmIsOn = false;
+              }
+              console.log("Bottle alarm is on", this.bottleFeedingAlarmIsOn);
 
-            this.bottleAlarmExists = true;
-            console.log("Bottle alarm from database is", this.bottleAlarm);
+              this.bottleAlarmExists = true;
+              console.log("Bottle alarm from database is", this.bottleAlarm);
 
-            this.getMinsHrs();
+              this.getMinsHrs();
 
-            resolve(true);
-          });
-        } else {
-          console.log("Alarm does not exists");
-          this.bottleAlarmExists = false;
-          this.bottleFeedingAlarmIsOn = false;
-          resolve(false);
-        };
-      });
+              resolve(true);
+            });
+          } else {
+            console.log("Alarm does not exists");
+            this.bottleAlarmExists = false;
+            this.bottleFeedingAlarmIsOn = false;
+            resolve(false);
+          };
+        });
+      } else if(activity == "breastfeeding"){
+        let alarmRef = await this.getAlarmReference("breastfeeding");
+
+        alarmRef.get().then(querySnapshot => {
+          if(!querySnapshot.empty){
+            console.log("Breast Alarm exists");
+            querySnapshot.forEach((doc) => {
+              this.breastAlarm = doc.data().alarm;
+
+              let status = doc.data().status;
+              if(status == 'on'){
+                this.breastAlarmIsOn = true;
+              } else {
+                this.breastAlarmIsOn = false;
+              }
+              console.log("Breast alarm is on", this.breastAlarmIsOn);
+
+              this.breastAlarmExists = true;
+              console.log("Breast alarm from database is", this.breastAlarm);
+
+              this.getBreastMinsHrs();
+
+              resolve(true);
+            });
+          } else {
+            console.log("Breast Alarm does not exists");
+            this.breastAlarmExists = false;
+            this.breastAlarmIsOn = false;
+            resolve(false);
+          };
+        });
+      }
     });
   }
 
-
   editBottleFeedingAlarm(){
-    console.log("Editing feeding alarm");
+    console.log("====== Editing feeding alarm =====");
     this.openBottleAlarmModal().then(async bottleAlarm => {
       let object: any;
       object = bottleAlarm;
       if(bottleAlarm != undefined){
         console.log("bottleAlarm is", bottleAlarm);
 
-        // IF hrs and mins from modal is different then we need to update
-        // alarm in the database and also need to cancel alarm and restart it.
-        if(this.hrs != object._hrs || this.mins != object._mins){
-          console.log("HRS and MINS returned from modal are different.")
+        if(this.hrs != undefined || this.mins != undefined){
+          // IF hrs and mins from modal is different then we need to update
+          // alarm in the database and also need to cancel alarm and restart it.
+          if(this.hrs != object._hrs || this.mins != object._mins){
+            console.log("HRS and MINS returned from modal are different.")
 
+            if(object._hrs != "0"){
+              this.hrs = object._hrs;
+            } else {
+              this.hrs = undefined;
+            }
+
+            if(object._mins != "0"){
+              this.mins = object._mins;
+            } else {
+              this.mins = undefined;
+            }
+
+            let additionalTime: number = 0;
+
+            if(this.hrs != undefined){
+              additionalTime += ((parseInt(this.hrs, 10)) * 60);
+            }
+
+            if(this.mins != undefined){
+              additionalTime += parseInt(this.mins, 10);
+            }
+
+            let alarmRef: any;
+
+            await this.getAlarmReference('bottlefeeding').then((ref) => {
+              alarmRef = ref;
+            });
+
+            let triggerObject: any = {
+              every: additionalTime,
+              unit: "minute"
+            };
+
+            await alarmRef.get().then(querySnapshot => {
+              querySnapshot.forEach((doc) => {
+                doc.ref.update({
+                  "alarm.trigger": triggerObject
+                }).then((suc) =>{
+                  console.log("Done updating trigger in database");
+                });
+              });
+            });
+
+            this.scheduleNotification(additionalTime, "bottlefeeding");
+          }
+        } else {
           if(object._hrs != "0"){
             this.hrs = object._hrs;
           } else {
@@ -147,29 +260,6 @@ export class AlarmsPage {
           if(this.mins != undefined){
             additionalTime += parseInt(this.mins, 10);
           }
-
-          let alarmRef: any;
-
-          await this.getAlarmReference('bottlefeeding').then((ref) => {
-            alarmRef = ref;
-          });
-
-          let triggerObject: any = {
-            every: additionalTime,
-            unit: "minute"
-          };
-
-          await alarmRef.get().then(querySnapshot => {
-            querySnapshot.forEach((doc) => {
-              doc.ref.update({
-                "alarm.trigger": triggerObject
-              }).then((suc) =>{
-                console.log("Done updating trigger in database");
-              });
-            });
-          });
-
-          this.scheduleNotification(additionalTime, "bottlefeeding");
         }
 
         this.bottleAlarmDisable = false;
@@ -178,94 +268,209 @@ export class AlarmsPage {
           this.toggleBottleFeedingAlarm();
         };
 
-
-
-        // let additionalTime: number = 0;
-        //
-        // if(this.hrs != undefined){
-        //   additionalTime += ((parseInt(this.hrs, 10)) * 60);
-        // }
-        //
-        // if(this.mins != undefined){
-        //   additionalTime += parseInt(this.mins, 10);
-        // }
-        //
-        // console.log("1. Adding additional time to firstAt", additionalTime);
-        //
-        // this.scheduleNotification(additionalTime, "bottlefeeding");
-
       } else {
         console.log("User cancel bottle feed alarm modal");
       }
     });
   }
 
-  updateAlarm(){
-    cordova.plugins.notification.local.update({
-      id: 1,
+  editBreastFeedingAlarm(){
+    console.log("====== Editing breast alarm ======");
+    this.openBreastAlarmModal().then(async breastAlarm => {
+      let object: any;
+      object = breastAlarm;
+      if(breastAlarm != undefined){
+        console.log("breastAlarm is", breastAlarm);
+
+        if(this.breastHours != undefined || this.breastMinutes != undefined){
+          // IF hrs and mins from modal is different then we need to update
+          // alarm in the database and also need to cancel alarm and restart it.
+          if(this.breastHours != object._hrs || this.breastMinutes != object._mins){
+            console.log("HRS and MINS returned from modal are different.")
+
+            if(object._hrs != "0"){
+              this.breastHours = object._hrs;
+            } else {
+              this.breastHours = undefined;
+            }
+
+            if(object._mins != "0"){
+              this.breastMinutes = object._mins;
+            } else {
+              this.breastMinutes = undefined;
+            }
+
+            let additionalTime: number = 0;
+
+            if(this.breastHours != undefined){
+              additionalTime += ((parseInt(this.breastHours, 10)) * 60);
+            }
+
+            if(this.breastMinutes != undefined){
+              additionalTime += parseInt(this.breastMinutes, 10);
+            }
+
+            let alarmRef: any;
+
+            await this.getAlarmReference('breastfeeding').then((ref) => {
+              alarmRef = ref;
+            });
+
+            let triggerObject: any = {
+              every: additionalTime,
+              unit: "minute"
+            };
+
+            await alarmRef.get().then(querySnapshot => {
+              querySnapshot.forEach((doc) => {
+                doc.ref.update({
+                  "alarm.trigger": triggerObject
+                }).then((suc) =>{
+                  console.log("Done updating trigger in database");
+                });
+              });
+            });
+
+            this.scheduleNotification(additionalTime, "breastfeeding");
+          }
+        } else {
+          if(object._hrs != "0"){
+            this.breastHours = object._hrs;
+          } else {
+            this.breastHours = undefined;
+          }
+
+          if(object._mins != "0"){
+            this.breastMinutes = object._mins;
+          } else {
+            this.breastMinutes = undefined;
+          }
+
+          let additionalTime: number = 0;
+
+          if(this.breastHours != undefined){
+            additionalTime += ((parseInt(this.breastHours, 10)) * 60);
+          }
+
+          if(this.breastMinutes != undefined){
+            additionalTime += parseInt(this.breastMinutes, 10);
+          }
+        }
+
+        this.breastAlarmDisable = false;
+
+        if(this.breastAlarmIsOn === false){
+          this.toggleBreastFeedingAlarm();
+        };
+
+      } else {
+        console.log("User cancel breast feed alarm modal");
+      }
     });
   }
 
   async scheduleNotification(triggerMins: any, activity: any){
     if(this.platform.is('cordova')){
-      this.localNotifications.cancel(1).then(() =>{
-        console.log("2. Scheduling ....")
+      if(activity == "bottlefeeding"){
+        this.localNotifications.cancel(1).then(() =>{
+          console.log("2. Scheduling ....")
 
-        if(this.bottleAlarmExists){
-          this.bottleAlarm.trigger = {
-            every: triggerMins, unit: 'minute'
+          if(this.bottleAlarmExists){
+            this.bottleAlarm.trigger = {
+              every: triggerMins, unit: 'minute'
+            };
+          } else {
+            this.bottleAlarm = {
+              id: 1,
+              title: "Bottle-Feeding Alarm",
+              text: "It's time to feed your baby",
+              sound: "res://ic_popup_reminder",
+              // sound: 'file://sound.mp3',
+              vibrate: true,
+              launch: true,
+              wakeup: true,
+              autoClear: true,
+              led: true,
+              priority: 2,
+              trigger: {every: triggerMins, unit: 'minute'},
+              actions: [
+                { id: 'turnoff', title: 'Turn-off Alarm'},
+                { id: 'clear', title: 'Clear'}
+              ]
+            };
+
+            this.saveAlarm(activity, this.bottleAlarm);
           };
-        } else {
-          this.bottleAlarm = {
-            id: 1,
-            title: "Bottle-Feeding Alarm",
-            text: "It's time to feed your baby",
-            sound: "res://ic_popup_reminder",
-            // sound: 'file://sound.mp3',
-            vibrate: true,
-            launch: true,
-            wakeup: true,
-            autoClear: true,
-            led: true,
-            priority: 2,
-            trigger: {every: triggerMins, unit: 'minute'},
-            actions: [
-              { id: 'turnoff', title: 'Turn-off Alarm'},
-              { id: 'clear', title: 'Clear'}
-            ]
-          };
 
-          this.saveAlarm(activity, this.bottleAlarm);
-        };
+          cordova.plugins.notification.local.schedule(this.bottleAlarm, suc => {
+            console.log("Done scheduling", suc);
 
-        cordova.plugins.notification.local.schedule(this.bottleAlarm, suc => {
-          console.log("Done scheduling", suc);
-
-          cordova.plugins.notification.local.isScheduled(1, scheduled => {
-            console.log("Is it scheduled? ", scheduled ? 'Yes' : 'No');
-          });
-
-          let babyFirstName = this.baby.getBabyFirstName();
-
-          if(suc){
-            let toast = this.toastCtrl.create({
-              message: babyFirstName + "'s recurring alarm for bottle-feeding was turned on.",
-              duration: 3000
+            cordova.plugins.notification.local.isScheduled(1, scheduled => {
+              console.log("Is it scheduled? ", scheduled ? 'Yes' : 'No');
             });
-            toast.present();
+
+            let babyFirstName = this.baby.getBabyFirstName();
+
+            if(suc){
+              let toast = this.toastCtrl.create({
+                message: babyFirstName + "'s recurring alarm for bottle-feeding was turned on.",
+                duration: 3000
+              });
+              toast.present();
+            };
+          })
+        });
+      } else if(activity == "breastfeeding"){
+        this.localNotifications.cancel(2).then(() =>{
+          console.log("2. Scheduling ....")
+
+          if(this.breastAlarmExists){
+            this.breastAlarm.trigger = {
+              every: triggerMins, unit: 'minute'
+            };
+          } else {
+            this.breastAlarm = {
+              id: 2,
+              title: "Breast-Feeding Alarm",
+              text: "It's time to feed your baby",
+              sound: "res://ic_popup_reminder",
+              // sound: 'file://sound.mp3',
+              vibrate: true,
+              launch: true,
+              wakeup: true,
+              autoClear: true,
+              led: true,
+              priority: 2,
+              trigger: {every: triggerMins, unit: 'minute'},
+              actions: [
+                { id: 'turnoff2', title: 'Turn-off Alarm'},
+                { id: 'clear', title: 'Clear'}
+              ]
+            };
+
+            this.saveAlarm(activity, this.breastAlarm);
           };
-        })
-      });
+
+          cordova.plugins.notification.local.schedule(this.breastAlarm, suc => {
+            console.log("Done scheduling", suc);
+
+            cordova.plugins.notification.local.isScheduled(2, scheduled => {
+              console.log("Is it scheduled? ", scheduled ? 'Yes' : 'No');
+            });
+
+            let babyFirstName = this.baby.getBabyFirstName();
+
+            if(suc){
+              let toast = this.toastCtrl.create({
+                message: babyFirstName + "'s recurring alarm for breast-feeding was turned on.",
+                duration: 3000
+              });
+              toast.present();
+            };
+          })
+        });
+      };
     };
-
-    cordova.plugins.notification.local.on('turnoff', async () => {
-      // cordova.plugins.notification.local.cancel(1);
-      await this.toggleBottleFeedingAlarm();
-    });
-
-    cordova.plugins.notification.local.on('clear', () => {
-      cordova.plugins.notification.local.clear(1);
-    });
   }
 
   async toggleBottleFeedingAlarm($event?){
@@ -281,6 +486,23 @@ export class AlarmsPage {
       } else {
         await this.turnOn("bottlefeeding");
         console.log("2. Turning bottle feeding alarm on", this.bottleFeedingAlarmIsOn)
+      };
+    };
+  }
+
+  async toggleBreastFeedingAlarm($event?){
+    console.log("1. Feeding alarm is on", this.breastAlarmIsOn);
+    if(this.breastAlarmIsOn){
+      // Turn alarm off
+      await this.turnOff("breastfeeding");
+      console.log("2. Turning breast feeding alarm off", this.breastAlarmIsOn)
+    } else {
+      if(this.breastHours == undefined && this.breastMinutes == undefined){
+        this.breastAlarmDisable = true;
+        // this.mustSpecifyTimeAlert();
+      } else {
+        await this.turnOn("breastfeeding");
+        console.log("2. Turning breast feeding alarm on", this.breastAlarmIsOn)
       };
     };
   }
@@ -301,9 +523,13 @@ export class AlarmsPage {
         });
       });
 
-      cordova.plugins.notification.local.cancel(1);
-
-      resolve(this.bottleFeedingAlarmIsOn = false);
+      if(activity == "bottlefeeding"){
+        cordova.plugins.notification.local.cancel(1);
+        resolve(this.bottleFeedingAlarmIsOn = false);
+      } else if (activity == "breastfeeding"){
+        cordova.plugins.notification.local.cancel(2);
+        resolve(this.breastAlarmIsOn = false);
+      }
     });
   }
 
@@ -323,19 +549,35 @@ export class AlarmsPage {
         });
       });
 
-      let additionalTime: number = 0;
+      if(activity == "bottlefeeding"){
+        let additionalTime: number = 0;
 
-      if(this.hrs != undefined){
-        additionalTime += ((parseInt(this.hrs, 10)) * 60);
+        if(this.hrs != undefined){
+          additionalTime += ((parseInt(this.hrs, 10)) * 60);
+        }
+
+        if(this.mins != undefined){
+          additionalTime += parseInt(this.mins, 10);
+        }
+
+        this.scheduleNotification(additionalTime, "bottlefeeding");
+
+        resolve(this.bottleFeedingAlarmIsOn = true);
+      } else if (activity == "breastfeeding"){
+        let additionalTime: number = 0;
+
+        if(this.breastHours != undefined){
+          additionalTime += ((parseInt(this.breastHours, 10)) * 60);
+        }
+
+        if(this.breastMinutes != undefined){
+          additionalTime += parseInt(this.breastMinutes, 10);
+        }
+
+        this.scheduleNotification(additionalTime, "breastfeeding");
+
+        resolve(this.breastAlarmIsOn = true);
       }
-
-      if(this.mins != undefined){
-        additionalTime += parseInt(this.mins, 10);
-      }
-
-      this.scheduleNotification(additionalTime, "bottlefeeding");
-
-      resolve(this.bottleFeedingAlarmIsOn = true);
     });
   }
 
@@ -364,6 +606,12 @@ export class AlarmsPage {
       if(error){
         console.log("Error, could not save alarm", error);
       } else {
+        if(activity == "bottlefeeding"){
+          this.bottleAlarmExists = true;
+        } else if(activity == "breastfeeding"){
+          this.breastAlarmExists = true;
+        }
+
         this.onToast(activity, babyFirstName);
         console.log("Successfully saved alarm");
       }
@@ -399,6 +647,45 @@ export class AlarmsPage {
     });
   }
 
+  openBreastAlarmModal(){
+    return new Promise(resolve => {
+      let time: string;
+
+      let checkHrs = this.addZeroToTime(this.breastHours);
+      let checkMins = this.addZeroToTime(this.breastMinutes);
+
+      if(this.breastHours == undefined && this.breastMinutes == undefined){
+        time = "02:00";
+      } else if (this.breastHours != undefined && this.breastMinutes == undefined){
+        time = checkHrs + ":00";
+      } else if (this.breastHours == undefined && this.breastMinutes != undefined){
+        time = "00:" + checkMins;
+      } else if (this.breastHours != undefined && this.breastMinutes != undefined){
+        time = checkHrs + ':' + checkMins;
+      };
+
+      console.log("TIme to pass to alarm modal is", time);
+
+      let object = {
+        time: time
+      };
+
+      this.breastAlarmModal = this.modal.create(AlarmsModalPage, {object: object});
+      this.breastAlarmModal.present();
+      resolve(this.waitForBreastAlarmModalReturn());
+    });
+  }
+
+  waitForBreastAlarmModalReturn() : any{
+    return new Promise(resolve => {
+      this.breastAlarmModal.onDidDismiss( data => {
+        console.log("WAIT FOR RETURN DATA IS:", data);
+        let alarm = data;
+        resolve(alarm);
+      });
+    });
+  }
+
   waitForBottleAlarmModalReturn() : any{
     return new Promise(resolve => {
       this.bottleAlarmModal.onDidDismiss( data => {
@@ -417,6 +704,21 @@ export class AlarmsPage {
     });
 
     return alarmRef;
+  }
+
+  getBreastMinsHrs(){
+    let n = this.breastAlarm.trigger.every;
+    let hours = ((parseInt(n, 10))/60);
+    let rhours = Math.floor(hours);
+    let minutes = (hours - rhours) * 60;
+    let rminutes = Math.round(minutes);
+
+    if(rhours != 0){
+      this.breastHours = rhours;
+    }
+    if(rminutes != 0){
+      this.breastMinutes = rminutes;
+    }
   }
 
   getMinsHrs(){
@@ -469,6 +771,15 @@ export class AlarmsPage {
       message: babyFirstName + "'s reccuring alarm for " + activity + " was turned off.",
       duration: 3000,
       position: 'bottom'
+    });
+    toast.present();
+  }
+
+  addAlarm(){
+    let toast = this.toastCtrl.create({
+      message: "FUCK DUDE....YOU RAN OUT OF TIME TO IMPLEMENT THIS!!!!",
+      duration: 5000,
+      position: "bottom"
     });
     toast.present();
   }

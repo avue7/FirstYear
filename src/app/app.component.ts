@@ -106,11 +106,21 @@ export class MyApp {
       cordova.plugins.notification.local.on("cancel", notification => {
         console.log("Local notification canceled: " + notification.id);
 
-        cordova.plugins.notification.local.isScheduled(1, scheduled => {
-          console.log("Is id:", notification.id, "scheduled? ", scheduled ? 'Yes' : 'No');
-        });
+        if(notification.id == 1){
+          cordova.plugins.notification.local.isScheduled(1, scheduled => {
+            console.log("Is id:", notification.id, "scheduled? ", scheduled ? 'Yes' : 'No');
+          });
+        } else if(notification.id == 2){
+          cordova.plugins.notification.local.isScheduled(2, scheduled => {
+            console.log("Is id:", notification.id, "scheduled? ", scheduled ? 'Yes' : 'No');
+          });
+        }
 
         this.alarmCancelAlert(notification.id);
+      });
+
+      cordova.plugins.notification.local.on('clear', () => {
+        cordova.plugins.notification.local.clear(1);
       });
     });
 
@@ -123,11 +133,14 @@ export class MyApp {
     if(id === 1){
       // BottleFeeding
       message = babyFirstName + " recurring alarm for bottle-feeding was turned off.";
-    }
+    } else if(id === 2){
+      message = babyFirstName + " recurring alarm for breast-feeding was turned off.";
+    };
 
     let toast = this.toastCtrl.create({
       message: message,
-      duration: 3000
+      duration: 4000,
+      position: "bottom"
     });
     toast.present();
   }
