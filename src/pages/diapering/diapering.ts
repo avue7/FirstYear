@@ -112,21 +112,26 @@ export class DiaperingPage {
     });
   }
 
-  getLastDiapering(){
+  async getLastDiapering(){
     console.log("Getting last diapering");
     this.DiaperingMomentsAgo = '';
     let count = 0;
-    let babyRef = this.db.getBabyReference();
-    babyRef.collection('diapering')
-      // .where('date', '==', 'date')
-      .get().then((latestSnapshot) => {
+    let activityRef;
+    await this.db.getActivityReference("diapering").then(_activityRef => {
+        activityRef = _activityRef;
+    });
+
+    // Use orderBy in firebase and create the Indexes within the firebase console
+    // to enable query by ascending or descending order. The error log will help you
+    // create this following the link.
+    await activityRef.get().then((latestSnapshot) => {
         latestSnapshot.forEach(doc => {
           count = count + 1;
           // console.log("Feeding::getLastBreastFeed(): lastest breastfeed:", doc.data());
         });
     });
 
-    babyRef.collection('diapering').get().then((latestSnapshot) => {
+    await activityRef.orderBy("dateTime", "asc").get().then((latestSnapshot) => {
       latestSnapshot.forEach(doc => {
         count = count - 1;
         if(count == 0){
@@ -143,6 +148,7 @@ export class DiaperingPage {
           this.lastDiaperType = doc.data().type;
         };
       });
+    }).then(() => {
       this.updateDiaperingSummary();
     });
   }
@@ -261,8 +267,13 @@ export class DiaperingPage {
   }
 
   noteAlert(){
-    this.nAlert = this.noteAlertProvider.alert();
-    this.nAlert.present();
+    if(this.diaperNote){
+      this.nAlert = this.noteAlertProvider.alert(this.diaperNote);
+      this.nAlert.present();
+    } else {
+      this.nAlert = this.noteAlertProvider.alert();
+      this.nAlert.present();
+    }
 
     this.waitForAlertReturn().then((val) => {
       if(val == true){

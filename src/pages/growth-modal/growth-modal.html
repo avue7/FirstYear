@@ -1,0 +1,64 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title *ngIf="edit">Edit Growth Information</ion-title>
+    <ion-title *ngIf="!edit">Add Growth Information</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <form class="list-form" (ngSubmit)="addGrowth()">
+    <ion-list>
+      <ion-item>
+        <ion-label>Date</ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="growth.date" name="date"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Time</ion-label>
+        <ion-datetime displayFormat="hh:mm:ss A" [(ngModel)]="growth.time" name="time"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Weight: </ion-label>
+        <ion-input placeholder="__" type="number" [(ngModel)]="growth.weight" name="weight"></ion-input>
+        <ion-select [(ngModel)]="growth.weightUnit" name="weightUnit" interface="popover">
+          <ion-option selected="true" value="lb">lb</ion-option>
+          <ion-option value="kg">kg</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Height: </ion-label>
+        <ion-input placeholder="__" type="number" [(ngModel)]="growth.height" name="height"></ion-input>
+        <ion-select [(ngModel)]="growth.heightUnit" name="heightUnit" interface="popover">
+          <ion-option selected="true" value="ft">ft</ion-option>
+          <ion-option value="cm">cm</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Head (circumference): </ion-label>
+        <ion-input placeholder="__" type="number" [(ngModel)]="growth.head" name="head"></ion-input>
+        <ion-select [(ngModel)]="growth.headUnit" name="headUnit" interface="popover">
+          <ion-option selected="true" value="in">in</ion-option>
+          <ion-option value="cm">cm</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label color="gray!important">Notes</ion-label>
+          <p item-right (click)="noteAlert()">
+            <ion-icon name="clipboard"></ion-icon>
+            <ion-icon *ngIf="growthNote" color="green" name="checkmark"></ion-icon>
+          </p>
+      </ion-item>
+
+    </ion-list>
+    <button ion-button class="baby-button" type="submit">Save</button>
+    <!-- <button *ngIf="!edit" ion-button class="baby-button" type="submit">Add</button>
+    <button *ngIf="edit" ion-button class="baby-button" type="submit">Save</button> -->
+  </form>
+  <button ion-button class="baby-button" (click)="cancelGrowthModal()">Cancel</button>
+
+</ion-content>

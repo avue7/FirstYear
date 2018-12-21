@@ -1,0 +1,26 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Recurring Alarm</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <form  class="list-form" (ngSubmit)="addAlarm()">
+    <ion-item>
+      <ion-label>Set alarm for every ( hrs : mins ):</ion-label>
+      <ion-datetime displayFormat="H:mm" [(ngModel)]="notify.time" name="time"></ion-datetime>
+    </ion-item>
+    <button ion-button class="baby-button" type="submit">Set Alarm</button>
+  </form>
+  <button (click)="cancel()" class="baby-button" ion-button>Cancel</button>
+</ion-content>
+
+<!-- <ion-footer>
+
+    <button (click)="addNotifications()" ion-button color="primary" full>ADD ALARM</button>
+    <button (click)="cancelAll()" ion-button color="danger" full>CANCEL ALARM</button>
+
+</ion-footer> -->

@@ -98,8 +98,13 @@ export class BottlefeedingModalPage {
   }
 
   noteAlert(){
-    this.nAlert = this.noteAlertProvider.alert();
-    this.nAlert.present();
+    if(this.bottleNote){
+      this.nAlert = this.noteAlertProvider.alert(this.bottleNote);
+      this.nAlert.present();
+    } else {
+      this.nAlert = this.noteAlertProvider.alert();
+      this.nAlert.present();
+    }
 
     this.waitForAlertReturn().then((val) => {
       if(val == true){

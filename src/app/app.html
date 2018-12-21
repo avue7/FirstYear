@@ -5,32 +5,32 @@
       <div id="imgwrap">
         <img src="assets/icon/baby-with-diaper.png" style="width:80px;height:80px;" (click)="editBabyProfile()">
           <!-- For ages less than 1 -->
-          <h2 *ngIf="bdayYear < 1 && bdayMonth <= 1; else months">
+          <h4 *ngIf="bdayYear < 1 && bdayMonth <= 1; else months">
             {{babyName}} <br> {{bdayMonth}} month old
-          </h2>
+          </h4>
           <ng-template #months>
-            <h2 *ngIf="bdayYear < 1 && bdayMonth > 1; else year">
+            <h4 *ngIf="bdayYear < 1 && bdayMonth > 1; else year">
               {{babyName}} <br> {{bdayMonth}} months old
-            </h2>
+            </h4>
           </ng-template>
           <!-- Ages 1 or higher -->
           <ng-template #year>
-            <h2 *ngIf="bdayYear <= 1 && bdayMonth <= 1; else more">
+            <h4 *ngIf="bdayYear <= 1 && bdayMonth <= 1; else more">
               {{babyName}} <br> {{bdayYear}} year {{bdayMonth}} month old
-            </h2>
+            </h4>
           </ng-template>
           <ng-template #more>
-            <h2 *ngIf="bdayYear > 1 && bdayMonth > 1; else month">
+            <h4 *ngIf="bdayYear > 1 && bdayMonth > 1; else month">
               {{babyName}} <br> {{bdayYear}} years {{bdayMonth}} months old
-            </h2>
+            </h4>
           </ng-template>
           <ng-template #month>
-            <h2 *ngIf="bdayYear <= 1 && bdayMonth > 1; else years">
+            <h4 *ngIf="bdayYear <= 1 && bdayMonth > 1; else years">
               {{babyName}} <br> {{bdayYear}} year {{bdayMonth}} months old
-            </h2>
+            </h4>
           </ng-template>
           <ng-template #years>
-            <h2> {{babyName}} <br> {{bdayYear}} years {{bdayMonth}} month old </h2>
+            <h4> {{babyName}} <br> {{bdayYear}} years {{bdayMonth}} month old </h4>
           </ng-template>
       </div>
       <!-- <ng-template #dummy>

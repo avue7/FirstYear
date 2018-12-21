@@ -47,12 +47,15 @@ export class AuthServiceProvider {
   signInWithGoogle() {
 		console.log('Auth-Service::signInWithGoogle(): Sign in with google');
 		return this.googlePlus.login({
-			'webClientId': '396313115996-fsp0t0q7co5gqmrg1o1ek8udjqn82rl0.apps.googleusercontent.com',
-		}).then((res) => {
-			let googleCredential = firebase.auth.GoogleAuthProvider.credential(res.idToken);
-			this.afAuth.auth.signInWithCredential(googleCredential).then((response) => {
-				console.log("Successfully signed in with google plus");
-			});
+			'webClientId': '396313115996-fsp0t0q7co5gqmrg1o1ek8udjqn82rl0.apps.googleusercontent.com'
+    }).then((res) => {
+      console.log("REs", res);
+			let googleCredential = firebase.auth.GoogleAuthProvider.credential(res.idToken)
+			this.afAuth.auth.signInAndRetrieveDataWithCredential(googleCredential).then((response) => {
+				console.log("Successfully signed in with google plus", response);
+			}, error => {
+        console.log("Error validating credentials,", error);
+      });
 		}, error => {
 			console.log("Auth-Service::signInWithGoogle(): cannot sign in:", error);
 		});
@@ -61,22 +64,8 @@ export class AuthServiceProvider {
 		// return this.afAuth.auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(() => {
 		// 	return this.oauthSignIn(new firebase.auth.GoogleAuthProvider());
 		// });
+    // return this.oauthSignIn(new firebase.auth.GoogleAuthProvider());
   }
-
-	signInWithFacebook() {
-		console.log('Auth-Service::signInWithFacebook: Sign in with Facebook');
-		return this.oauthSignIn(new firebase.auth.FacebookAuthProvider().setCustomParameters({
-			auth_type: 'reauthenticate'
-		}));
-	}
-
-	signInWithTwitter() {
-		console.log("Auth-Service::signInWithTwitter(): Sign in with Twitter");
-		return this.oauthSignIn(new firebase.auth.TwitterAuthProvider().setCustomParameters({
-			force_login: 'true',
-			screen_name: 'true'
-		}));
-	}
 
   private oauthSignIn(provider: AuthProvider) {
 		return this.afAuth.auth.signInWithRedirect(provider).then(() => {
@@ -97,6 +86,21 @@ export class AuthServiceProvider {
 			});
 		});
   }
+
+	signInWithFacebook() {
+		console.log('Auth-Service::signInWithFacebook: Sign in with Facebook');
+		return this.oauthSignIn(new firebase.auth.FacebookAuthProvider().setCustomParameters({
+			auth_type: 'reauthenticate'
+		}));
+	}
+
+	signInWithTwitter() {
+		console.log("Auth-Service::signInWithTwitter(): Sign in with Twitter");
+		return this.oauthSignIn(new firebase.auth.TwitterAuthProvider().setCustomParameters({
+			force_login: 'true',
+			screen_name: 'true'
+		}));
+	}
 
 	resetPassword(emailAddress: any) {
 		this.afAuth.auth.sendPasswordResetEmail(emailAddress).then(() => {

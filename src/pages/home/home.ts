@@ -3,13 +3,20 @@ import { NavController, MenuController, NavParams, Platform} from 'ionic-angular
 import { LifoHistoryProvider } from '../../providers/lifo-history/lifo-history';
 import { UserProvider } from '../../providers/user/user';
 import { DatabaseProvider } from '../../providers/database/database';
+import { PopoverController } from 'ionic-angular';
+import { PopoverPage } from '../popover/popover';
+
+// Push implementation (testing)
+import { FcmProvider } from '../../providers/fcm/fcm';
+import { ToastController } from 'ionic-angular';
+import { Subject } from 'rxjs/Subject';
+import { tap } from 'rxjs/operators';
 
 
 // Pages:
 import { FeedingPage } from '../feeding/feeding';
 import { DiaperingPage } from '../diapering/diapering';
 import { SleepingPage } from '../sleeping/sleeping';
-import { PlayingPage } from '../playing/playing';
 import { GrowthPage } from '../growth/growth';
 import { CameraPage } from '../camera/camera';
 
@@ -25,7 +32,6 @@ export class HomePage {
       { component: FeedingPage, icon: 'custom-bottle' },
       { component: DiaperingPage, icon: 'custom-diaper' },
       { component: SleepingPage, icon: 'custom-sleeping-baby' },
-      { component: PlayingPage, icon: 'custom-cubes' },
       { component: GrowthPage, icon: 'custom-growth' },
       { component: CameraPage, icon: 'custom-camera' }
     ],
@@ -109,29 +115,38 @@ export class HomePage {
     private user: UserProvider,
     private db: DatabaseProvider,
     private navParams: NavParams,
-    private platform: Platform) {
-    this.waitForPlatFormReady().then(() => {
+    private platform: Platform,
+    private fcm: FcmProvider,
+    private toastCtrl: ToastController,
+    private popCtrl: PopoverController) {
+    // this.waitForPlatFormReady().then(() => {
       this.enableMenu();
-    }).then(() => {
+      //this.startFCMService();
+    // }).then(() => {
       this.init();
-    });
-
-    // this.activities = [
-    //   { type_: 'bottlefeeding', icon: 'custom-bottle' },
-    //   { type_: 'meal', icon: 'custom-cubes' },
-    //   { type_: 'diapering', icon: 'custom-diaper' },
-    //   { type_: 'sleeping', icon: 'custom-sleeping-baby' },
-    //   // {type: 'bottlefeeding', icon: 'custom-bottle'},
-    // ];
+    // });
   }
 
   async waitForPlatFormReady(){
     return new Promise(async resolve => {
       await this.platform.ready().then(() => {
-
+        resolve(true);
       });
-      resolve(true);
     });
+  }
+
+  startFCMService(){
+    this.fcm.getToken();
+    this.fcm.listenToNotifications().pipe(
+      tap(msg => {
+        // show a toast
+        const toast = this.toastCtrl.create({
+          message: msg.body,
+          duration: 3000
+        });
+        toast.present();
+      })
+    ).subscribe();
   }
   // ionViewDidLoad(){
   //   console.log("Home:: ionViewDidLoad() ran...");
@@ -139,16 +154,20 @@ export class HomePage {
   // }
 
   init(){
-    this.createHistoryObservables(this.user).then(async() => {
+    console.log("Init() begins......")
+    this.createHistoryObservables().then(async() => {
       await this.updateBottleSummary();
       await this.updateMealSummary();
       await this.updateDiaperingSummary();
       await this.updateBreastSummary();
       await this.updateSleepSummary();
+      console.log("Done updateing activities");
+    //});
     }).then(() => {
       this.hasToday = false;
       this.hasYesterday = false;
       this.hasMore = false;
+      console.log("Done resetting has variables:", this.hasToday, this.hasYesterday, this.hasMore);
     }).then(async() => {
       await this.groupTodayArray();
       // Then sort:
@@ -168,7 +187,6 @@ export class HomePage {
       };
     }).then(async() => {
       await this.groupMoreArray();
-      console.log("MORE HISTORY:", this.moreHistoryArray)
       if(this.hasMore){
         this.moreHistoryArray = await this.moreHistoryArray.sort((a,b) => {
           return (a.dateTime > b.dateTime ? -1 : a.dateTime < b.dateTime ? 1 : 0);
@@ -177,40 +195,51 @@ export class HomePage {
       };
     }).then(async() => {
       await this.checkForNoHistory();
+      console.log("Done checking for no history...");
+      console.log("------------- INIT FINISHED ------------");
     });
   }
 
-  async createHistoryObservables(user: any){
+  async createHistoryObservables(){
+    return new Promise(async resolve => {
+    console.log("Creating history observables, activitiesarray is", this.activitiesArray);
     for (let activity of this.activitiesArray){
       let activityRef: any;
       await this.db.getActivityReference(activity).then( async(_activityRef) => {
-        // console.log("1....database:: getActivityReference returned");
+         console.log("1....database:: getActivityReference returned", _activityRef);
         activityRef = _activityRef;
       }).then(async() => {
-        // console.log("2. Creating observable for <", activity, "> ....");
+        console.log("2. Creating observable for <", activity, "> ....");
         if(activity == "bottlefeeding"){
-          // console.log("3b) activity is bottlefeeding");
-          await this.db.createBottleFeedingHistoryObservable(user.uid, activityRef).then(async() => {
-            //await this.updateSummaryArray("bottlefeeding");
+          console.log("3b) activity is bottlefeeding");
+          await this.db.createBottleFeedingHistoryObservable(activityRef).then(async() => {
+            console.log("Done creating bottle history observable");
           });
         } else if(activity == "breastfeeding"){
-          // console.log("3b) activity is meal");
-          await this.db.createBreastFeedingHistoryObservable(user.uid, activityRef).then((retVal) => {
+          console.log("3b) activity is breast");
+          await this.db.createBreastFeedingHistoryObservable(activityRef).then((retVal) => {
+            console.log("Done creating breastfeeding history observable");
           });
         } else if(activity == "meal"){
-          // console.log("3b) activity is meal");
-          await this.db.createMealHistoryObservable(user.uid, activityRef).then((retVal) => {
+          console.log("3b) activity is meal");
+          await this.db.createMealHistoryObservable(activityRef).then((retVal) => {
+            console.log("Done creating meal history observable");
           });
-        } else if(activity == "diapering"){
-          await this.db.createDiaperingHistoryObservable(user.uid, activityRef).then((retVal) => {
+        }
+        else if(activity == "diapering"){
+          await this.db.createDiaperingHistoryObservable(activityRef).then((retVal) => {
+            console.log("Done creating diapering history observable");
           });
         } else if(activity == "sleeping"){
-          await this.db.createSleepHistoryObservable(user.uid, activityRef).then((retVal) => {
+          await this.db.createSleepHistoryObservable(activityRef).then((retVal) => {
+            console.log("Done creating sleeping history observable");
           });
         };
       });
-      // console.log("-----Done creating history observable-----");
     };
+    console.log("-----Done creating history observables-----");
+    resolve();
+    });
   }
 
   updateBottleSummary(){
@@ -482,6 +511,9 @@ export class HomePage {
     console.log("CLICKED ON DELETE EVENT", event);
     slidingItem.close();
     await this.db.deleteEvent(event).then(() => {
+      console.log("Done deleting calling init()");
+    }).then(() => {
+      console.log("Calling init()");
       this.init();
     });
   }
@@ -502,6 +534,15 @@ export class HomePage {
     console.log('Begin async operation', refresher);
     await this.init();
     refresher.complete();
+  }
+
+  // Settings: alarm, switch baby, etc.
+  popOverSettings(event: any){
+    console.log("Open settings clicked");
+    let popover = this.popCtrl.create(PopoverPage)
+    popover.present({
+      ev: event
+    });
   }
 }
 

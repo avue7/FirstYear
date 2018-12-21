@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, MenuController, ModalController } from 'ionic-angular';
+import { Nav, Platform, MenuController, ModalController, ToastController} from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Subscription} from 'rxjs/Subscription';
@@ -7,6 +7,8 @@ import { UserProvider } from '../providers/user/user';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { DatabaseProvider } from '../providers/database/database';
+import { FcmProvider } from '../providers/fcm/fcm';
+import { BabyProvider } from '../providers/baby/baby';
 
 // Pages:
 import { HomePage } from '../pages/home/home';
@@ -15,15 +17,16 @@ import { FeedingPage } from '../pages/feeding/feeding';
 import { DiaperingPage } from '../pages/diapering/diapering';
 import { SleepingPage } from '../pages/sleeping/sleeping';
 import { GrowthPage } from '../pages/growth/growth';
-import { PlayingPage } from '../pages/playing/playing';
 import { CreditsPage } from '../pages/credits/credits';
 import { CameraPage } from '../pages/camera/camera';
 import { EditBabyModalPage } from '../pages/edit-baby-modal/edit-baby-modal';
+import { AlarmsPage } from '../pages/alarms/alarms';
 
 import firebase from 'firebase';
 import 'firebase/firestore';
 import { async } from '@firebase/util';
 
+declare var cordova;
 
 @Component({
   templateUrl: 'app.html'
@@ -55,6 +58,7 @@ export class MyApp {
   activitiesArray: string[] = new Array("bottlefeeding", "breastfeeding", "meal", "diapering", "sleeping");
 
   myModal: any;
+  babyArray: any;
 
   constructor(public platform: Platform,
     public statusBar: StatusBar,
@@ -64,7 +68,11 @@ export class MyApp {
     private user: UserProvider,
     private googlePlus: GooglePlus,
     private db: DatabaseProvider,
-    private modal: ModalController) {
+    private modal: ModalController,
+    private fcm: FcmProvider,
+    private baby: BabyProvider,
+    private toastCtrl: ToastController
+    ) {
     this.initializeApp();
 
     this.pages = [
@@ -72,9 +80,9 @@ export class MyApp {
       { title: 'Feeding', component: FeedingPage, icon: 'custom-bottle' },
       { title: 'Diapering', component: DiaperingPage, icon: 'custom-diaper' },
       { title: 'Sleeping', component: SleepingPage, icon: 'custom-sleeping-baby' },
-      { title: 'Playing', component: PlayingPage, icon: 'custom-cubes' },
       { title: 'Growth', component: GrowthPage, icon: 'custom-growth' },
       { title: 'PhotoShoot', component: CameraPage, icon: 'custom-camera' },
+      { title: 'Alarms', component: AlarmsPage, icon: 'alarm' },
       { title: 'Credits', component: CreditsPage, icon: 'custom-cited'},
     ];
 
@@ -90,13 +98,55 @@ export class MyApp {
       // if(this.summaryArray.length != 0){
       //   this.summaryArray.splice(0, this.summaryArray.length);
       // };
-      await this.createAuthObservable();
+    }).then(() => {
+      this.createUserAuthObservable()
+      // this.createBabyObservable();
+    }).then(() => {
+      // For alarms
+      cordova.plugins.notification.local.on("cancel", notification => {
+        console.log("Local notification canceled: " + notification.id);
+
+        if(notification.id == 1){
+          cordova.plugins.notification.local.isScheduled(1, scheduled => {
+            console.log("Is id:", notification.id, "scheduled? ", scheduled ? 'Yes' : 'No');
+          });
+        } else if(notification.id == 2){
+          cordova.plugins.notification.local.isScheduled(2, scheduled => {
+            console.log("Is id:", notification.id, "scheduled? ", scheduled ? 'Yes' : 'No');
+          });
+        }
+
+        this.alarmCancelAlert(notification.id);
+      });
+
+      cordova.plugins.notification.local.on('clear', () => {
+        cordova.plugins.notification.local.clear(1);
+      });
     });
 
   }
 
-  createAuthObservable(){
-    return new Promise(resolve => {
+  alarmCancelAlert(id: any){
+    let message: any;
+    let babyFirstName = this.baby.getBabyFirstName();
+
+    if(id === 1){
+      // BottleFeeding
+      message = babyFirstName + " recurring alarm for bottle-feeding was turned off.";
+    } else if(id === 2){
+      message = babyFirstName + " recurring alarm for breast-feeding was turned off.";
+    };
+
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 4000,
+      position: "bottom"
+    });
+    toast.present();
+  }
+
+  async createUserAuthObservable(){
+    return new Promise(async resolve => {
       // Logic to check if users are logged in or not.
       this.userSubscription = this.auth.afAuth.authState.subscribe( user => {
         if(user){
@@ -104,76 +154,82 @@ export class MyApp {
             this.user.setUserEmail(user.email);
           };
           if(user.uid){
-            this.user.setUserId(user.uid).then(() =>{
-              this.db.setNewUserNewBaby(user.uid).then(retVal => {
-                // User decided to add baby later
-                if(retVal == "later"){
-                  this.bdayYear = 0;
-                  this.bdayMonth = 0;
-                  this.babyName = "No baby added yet!";
-                  resolve();
-                }
-                // No baby file found but user added baby
-                else {
-                  // Create a baby observable as soon as the user adds him or her
-                  console.log("App:: Creating baby observable...");
-                  this.db.createBabyObservable(user.uid).then((retVal) => {
-                    this.bdayYear = this.db.bdayYear;
-                    this.bdayMonth = this.db.bdayMonth;
-                    this.babyName = this.db.babyName;
-                    this.babyObservableDone = true;
-                    console.log("APP:: done creating baby observable!");
-                    this.nav.setRoot(HomePage);
-                  });
-                }
+            this.user.setUserId(user.uid).then(async () =>{
+              await this.db.setNewUser(user).then( async retVal => {
+                console.log("Set new user finished")
+                resolve(this.createBabyObservable());
               });
             });
-          } else {
-            console.log("App::initializeApp(): No user exists...going to WelcomePage.");
-            this.nav.setRoot(WelcomePage);
-            resolve();
-          };
+          }
+        } else {
+          console.log("App::initializeApp(): No user exists...going to WelcomePage.");
+          resolve(this.nav.setRoot(WelcomePage));
         };
+      }, error => {
+        console.log("Error while subscribing to authstate", error);
       });
     });
+  }
+
+  createBabyObservable(){
+    return new Promise(async resolve => {
+      console.log("Creating baby observable");
+      let currentBabyRef = await this.db.getCurrentBabyRef();
+      await currentBabyRef.onSnapshot(async (snapShot) => {
+        let count: number = 0;
+        let skip: boolean = false;
+        let babyArray = [];
+
+        await snapShot.forEach(async (doc) => {
+          count = count + 1;
+          let babyObject = doc.data();
+          babyArray.push(babyObject);
+
+          if(babyObject.current == true){
+            console.log("Found baby to use");
+            this.baby.setBabyObject(babyObject);
+            await this.db.calculateAge();
+            this.bdayYear = this.db.bdayYear;
+            this.bdayMonth = this.db.bdayMonth;
+            this.babyName = this.baby.getBabyFirstName();
+            skip = true;
+          }
+        });
+        // Update the babies array in the db
+        console.log("Setting babies in db");
+        this.db.setBabiesArray(babyArray);
+        // If we have only one baby use that baby, else ask user which
+        // baby to use.
+        if (count == 0 && skip == false){
+          console.log("Creating first baby file");
+          this.db.createNewBaby().then(async () => {
+            await this.db.calculateAge();
+            this.bdayYear = this.db.bdayYear
+            this.bdayMonth = this.db.bdayMonth;
+            this.babyName = this.baby.getBabyFirstName();
+            this.db.setCurrentBabyFlag(this.babyName);
+            resolve(this.nav.setRoot(HomePage));
+          });
+        };
+        console.log("Done with baby observable going to home page");
+        resolve(this.nav.setRoot(HomePage));
+      });
+    });
+  }
+
+  setYearMonth(year: any, month: any){
+    this.bdayYear = year;
+    this.bdayMonth = month;
+    this.babyName = this.baby.getBabyFirstName();
   }
 
   // NOTE: working on this...settings are lagging away by one set
   async editBabyProfile(){
     console.log("Editing baby profile");
-    this.db.getUserReference().then((currentUserRef) => {
-      // console.log("1");
-      this.db.getBabyObject().then((babyObject) => {
-        // console.log("2");
-        this.openModal(babyObject).then(async (baby) => {
-          // console.log("3. baby birthday", baby.birthday);
-          await currentUserRef.doc(baby.firstName).set(baby);
-          this.bdayYear = this.db.bdayYear;
-          // console.log("4. baby birthday", this.bdayYear);
-          this.bdayMonth = this.db.bdayMonth;
-          this.babyName = this.db.babyName;
-        });
-      });
-    });
-  }
-
-  openModal(babyObject: any) : any{
-    return new Promise(resolve => {
-      this.myModal = this.modal.create(EditBabyModalPage, {babyObject: babyObject});
-      this.myModal.present();
-      resolve(this.waitForReturn());
-    });
-  }
-
-  // This method serves as a condition while loop and waits for the
-  // modal to dismiss before it goes to the next line of the caller.
-  waitForReturn() : any{
-    return new Promise(resolve => {
-      this.myModal.onDidDismiss( data => {
-        let babyObject = data;
-        // console.log("This babyObject_", babyObject);
-        resolve(babyObject);
-      });
+    this.db.editBabyProfile().then(() => {
+      this.bdayYear - this.db.bdayYear;
+      this.bdayMonth = this.db.bdayMonth;
+      this.babyName = this.db.babyName;
     });
   }
 
@@ -200,6 +256,8 @@ export class MyApp {
 	  this.nav.setRoot(WelcomePage);
     this.activePage = this.pages[0];
     this.summaryArray.splice(0, this.summaryArray.length);
+    //this.userSubscription.unsubscribe();
+    //this.db.removeSubs();
     console.log("App::logOut(): User logged out");
   }
 

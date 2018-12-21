@@ -121,7 +121,7 @@ export class LifoHistoryProvider {
       // IF activity is bottlefeeding
       let outputString: any;
       let durationString = this.convertDuration(x.duration);
-      console.log("x duration is", x.duration);
+      // console.log("x duration is", x.duration);
 
       if(activity == 'bottlefeeding'){
         if(x.duration) {
@@ -315,6 +315,10 @@ export class LifoHistoryProvider {
       };
     };
 
+    if(!durationString){
+      console.log("Sleep duration string is empty");
+      durationString += "0 sec";
+    }
     return durationString;
   }
 }

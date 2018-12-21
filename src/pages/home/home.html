@@ -1,9 +1,19 @@
 <ion-header>
-  <ion-navbar no-border-bottom color="navbarColor">
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title> Home </ion-title>
+  <ion-navbar no-border-bottom color="navbarColor" primary>
+    <ion-buttons left>
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-title left> Home </ion-title>
+
+    <ion-buttons right>
+      <button (click)="popOverSettings($event)" ion-button large>
+        <!-- <ion-icon name="settings"></ion-icon> -->
+        <ion-icon name="settings"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 
   <!-- SEGMENT BEGINS -->
@@ -134,7 +144,7 @@
             <ul>
               <ion-item-sliding #slidingItem class="summary" *ngIf="x.activity=='sleeping'">
                 <ion-item>
-                  <p><b>Sleeping</b></p>
+                  <p><b>Sleep</b></p>
                   <p item right> {{x.output}} </p>
                   <p *ngIf="x.note">Note: {{x.note}} </p>
                 </ion-item>

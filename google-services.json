@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "396313115996",
+    "firebase_url": "https://firstyear-9823a.firebaseio.com",
+    "project_id": "firstyear-9823a",
+    "storage_bucket": "firstyear-9823a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396313115996:android:60ab08fe125e03ef",
+        "android_client_info": {
+          "package_name": "com.FirstYear"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "396313115996-r86nianf8guipqofs83bbmtpakadd92g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.FirstYear",
+            "certificate_hash": "c3329fbc4d44c161a0eb25d85e1e85da7d07767a"
+          }
+        },
+        {
+          "client_id": "396313115996-fsp0t0q7co5gqmrg1o1ek8udjqn82rl0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtvvltxxBVXjUd7q4cC8XcC0NItyCzbl8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "396313115996-fsp0t0q7co5gqmrg1o1ek8udjqn82rl0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

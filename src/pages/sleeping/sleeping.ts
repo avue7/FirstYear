@@ -8,6 +8,7 @@ import { NoteAlertProvider } from '../../providers/note-alert/note-alert';
 import { LifoHistoryProvider } from '../../providers/lifo-history/lifo-history';
 import { DiaperingModalPage } from '../diapering-modal/diapering-modal';
 import { SleepingModalPage } from '../sleeping-modal/sleeping-modal';
+import { CalculateSleepDurationProvider } from '../../providers/calculate-sleep-duration/calculate-sleep-duration';
 
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Rx';
@@ -25,7 +26,7 @@ export class SleepingPage {
   dateTimeEnd: any;
   timerStarted: boolean;
   sleeping: any = {
-    date: '',
+    dateStart: '',
     time: '',
     dateEnd: '',
     timeEnd: '',
@@ -36,7 +37,7 @@ export class SleepingPage {
   momentsAgoTime: any;
   momentsAgoSubscription: any;
   momentsAgo: any;
-  date: any = moment().format();
+  dateStart: any = moment().format();
   time: any = moment().format();
 
   nAlert: any;
@@ -44,6 +45,11 @@ export class SleepingPage {
   SleepingMomentsAgoSubscription: any;
   SleepingMomentsAgoTime: any;
   SleepingMomentsAgo: any;
+
+  WokeupMomentsAgoSubscription: any;
+  WokeupMomentsAgoTime: any;
+  WokeupMomentsAgo: any;
+
 
   todayHistoryArray: any;
   yesterdayHistoryArray: any;
@@ -60,8 +66,9 @@ export class SleepingPage {
     private modal: ModalController,
     private noteAlertProvider: NoteAlertProvider,
     private lifoHistory: LifoHistoryProvider,
-    private navParams: NavParams) {
-    this.sleeping.date = moment().format();
+    private navParams: NavParams,
+    private calculateSleepDuration: CalculateSleepDurationProvider) {
+    this.sleeping.dateStart = moment().format();
     this.sleeping.time = moment().format();
     this.SleepingMomentsAgo = '';
     this.sleepingNote = null;
@@ -96,9 +103,10 @@ export class SleepingPage {
 
     // Split today with time to get time
     let splitTimeArray = today.split(' ');
+    let splitDateOnly = splitTimeArray[0];
     let splitTimeOnly = splitTimeArray[1];
 
-    this.checkIfSleepingNoteExist(splitTimeOnly).then(object => {
+    this.checkIfSleepingNoteExist(splitTimeOnly, splitDateOnly).then(object => {
       this.db.saveBabyActivity("sleeping", object).then(() => {
         this.sleepingNote = null;
         this.getLastSleeping();
@@ -111,7 +119,7 @@ export class SleepingPage {
     });
   }
 
-  checkIfSleepingNoteExist(splitTimeOnly: any){
+  checkIfSleepingNoteExist(splitTimeOnly: any, splitDateOnly: any){
     return new Promise(resolve => {
       let object = {};
       let pausedDateTime: any;
@@ -137,6 +145,7 @@ export class SleepingPage {
         object = {
           activity: 'sleeping',
           dateTime: this.dateTimeStart,
+          dateStart: splitDateOnly,
           note: this.sleepingNote,
           time: splitTimeOnly,
           dateEnd: splitDate,
@@ -146,6 +155,7 @@ export class SleepingPage {
       }else {
         object = {
           activity: 'sleeping',
+          dateStart: splitDateOnly,
           dateTime: this.dateTimeStart,
           time: splitTimeOnly,
           dateEnd: splitDate,
@@ -157,44 +167,65 @@ export class SleepingPage {
     });
   }
 
-  getLastSleeping(){
+  async getLastSleeping(){
     console.log("Getting last sleeping");
     this.SleepingMomentsAgo = '';
     let count = 0;
-    let babyRef = this.db.getBabyReference();
-    babyRef.collection('sleeping')
-      // .where('date', '==', 'date')
-      .get().then((latestSnapshot) => {
+    let activityRef;
+    await this.db.getActivityReference("sleeping").then(_activityRef => {
+        activityRef = _activityRef;
+    });
+
+    // Use orderBy in firebase and create the Indexes within the firebase console
+    // to enable query by ascending or descending order. The error log will help you
+    // create this following the link.
+    await activityRef.get().then((latestSnapshot) => {
         latestSnapshot.forEach(doc => {
           count = count + 1;
           // console.log("Feeding::getLastBreastFeed(): lastest breastfeed:", doc.data());
         });
     });
 
-    babyRef.collection('sleeping').get().then((latestSnapshot) => {
+
+    activityRef.orderBy("dateTime", "asc").get().then((latestSnapshot) => {
       latestSnapshot.forEach(doc => {
         count = count - 1;
         if(count == 0){
           // If last breastfeeding exists
           if(this.lastSleeping){
+            this.WokeupMomentsAgoSubscription.unsubscribe();
             this.SleepingMomentsAgoSubscription.unsubscribe();
           };
 
+          let dateEnd = doc.data().dateEnd;
+          let splitDateEnd = dateEnd.split('-');
+          let newDateEnd = splitDateEnd[2] + "-" + splitDateEnd[0] + "-" + splitDateEnd[1];
+          let dateEndTime = newDateEnd + " " + doc.data().timeEnd;
+
+          console.log("dateEndTime ", dateEndTime);
+
           // NOTE: MOMENTS AGO HACK...
           this.SleepingMomentsAgoTime = moment(doc.data().dateTime, 'YYYY-MM-DD HH:mm:ss');
-          this.createMomentObservable(this.SleepingMomentsAgoTime);
+          this.WokeupMomentsAgoTime = moment(dateEndTime, 'YYYY-MM-DD HH:mm:ss');
+          this.createMomentObservable(this.SleepingMomentsAgoTime, this.WokeupMomentsAgoTime);
 
           this.lastSleeping = this.ft.formatDateTimeStandard(doc.data().dateTime);
-          this.lastSleepDuration = this.lifoHistory.convertDuration(doc.data().duration);
+          this.lastSleepDuration = doc.data().duration;
+          console.log("Last sleepduration", this.lastSleepDuration);
+          console.log("doc duration", doc.data().duration)
         };
       });
       this.updateSleepingSummary();
     });
   }
 
-  createMomentObservable(momentsAgoTime : any){
+  createMomentObservable(momentsAgoTime : any, wokeupMomentsAgoTime: any){
     this.SleepingMomentsAgoSubscription = Observable.interval(1000).subscribe(x => {
         this.SleepingMomentsAgo = momentsAgoTime.startOf('seconds').fromNow();
+    });
+
+    this.WokeupMomentsAgoSubscription = Observable.interval(1000).subscribe(x => {
+        this.WokeupMomentsAgo = wokeupMomentsAgoTime.startOf('seconds').fromNow();
     });
   }
 
@@ -217,12 +248,13 @@ export class SleepingPage {
   }
 
   manuallyAddSleeping(){
-    this.openSleepingModal().then((sleeping) => {
+    this.openSleepingModal().then(async (sleeping) => {
       if (sleeping == undefined){
         console.log("Sleeping::manualAdd(): user canceled modal");
       } else {
         // Extract only the date
-        let date = this.getDate(sleeping.date);
+        let date = this.getDate(sleeping.dateStart);
+        // let date = this.sleeping.dateStart;
         console.log("SLeeping::date is: ", date);
         let dateEnd = this.getDate(sleeping.dateEnd);
         console.log("SLeeping::dateEnd is: ", dateEnd);
@@ -236,49 +268,14 @@ export class SleepingPage {
         /////////////////////////////////////////////////////////////////
         // String up date and time and call the method to standardize the time
         let dateTime = date + " " + timeStart;
-        let dateTimeEnd = dateEnd + " " + timeEnd;
 
-        // Need to get the distance of the day start and day end
-        let sleepDurationMoment = moment(dateTime, "MM-DD-YYYY HH:mm:ss").diff(moment(dateTimeEnd, "MM-DD-YYYY HH:mm:ss"));
-        let sleepDuration = moment.duration(sleepDurationMoment);
-        // console.log("Days:", sleepDuration.days(), ", Hours:", sleepDuration.hours(), ", Minutes:", sleepDuration.minutes(), ", Seconds:", sleepDuration.seconds());
+        // let dateStartSplit = date.split('-');
+        // let newDateStart = dateStartSplit[1] + "-" + dateStartSplit[2] + "-" + dateStartSplit[0];
+        let sleepDurationString: any;
 
-        let sleepDurationString: any
-        if(sleepDuration.months()){
-          if(Math.abs(sleepDuration.months()) == 1){
-            sleepDurationString = Math.abs(sleepDuration.months()) + " month";
-          } else {
-            sleepDurationString = Math.abs(sleepDuration.months()) + " months";
-          };
-        }
-        if(sleepDuration.days()){
-          if(Math.abs(sleepDuration.days()) == 1){
-            sleepDurationString = Math.abs(sleepDuration.days()) + " day";
-          } else {
-            sleepDurationString = " " + Math.abs(sleepDuration.days()) + " days";
-          };
-        }
-        if(sleepDuration.hours()){
-          if(Math.abs(sleepDuration.hours()) == 1){
-            sleepDurationString = Math.abs(sleepDuration.hours()) + " hr";
-          } else {
-            sleepDurationString = " " + Math.abs(sleepDuration.hours()) + " hrs";
-          };
-        }
-        if(sleepDuration.minutes()){
-          if(Math.abs(sleepDuration.minutes()) == 1){
-            sleepDurationString = Math.abs(sleepDuration.minutes()) + " min";
-          } else {
-            sleepDurationString = " " + Math.abs(sleepDuration.minutes()) + " mins";
-          };
-        }
-        if(sleepDuration.seconds()){
-          if(Math.abs(sleepDuration.seconds()) == 1){
-            sleepDurationString = Math.abs(sleepDuration.seconds()) + " sec";
-          } else {
-            sleepDurationString = " " + Math.abs(sleepDuration.seconds()) + " secs";
-          };
-        }
+        await this.calculateSleepDuration.calculateDuration(sleeping).then((duration) => {
+          sleepDurationString = duration;
+        });
 
         let manualObject = {}
 
@@ -287,8 +284,9 @@ export class SleepingPage {
             activity: 'sleeping',
             dateTime: dateTime,
             note: sleeping.note,
+            dateStart: date,
             time: timeStart,
-            dateEnd: dateTimeEnd,
+            dateEnd: dateEnd,
             timeEnd:  timeEnd,
             duration: sleepDurationString
           }
@@ -296,8 +294,9 @@ export class SleepingPage {
           manualObject = {
             activity: 'sleeping',
             dateTime: dateTime,
+            dateStart: date,
             time: timeStart,
-            dateEnd: dateTimeEnd,
+            dateEnd: dateEnd,
             timeEnd:  timeEnd,
             duration: sleepDurationString
           }
@@ -367,9 +366,13 @@ export class SleepingPage {
   }
 
   noteAlert(){
-    this.nAlert = this.noteAlertProvider.alert();
-    this.nAlert.present();
-
+    if(this.sleepingNote){
+      this.nAlert = this.noteAlertProvider.alert(this.sleepingNote);
+      this.nAlert.present();
+    } else {
+      this.nAlert = this.noteAlertProvider.alert();
+      this.nAlert.present();
+    }
     this.waitForAlertReturn().then((val) => {
       if(val == true){
         console.log("THIS sleepNote is true: ", val);

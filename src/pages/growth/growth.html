@@ -3,10 +3,122 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title> Growth </ion-title>
+    <ion-title> Growth History</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content no-border-top>
+  <p class="center"  *ngIf="lastGrowth;else none">
+    <i class="GrowthMomentsAgo"><b>Last Growth Info: about {{GrowthMomentsAgo}}</b></i>
+    <br>
+    <i> {{lastGrowth}}</i>
+    <br>
+    <i> {{lastGrowthOutput}} </i>
+    <br>
+  </p>
+  <ng-template #none>
+    <p class="center">
+      <i>Last Growth Info: No records of any growth info yet! </i>
+    </p>
+  </ng-template>
 
+  <ion-list>
+    <div class="bottle-summary">
+      <!-- <div *ngIf="noHistoryYet">
+        <div class="divider-title"> No History Yet! </div>
+      </div> -->
+
+      <div *ngIf="hasToday">
+        <div class="divider-title"> Today </div>
+        <div  class="timeline" *ngFor="let x of todayHistoryArray">
+          <ul>
+            <ion-item-sliding #slidingItem class="summary">
+              <ion-item>
+                <p><b>{{x.time}}</b></p>
+                <p item right> {{x.output}} </p>
+                <p *ngIf="x.note">Note: {{x.note}} </p>
+              </ion-item>
+              <ion-item-options side="right">
+                <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, x)">
+                  <ion-icon large name="trash"></ion-icon>
+                  Delete
+                </button>
+              </ion-item-options>
+              <ion-item-options side="left">
+                <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, x)">
+                  <ion-icon large name="more"></ion-icon>
+                  Edit
+                </button>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ul>
+        </div>
+      </div>
+
+      <div *ngIf="hasYesterday">
+        <div class="divider-title"> Yesterday </div>
+        <div  class="timeline" *ngFor="let x of yesterdayHistoryArray">
+          <ul>
+            <ion-item-sliding #slidingItem class="summary">
+              <ion-item>
+                <p><b>{{x.time}}</b></p>
+                <p item right> {{x.output}} </p>
+                <p *ngIf="x.note">Note: {{x.note}} </p>
+              </ion-item>
+              <ion-item-options side="right">
+                <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, x)">
+                  <ion-icon large name="trash"></ion-icon>
+                  Delete
+                </button>
+              </ion-item-options>
+              <ion-item-options side="left">
+                <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, x)">
+                  <ion-icon large name="more"></ion-icon>
+                  Edit
+                </button>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ul>
+        </div>
+      </div>
+
+      <div *ngIf="hasMore">
+        <ion-item-group *ngFor="let x of moreHistoryArray | groupby: 'date'">
+          <div  class="divider-title">
+            {{ x.key | moment:'ll' }}
+          </div>
+          <div  class="timeline" *ngFor="let event of x.list">
+            <ul>
+              <ion-item-sliding #slidingItem class="summary">
+                <ion-item>
+                  <p><b>{{event.time}}</b></p>
+                  <p item right> {{event.output}}</p>
+                  <p *ngIf="event.note">Note: {{event.note}} </p>
+                </ion-item>
+                <ion-item-options side="right">
+                  <button color="danger" ion-button icon-only (click)="deleteEvent(slidingItem, event)">
+                    <ion-icon large name="trash"></ion-icon>
+                    Delete
+                  </button>
+                </ion-item-options>
+                <ion-item-options side="left">
+                  <button class="timer" ion-button icon-only (click)="editEvent(slidingItem, event)">
+                    <ion-icon large name="more"></ion-icon>
+                    Edit
+                  </button>
+                </ion-item-options>
+              </ion-item-sliding>
+            </ul>
+          </div>
+        </ion-item-group>
+      </div>
+
+    </div>
+  </ion-list>
+
+  <ion-fab right bottom>
+    <button ion-fab class="timer" (click)="addGrowth()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
 </ion-content>

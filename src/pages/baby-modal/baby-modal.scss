@@ -23,9 +23,26 @@
       height: 100%;
     }
 
-    ion-row {
-      align-items: center;
-      text-align: center;
+    ion-input{
+      input {
+        text-align: right;
+        ::-webkit-input-placeholder {
+          text-align: right;
+        }
+      }
+    }
+
+    .item-datetime ion-datetime {
+      text-align: right !important;
+    }
+
+    ion-select{
+      select {
+        text-align: right;
+        ::-webkit-input-placeholder {
+          text-align: right;
+        }
+      }
     }
 
     .baby-button {
