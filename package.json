@@ -32,6 +32,7 @@
     "@ultimate/ngxerrors": "^1.4.0",
     "angularfire2": "^5.1.0",
     "cordova-android": "7.1.1",
+    "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-browsertab": "^0.2.0",
     "cordova-plugin-buildinfo": "^2.0.2",
     "cordova-plugin-compat": "^1.2.0",
@@ -83,10 +84,10 @@
         "ANDROID_HOST": " ",
         "ANDROID_PATHPREFIX": "/"
       },
-      "cordova-plugin-local-notification": {},
       "cordova-plugin-firebase": {},
       "cordova-universal-links-plugin": {},
-      "cordova-plugin-nativestorage": {}
+      "cordova-plugin-nativestorage": {},
+      "cordova-plugin-local-notification": {}
     },
     "platforms": [
       "android"

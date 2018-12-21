@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, MenuController, ModalController } from 'ionic-angular';
+import { Nav, Platform, MenuController, ModalController, ToastController} from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Subscription} from 'rxjs/Subscription';
@@ -26,6 +26,7 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 import { async } from '@firebase/util';
 
+declare var cordova;
 
 @Component({
   templateUrl: 'app.html'
@@ -69,7 +70,8 @@ export class MyApp {
     private db: DatabaseProvider,
     private modal: ModalController,
     private fcm: FcmProvider,
-    private baby: BabyProvider
+    private baby: BabyProvider,
+    private toastCtrl: ToastController
     ) {
     this.initializeApp();
 
@@ -99,8 +101,35 @@ export class MyApp {
     }).then(() => {
       this.createUserAuthObservable()
       // this.createBabyObservable();
+    }).then(() => {
+      // For alarms
+      cordova.plugins.notification.local.on("cancel", notification => {
+        console.log("Local notification canceled: " + notification.id);
+
+        cordova.plugins.notification.local.isScheduled(1, scheduled => {
+          console.log("Is id:", notification.id, "scheduled? ", scheduled ? 'Yes' : 'No');
+        });
+
+        this.alarmCancelAlert(notification.id);
+      });
     });
 
+  }
+
+  alarmCancelAlert(id: any){
+    let message: any;
+    let babyFirstName = this.baby.getBabyFirstName();
+
+    if(id === 1){
+      // BottleFeeding
+      message = babyFirstName + " recurring alarm for bottle-feeding was turned off.";
+    }
+
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 
   async createUserAuthObservable(){

@@ -8,14 +8,6 @@ import * as moment from 'moment';
   templateUrl: 'alarms-modal.html',
 })
 export class AlarmsModalPage {
-  notifyTime: any
-  notifications: any[] = [];
-  days: any[];
-  chosenHours: number;
-  chosenMinutes: number;
-
-  hourvalues: any[] = [0,13,14,15,16,17,18,19,20,21,22,23,24];
-
   notify: any = {
     time: '2:00'
   }
@@ -26,43 +18,39 @@ export class AlarmsModalPage {
     private localNotifications: LocalNotifications,
     private platform: Platform,
     private view: ViewController) {
-      // this.notifyTime = moment(new Date()).format();
-      // this.notify.time = moment(new Date()).format();
-      // this.chosenHours = new Date().getHours();
-      // this.chosenMinutes = new Date().getMinutes();
-      let passInObject = this.navParams.get('object');
 
-      if(passInObject){
-        console.log("passed in time is", passInObject.time);
-        this.notify.time = passInObject.time;
-      } else {
-        // this.notify.time = moment().format("H:mm");
-      }
+    let passInObject = this.navParams.get('object');
+    if(passInObject){
+      console.log("passed in time is", passInObject.time);
+      this.notify.time = passInObject.time;
+    };
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad AlarmsModalPage');
   }
 
-  timeChange(time){
-    this.chosenHours = time.hour.value;
-    this.chosenMinutes = time.minute.value;
-  }
-
-
   addAlarm(){
+    let alarmObject: any = {};
+
     let splitTime = this.notify.time.split(':');
 
     let noZeroHour: any;
+    let noZeroMin: any;
 
     if(splitTime[0].charAt(0) === "0"){
       noZeroHour = splitTime[0].substr(1);
+      alarmObject._hrs = noZeroHour;
+    } else {
+      alarmObject._hrs = splitTime[0];
     }
 
-    let alarmObject = {
-      _hrs: noZeroHour,
-      _mins: splitTime[1]
-    };
+    if(splitTime[1].charAt(0) === "0"){
+      noZeroMin = splitTime[1].substr(1);
+      alarmObject._mins = noZeroMin;
+    } else {
+      alarmObject._mins = splitTime[1];
+    }
 
     this.view.dismiss(alarmObject);
   }
