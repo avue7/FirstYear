@@ -70,13 +70,10 @@ export class AlarmsPage {
 
     this.checkIfAlarmExist("bottlefeeding").then(retVal => {
       if(retVal === false){
-        this.bottleFeedingAlarmIsOn = false;
         if(this.hrs == undefined && this.mins == undefined){
           this.bottleAlarmDisable = true;
         }
-      } else  {
-        this.bottleFeedingAlarmIsOn = true;
-      }
+      };
     });
   }
 
@@ -89,7 +86,15 @@ export class AlarmsPage {
           console.log("Alarm exists");
           querySnapshot.forEach((doc) => {
             this.bottleAlarm = doc.data().alarm;
-            this.bottleFeedingAlarmIsOn = doc.data().status;
+
+            let status = doc.data().status;
+            if(status == 'on'){
+              this.bottleFeedingAlarmIsOn = true;
+            } else {
+              this.bottleFeedingAlarmIsOn = false;
+            }
+            console.log("Bottle alarm is on", this.bottleFeedingAlarmIsOn);
+
             this.bottleAlarmExists = true;
             console.log("Bottle alarm from database is", this.bottleAlarm);
 
@@ -100,6 +105,7 @@ export class AlarmsPage {
         } else {
           console.log("Alarm does not exists");
           this.bottleAlarmExists = false;
+          this.bottleFeedingAlarmIsOn = false;
           resolve(false);
         };
       });
@@ -109,22 +115,61 @@ export class AlarmsPage {
 
   editBottleFeedingAlarm(){
     console.log("Editing feeding alarm");
-    this.openBottleAlarmModal().then(bottleAlarm => {
+    this.openBottleAlarmModal().then(async bottleAlarm => {
       let object: any;
       object = bottleAlarm;
       if(bottleAlarm != undefined){
         console.log("bottleAlarm is", bottleAlarm);
 
-        if(object._hrs != "0"){
-          this.hrs = object._hrs;
-        } else {
-          this.hrs = undefined;
-        }
+        // IF hrs and mins from modal is different then we need to update
+        // alarm in the database and also need to cancel alarm and restart it.
+        if(this.hrs != object._hrs || this.mins != object._mins){
+          console.log("HRS and MINS returned from modal are different.")
 
-        if(object._mins != "0"){
-          this.mins = object._mins;
-        } else {
-          this.mins = undefined;
+          if(object._hrs != "0"){
+            this.hrs = object._hrs;
+          } else {
+            this.hrs = undefined;
+          }
+
+          if(object._mins != "0"){
+            this.mins = object._mins;
+          } else {
+            this.mins = undefined;
+          }
+
+          let additionalTime: number = 0;
+
+          if(this.hrs != undefined){
+            additionalTime += ((parseInt(this.hrs, 10)) * 60);
+          }
+
+          if(this.mins != undefined){
+            additionalTime += parseInt(this.mins, 10);
+          }
+
+          let alarmRef: any;
+
+          await this.getAlarmReference('bottlefeeding').then((ref) => {
+            alarmRef = ref;
+          });
+
+          let triggerObject: any = {
+            every: additionalTime,
+            unit: "minute"
+          };
+
+          await alarmRef.get().then(querySnapshot => {
+            querySnapshot.forEach((doc) => {
+              doc.ref.update({
+                "alarm.trigger": triggerObject
+              }).then((suc) =>{
+                console.log("Done updating trigger in database");
+              });
+            });
+          });
+
+          this.scheduleNotification(additionalTime, "bottlefeeding");
         }
 
         this.bottleAlarmDisable = false;
@@ -132,6 +177,8 @@ export class AlarmsPage {
         if(this.bottleFeedingAlarmIsOn === false){
           this.toggleBottleFeedingAlarm();
         };
+
+
 
         // let additionalTime: number = 0;
         //
@@ -150,6 +197,12 @@ export class AlarmsPage {
       } else {
         console.log("User cancel bottle feed alarm modal");
       }
+    });
+  }
+
+  updateAlarm(){
+    cordova.plugins.notification.local.update({
+      id: 1,
     });
   }
 
@@ -192,12 +245,16 @@ export class AlarmsPage {
             console.log("Is it scheduled? ", scheduled ? 'Yes' : 'No');
           });
 
+          let babyFirstName = this.baby.getBabyFirstName();
+
           if(suc){
-            let toastCtrl = thiss.toastasaffdsds
-          }
+            let toast = this.toastCtrl.create({
+              message: babyFirstName + "'s recurring alarm for bottle-feeding was turned on.",
+              duration: 3000
+            });
+            toast.present();
+          };
         })
-
-
       });
     };
 
@@ -224,20 +281,8 @@ export class AlarmsPage {
       } else {
         await this.turnOn("bottlefeeding");
         console.log("2. Turning bottle feeding alarm on", this.bottleFeedingAlarmIsOn)
-
-        let additionalTime: number = 0;
-
-        if(this.hrs != undefined){
-          additionalTime += ((parseInt(this.hrs, 10)) * 60);
-        }
-
-        if(this.mins != undefined){
-          additionalTime += parseInt(this.mins, 10);
-        }
-
-        this.scheduleNotification(additionalTime, "bottlefeeding");
       };
-    }
+    };
   }
 
   async turnOff(activity: any){
@@ -277,6 +322,18 @@ export class AlarmsPage {
           });
         });
       });
+
+      let additionalTime: number = 0;
+
+      if(this.hrs != undefined){
+        additionalTime += ((parseInt(this.hrs, 10)) * 60);
+      }
+
+      if(this.mins != undefined){
+        additionalTime += parseInt(this.mins, 10);
+      }
+
+      this.scheduleNotification(additionalTime, "bottlefeeding");
 
       resolve(this.bottleFeedingAlarmIsOn = true);
     });
