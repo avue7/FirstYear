@@ -37,7 +37,7 @@ Users might miss or forget to record a bottlefeeding event. When this happens, u
 <img src="Readme_screenshots/bottlefeeding.png" width="400" />
 <br/>
 
-The FAB button will take the user to a modal to save the bottlefeeding details. Notice that the users now have the option to enter the date, time, and duration instead of it being automatic on the prior page. 
+The FAB button will take the user to a modal to save the bottlefeeding details. Notice that the user now have the option to enter the date, time, and duration instead of it being automatic on the prior page. 
 
 <img src="Readme_screenshots/manually_add_bottlefeeding.png" width="400" />
 <br/>
