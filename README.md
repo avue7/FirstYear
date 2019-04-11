@@ -1,5 +1,7 @@
 # FirstYear
-This is an android app using the Ionic Framework and Google's Firebase to store information that will help keep track of the user's baby's or babies daily essential activities such as feeding, diapering, sleeping, and eating.
+This is an android app using the Ionic Framework and Google's Firebase to store information that will help keep track of the user's baby's or babies daily essential activities such as feeding, diapering, and sleeping. The user may also keep a record of his/her baby or babies' growth.
+
+** This is an ongoing project and some of functionalities (titles) that you can see in the segments are functionalities that I would like to work on in the future.  
 <br/>
 <br/>
 
