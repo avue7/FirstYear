@@ -34,7 +34,7 @@
 
       <ion-item>
         <ion-label stacked>Birthday</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY" formControlName="birthday"></ion-datetime>
+        <ion-datetime class="item-datetime" displayFormat="MM/DD/YYYY" formControlName="birthday"></ion-datetime>
       </ion-item>
       <!-- checking for errors for lastName -->
       <ion-item no-lines *ngIf="babyInfoForm.get('birthday').hasError('required')
@@ -46,7 +46,7 @@
 
       <ion-item>
         <ion-label >Gender</ion-label>
-        <ion-select [(ngModel)]="gender" formControlName="gender" interface="popover">
+        <ion-select formControlName="gender" interface="popover">
           <ion-option value="male">Male</ion-option>
           <ion-option value="female">Female</ion-option>
         </ion-select>

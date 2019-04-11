@@ -8,7 +8,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class EditBabyModalPage {
   babyInfoForm: FormGroup;
-  gender: string = "male";
+  // gender: string = "male";
   passedInBabyObject: any;
 
   constructor( private view: ViewController,

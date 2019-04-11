@@ -1,7 +1,8 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Manually Add Diapering</ion-title>
+    <ion-title *ngIf="!edit">Manually Add Diapering</ion-title>
+    <ion-title *ngIf="edit">Edit Diapering</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -37,7 +38,8 @@
       </ion-item>
 
     </ion-list>
-    <button ion-button class="baby-button" type="submit">Add</button>
+    <button *ngIf="!edit" ion-button class="baby-button" type="submit">Add</button>
+    <button *ngIf="edit" ion-button class="baby-button" type="submit">Submit</button>
   </form>
   <button ion-button class="baby-button" (click)="cancelBottleModal()">Cancel</button>
 

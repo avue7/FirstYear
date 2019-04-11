@@ -151,7 +151,7 @@
         <br>
         <i> {{lastBottleFeed}}, {{this.bottleLastAmount}}</i>
         <br>
-        <i>{{((lastBottleDuration) |  hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </i>
+        <i *ngIf="lastBottleDuration">{{((lastBottleDuration) |  hoursMinutesSeconds:{hours: true, minutes: true, seconds: true})}} </i>
       </p>
       <ng-template #none>
         <p class="center">

@@ -32,6 +32,10 @@
       }
     }
 
+    .item-datetime ion-datetime {
+      text-align: right !important;
+    }
+
     ion-select{
       select {
         text-align: right;
@@ -39,11 +43,6 @@
           text-align: right;
         }
       }
-    }
-    
-    ion-row {
-      align-items: center;
-      text-align: center;
     }
 
     .baby-button {

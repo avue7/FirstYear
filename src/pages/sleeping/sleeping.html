@@ -16,7 +16,7 @@
         <ion-col width-25>
           <ion-item>
             <ion-label>Date</ion-label>
-            <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="sleeping.date" name="date"></ion-datetime>
+            <ion-datetime displayFormat="MM/DD/YYYY" min="2015" [(ngModel)]="sleeping.dateStart" name="dateStart"></ion-datetime>
           </ion-item>
         </ion-col>
         <ion-col class="center-black" width-3>
@@ -55,6 +55,8 @@
 
     <!-- Summary -->
     <p class="center"  *ngIf="lastSleeping;else none">
+      <i class="momentsAgo"><b>Last Awoke: about {{WokeupMomentsAgo}}</b></i>
+      <br>
       <i class="momentsAgo"><b>Last Slept: about {{SleepingMomentsAgo}}</b></i>
       <br>
       <i> {{lastSleeping}}, slept for: {{lastSleepDuration}}</i>

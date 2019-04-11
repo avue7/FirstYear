@@ -1,0 +1,114 @@
+<ion-header>
+  <ion-navbar no-border-bottom color="navbarColor">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title> Alarms </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<!-- <ion-content padding class="center"> -->
+<ion-content class="center">
+  <div class="diaper-box">
+    <!-- <ion-title> Recurring Alarms: </ion-title> -->
+    <p> Recurring Alarms: </p>
+    <ion-row *ngIf="bottleFeedingAlarmIsOn" class="alarmOn">
+      <ion-item (click)="editBottleFeedingAlarm()">
+        <ion-toggle color="secondary" (ionChange)="toggleBottleFeedingAlarm($event)" checked={{bottleFeedingAlarmIsOn}} [disabled]="bottleAlarmDisable" item-start></ion-toggle>
+        <ion-label>Bottlefeeding
+          <ng-container *ngIf="hrs && mins; else second">
+            <p >every {{hrs}} hr, {{mins}} min</p>
+          </ng-container>
+          <ng-template #second>
+            <ng-container *ngIf="hrs; else third">
+              <p >every {{hrs}} hr</p>
+            </ng-container>
+          </ng-template>
+          <ng-template #third>
+            <ng-container *ngIf="mins">
+              <p >every {{mins}} min</p>
+            </ng-container>
+          </ng-template>
+        </ion-label>
+        <ion-icon name="more" item-right></ion-icon>
+      </ion-item>
+    </ion-row>
+    <ion-row *ngIf="!bottleFeedingAlarmIsOn" class="alarmOff">
+      <ion-item (click)="editBottleFeedingAlarm()">
+        <ion-toggle color="secondary"  (ionChange)="toggleBottleFeedingAlarm($event)" checked={{bottleFeedingAlarmIsOn}} [disabled]="bottleAlarmDisable" item-start></ion-toggle>
+        <!-- <ion-icon name="custom-bottle" item-left></ion-icon> -->
+        <ion-label>Bottlefeeding
+          <ng-container *ngIf="hrs && mins; else second">
+            <p >every {{hrs}} hr, {{mins}} min</p>
+          </ng-container>
+          <ng-template #second>
+            <ng-container *ngIf="hrs; else third">
+              <p >every {{hrs}} hr</p>
+            </ng-container>
+          </ng-template>
+          <ng-template #third>
+            <ng-container *ngIf="mins">
+              <p >every {{mins}} min</p>
+            </ng-container>
+          </ng-template>
+        </ion-label>
+        <ion-icon name="more" item-right></ion-icon>
+      </ion-item>
+    </ion-row>
+    <ion-row *ngIf="breastAlarmIsOn" class="alarmOn">
+      <ion-item (click)="editBreastFeedingAlarm()">
+        <ion-toggle color="secondary" (ionChange)="toggleBreastFeedingAlarm($event)" checked={{breastAlarmIsOn}} [disabled]="breastAlarmDisable" item-start></ion-toggle>
+        <ion-label>Breastfeeding
+          <ng-container *ngIf="breastHours && breastMinutes; else breastSecond">
+            <p >every {{breastHours}} hr, {{breastMinutes}} min</p>
+          </ng-container>
+          <ng-template #breastSecond>
+            <ng-container *ngIf="breastHours; else breastThird">
+              <p >every {{breastHours}} hr</p>
+            </ng-container>
+          </ng-template>
+          <ng-template #breastThird>
+            <ng-container *ngIf="breastMinutes">
+              <p >every {{breastMinutes}} min</p>
+            </ng-container>
+          </ng-template>
+        </ion-label>
+        <ion-icon name="more" item-right></ion-icon>
+      </ion-item>
+    </ion-row>
+    <ion-row *ngIf="!breastAlarmIsOn" class="alarmOff">
+      <ion-item (click)="editBreastFeedingAlarm()">
+        <ion-toggle color="secondary" (ionChange)="toggleBreastFeedingAlarm($event)" checked={{breastAlarmIsOn}} [disabled]="breastAlarmDisable" item-start></ion-toggle>
+        <ion-label>Breastfeeding
+          <ng-container *ngIf="breastHours && breastMinutes; else breastSecond">
+            <p >every {{breastHours}} hr, {{breastMinutes}} min</p>
+          </ng-container>
+          <ng-template #breastSecond>
+            <ng-container *ngIf="breastHours; else breastThird">
+              <p >every {{breastHours}} hr</p>
+            </ng-container>
+          </ng-template>
+          <ng-template #breastThird>
+            <ng-container *ngIf="breastMinutes">
+              <p >every {{breastMinutes}} min</p>
+            </ng-container>
+          </ng-template>
+        </ion-label>
+        <ion-icon name="more" item-right></ion-icon>
+      </ion-item>
+    </ion-row>
+  </div>
+
+  <div class="bottle-summary">
+    <div class="divider-title"> No Manual Alarms Yet </div>
+  </div>
+
+  <ion-fab bottom right>
+    <button ion-fab class="center-fab" (click)="addAlarm()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+
+</ion-content>
