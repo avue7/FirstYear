@@ -32,9 +32,15 @@ Clicking on the icon feeding will take the user to this page. Bottlefeeding is s
 <b>Bottlefeeding:</b>
 For bottlefeeding, users can choose the type of fluid, volume in oz or ml, and add any notes. The right row displays a timer for the feeding event. Timing is optional and if there exists a time, the detail for the feeding time will be displayed with the activity item. The next column shows the latest bottlefeed. This event listener will automatically update relative to the current time on the latest bottlefeeding recorded. The information below this shows the history for the baby's bottlefeedings. I plan to make the items in this list editable in the future. 
 
+Users might miss or forget to record a bottlefeeding event. When this happens, users may manually add a bottlefeeding event by pressing the FAB button on the bottom right. 
+
 <img src="Readme_screenshots/bottlefeeding.png" width="400" />
 <br/>
 
+The FAB button will take the user to a modal to save the bottlefeeding details. Notice that the users now have the option to enter the date, time, and duration instead of it being automatic on the prior page. 
+
+<img src="Readme_screenshots/manually_add_bottlefeeding.png" width="400" />
+<br/>
 
 
 
