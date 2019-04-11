@@ -3,7 +3,6 @@ This is an android app using the Ionic Framework and Google's Firebase to store 
 
 ** This is an ongoing project and some of functionalities (titles) that you can see in the segments are functionalities that I would like to work on in the future.  
 <br/>
-<br/>
 
 ### Welcome Page:
 Users have the option login with normal username/password credentials, Google+, Facebook, or Twitter. If an account is not recognized by or not in Firebase's Authentication system via the login button, then the user will have the option to signup. Signing in with Google+, Facebook, or Twitter will automatically add users to the Firebase Authentication system. 
