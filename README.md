@@ -77,7 +77,7 @@ Here the user can specify the meal type or make any notes of the meal being reco
 <img src="Readme_screenshots/meal.png" width="400" />
 <br/>
 
-Recording a missed-logging of a meal activity may also be recorded manually via the FAB button on the bottom right.
+Recording a missed logging of a meal activity can also be done manually via the FAB button on the bottom right.
 
 <img src="Readme_screenshots/manually_add_meal.png" width="400" />
 <br/>
