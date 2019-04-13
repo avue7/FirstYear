@@ -102,7 +102,7 @@ If the user decides not to use the timer, then he/she must manually add the slee
 <b> Growth History: </b> <br/>
 I've decided to exclude the growth history feature from the activities and put it in its own structure since I believe that the user  will find this information irrelavent to the "essential" activities. 
 
-This page may be entered from the side menu or the home page by pressing on the appropriate icon. Upon entering, the page shows all of the growth information recorded for the current baby. At the top, I also added an event listener to allow the user to see when the last growth information was recorded relative to the current time. This information may be useful for users who would like to check their baby's growth on a daily, weekly, or monthly bases. 
+This page may be entered from the side menu or the home page by pressing on the appropriate icon. Upon entering, the page shows all of the growth information recorded for the current baby. Like the items on the activities list for the Home page, each item here may also be modified or deleted by swiping the item left or right. At the top, I also added an event listener to allow the user to see when the last growth information was recorded relative to the current time. This information may be useful for users who would like to check their baby's growth on a daily, weekly, or monthly bases. 
 
 <img src="Readme_screenshots/growth_history.png" width="400" />
 <br/>
