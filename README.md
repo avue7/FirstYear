@@ -4,15 +4,15 @@ This is an android app using the Ionic Framework and Google's Firebase to store 
 Please note: This is an ongoing project and some of functionalities (titles) that you can see in the segments are functionalities that I have not yet finished if it is not listed below. 
 <br/>
 
-### Welcome Page:
+## Welcome Page:
 Users have the option login with normal username/password credentials, Google+, Facebook, or Twitter. If an account is not recognized by or not in Firebase's Authentication system via the login button, then the user will have the option to signup. Signing in with Google+, Facebook, or Twitter will automatically add users to the Firebase Authentication system. 
 
 <img align="center" src="Readme_screenshots/welcome.png" width="400" />
 <br/>
 
-### Home Page: 
+## Home Page: 
 
-#### Activities Segment:
+### Activities Segment:
 In this segment of the home page, each logged activitiy will be display here in chronological order from the latest to the oldest. At the bottom of the screen is a fixed footer that contains clickable icons for each activity. When an icon is clicked, it will take the user to the appropriate view. 
 
 <img src="Readme_screenshots/home.png" width="400" />
@@ -38,7 +38,7 @@ Users might miss or forget to record a bottlefeeding event. When this happens, u
 <img src="Readme_screenshots/bottlefeeding.png" width="400" />
 <br/>
 
-The FAB button will take the user to a modal to save the bottlefeeding details. Notice that the user now have the option to enter the date, time, and duration instead of it being automatic on the prior page. 
+The FAB button will take the user to a modal to save the bottlefeeding details. Notice that the user now have the option to enter the date, time, and duration instead of the current time being automatically logged when the save icon is pressed. 
 
 <img src="Readme_screenshots/manually_add_bottlefeeding.png" width="400" />
 <br/>
