@@ -61,3 +61,14 @@ Timer paused:
 <img src="Readme_screenshots/breastfeeding_timer_paused.png" width="400" />
 <br/>
 
+Likewise with the bottlefeeding, the user may forget to log a breastfeeding session. The user may do this by pressing the FAB button on the bottom right corner and add the details. 
+
+<img src="Readme_screenshots/manually_add_breastfeed.png" width="400" />
+<br/>
+
+At the very button exists a history button that the user can press to view all history of recorded breastfeeding events. I understand that this may get expensive as the app attracts more users and it may also slow down the app as well. Options that I have considered is probably limiting the user to store a number of events to a certain degree. Or maybe having the user subscribe to a very low paid service once the user has reached a number of logged events. 
+
+<img src="Readme_screenshots/breastfeeding_history.png" width="400" />
+
+
+
