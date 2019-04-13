@@ -52,9 +52,12 @@ Breastfeeding follows the same format as the bottlefeeding activity. The buttons
 In an effort to help with avoiding user-error, I have disabled the refresh and save buttons, far-left and far-right, from becoming functional until the record button, center button, is pressed and the button is pressed again for the time to paused.
 
 Timer started:
+
 <img src="Readme_screenshots/breastfeeding_timer_started.png" width="400" />
+<br/>
 
 Timer paused:
-<img src="Readme_screenshots/breastfeeding_timer_paused.png" width="400" />
 
+<img src="Readme_screenshots/breastfeeding_timer_paused.png" width="400" />
+<br/>
 
