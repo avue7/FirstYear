@@ -82,5 +82,11 @@ Recording a missed logging of a meal activity can also be done manually via the 
 <img src="Readme_screenshots/manually_add_meal.png" width="400" />
 <br/>
 
+<b> Diapering: </b> <br/>
+The user can enter the Diapering page from the Home page by pressing the Diaper icon or from the side menu in the Home page. The Diapering activity page follows the same format as the above activities and should be self-explanatory.
+
+<img src="Readme_screenshots/diapering.png" width="400" />
+<br/>
+
 
 
