@@ -94,7 +94,7 @@ The Sleeping activity page follows the same format as the Diapering activity pag
 <img src="Readme_screenshots/sleeping.png" width="400" />
 <br/>
 
-If the user decides not to use the timer, then he/she must manually add the sleeping event in order to log the "hours slept" correctly; the user must specify date and time of start and date of time of ending of sleep. This can be done by pressing the FAB button on the lower right corner that will open a modal.
+If the user decides not to use the timer, then he/she must manually add the sleeping event in order to log the "hours slept" correctly; the user must specify date and time of start and date of time of ending of sleep. This can be done by pressing the FAB button on the lower right corner that will open the following modal:
 
 <img src="Readme_screenshots/manually_add_sleep.png" width="400" />
 <br/>
