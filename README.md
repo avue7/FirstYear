@@ -44,5 +44,17 @@ The FAB button will take the user to a modal to save the bottlefeeding details. 
 <br/>
 
 <b> Breastfeeding:</b> <br/>
-Breastfeeding follows the same format as the bottlefeeding activity. The buttons on the very top, below the segments, allows the user to select between left or right breast. Below that shows the last breastfeeding that was recorded relative to the current time. 
+Breastfeeding follows the same format as the bottlefeeding activity. The buttons on the very top, below the segment headings, allows the user to select between left or right breast. Below that shows the last breastfeeding that was recorded with a "moments ago" time relative to the current time. Below are three buttons that will control the timer. 
+
+<img src="Readme_screenshots/breastfeeding.png" width="400" />
+<br/>
+
+In an effort to help with avoiding user-error, I have disabled the refresh and save buttons, far-left and far-right, from becoming functional until the record button, center button, is pressed and the button is pressed again for the time to paused.
+
+Timer started:
+<img src="Readme_screenshots/breastfeeding_timer_started.png" width="400" />
+
+Timer paused:
+<img src="Readme_screenshots/breastfeeding_timer_paused.png" width="400" />
+
 
