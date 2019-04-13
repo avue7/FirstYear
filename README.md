@@ -69,6 +69,7 @@ Likewise with the bottlefeeding, the user may forget to log a breastfeeding sess
 At the very bottom of the Breastfeeding page exists a history button. Pressing this button will show all logged breastfeeding events for the currently selected baby. 
 
 <img src="Readme_screenshots/breastfeeding_history.png" width="400" />
+<br/>
 
 <b> Meal Feeding: </b><br/>
 Here the user can specify the meal type or make any notes of the meal being recorded. The last meal "moments ago" time is also displayed followed by the history of all meal activities recorded for the current baby. 
