@@ -1,7 +1,7 @@
 # FirstYear
 This is an android app using the Ionic Framework and Google's Firebase to store information that will help keep track of the user's baby's or babies daily essential activities such as feeding, diapering, and sleeping. The user may also keep a record of his/her baby or babies' growth as well.
 
-Please note: This is an ongoing project and some of functionalities (titles) that you can see in the segments are functionalities that I have not yet finished if it is not listed below. 
+<b>Please note:</b> This is an ongoing project and some of functionalities (titles) that you can see in the home page segments are functionalities that I have not yet finished if it is not listed below (i.e. Charts, Gallery, Chats). All other sub-segments within the activities such as feeding are finished. 
 <br/>
 
 ## Welcome Page:
@@ -43,5 +43,6 @@ The FAB button will take the user to a modal to save the bottlefeeding details. 
 <img src="Readme_screenshots/manually_add_bottlefeeding.png" width="400" />
 <br/>
 
-
+<b> Breastfeeding:</b> <br/>
+Breastfeeding follows the same format as the bottlefeeding activity. The buttons on the very top, below the segments, allows the user to select between left or right breast. Below that shows the last breastfeeding that was recorded relative to the current time. 
 
