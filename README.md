@@ -100,14 +100,14 @@ If the user decides not to use the timer, then he/she must manually add the slee
 <br/>
 
 <b> Growth History: </b> <br/>
-I've decided to exclude the growth history feature from the activities and put it in its own structure since I believe that the user will rarely use this and will find this information irrelavent to the "essential" activities. 
+I've decided to exclude the growth history feature from the activities and put it in its own structure since I believe that the user  will find this information irrelavent to the "essential" activities. 
 
-This page may be entered from the side menu or the home page by pressing on the appropriate icon. Upon entering, the page shows all of the growth information recorded for the current baby. At the top I also added an event listener to allow the user to see when the last growth was recorded relative to the current time. I put this here as well, so the user can simply stick to a schedule of checking the baby's growth to see how he/she is growing. This information may also be recorded via from the docter visits and they check the baby's growth for the parents as well. 
+This page may be entered from the side menu or the home page by pressing on the appropriate icon. Upon entering, the page shows all of the growth information recorded for the current baby. At the top, I also added an event listener to allow the user to see when the last growth information was recorded relative to the current time. This information may be useful for users who would like to check their baby's growth on a daily, weekly, or monthly bases. 
 
 <img src="Readme_screenshots/growth_history.png" width="400" />
 <br/>
 
-The user must add a new growth information by pressing the FAB button on the lower right corner. Then the modal for the information to be enter will be displayed. For now I have added weight, height, and head circumference. Values and units of measurements can also be changed. The user will also have the option to add a note in addition to these information. 
+The user must add a new growth information by pressing the FAB button on the lower right corner. For now, the user has the option of  recording the baby's weight, height, and head values. The user may also change the unit of measurement and have the option to add a note as well.
 
 <img src="Readme_screenshots/add_growth.png" width="400" />
 <br/>
