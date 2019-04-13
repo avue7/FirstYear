@@ -13,7 +13,7 @@ Users have the option login with normal username/password credentials, Google+, 
 ### Home Page: 
 
 #### Activities Segment:
-In this segment of the home page, each logged activitiy will be display here in chronological order from the latest to the oldest. At the bottom of the screen is a fixed footer that contains the icon for each activity. By clicking on the icon, the app will take the user to the appropriate page to record the activity chosen. 
+In this segment of the home page, each logged activitiy will be display here in chronological order from the latest to the oldest. At the bottom of the screen is a fixed footer that contains clickable icons for each activity. When an icon is clicked, it will take the user to the appropriate view. 
 
 <img src="Readme_screenshots/home.png" width="400" />
 <br/>
@@ -28,9 +28,9 @@ Users can also swipe the activity item right to edit the information.
 <img src="Readme_screenshots/edit_activity_home.png" width="400" />
 <br/>
 
-Clicking on the icon feeding will take the user to this page. Bottlefeeding is set as the preference by the app for the first segment to be automatically display. Later, I will add the option for the user to choose which segment is best for them. 
-
 <b>Bottlefeeding:</b>
+** Clicking on the icon feeding will take the user to this page. Bottlefeeding is set as the preference by the app to be the first segment displayed when entering this view. The user can swipe left or right to a different view for feeding. Later, I will add the option for the user to choose which segment should be opened first when entering the feeding page. 
+
 For bottlefeeding, users can choose the type of fluid, volume in oz or ml, and add any notes. The right row displays a timer for the feeding event. Timing is optional and if there exists a time, the detail for the feeding time will be displayed with the activity item. The next column shows the latest bottlefeed. This event listener will automatically update relative to the current time on the latest bottlefeeding recorded. The information below this shows the history for the baby's bottlefeedings. I plan to make the items in this list editable in the future. 
 
 Users might miss or forget to record a bottlefeeding event. When this happens, users may manually add a bottlefeeding event by pressing the FAB button on the bottom right. 
