@@ -89,7 +89,7 @@ The user can enter the Diapering page from the Home page by pressing the Diaper 
 <br/>
 
 <b> Sleeping: </b> <br/>
-The Sleeping activity page follows the same format as the Diapering activity page except it has a timer that the user can use to time the baby's sleep and it also has a "last awoke moments ago" time to inform the user how long ago did the current baby had his/her nap. Babies get cranky if they do not get their rest, thus this idea came from my wife and was implemented here. 
+The Sleeping activity page follows the same format as the Diapering activity page except it has a timer that the user can use to time the baby's sleep and also the "last awoke moments ago" time to inform the user how long ago did the current baby had his/her nap. Babies get cranky if they do not get their rest, thus this idea came from my wife and was implemented here. 
 
 <img src="Readme_screenshots/sleeping.png" width="400" />
 <br/>
